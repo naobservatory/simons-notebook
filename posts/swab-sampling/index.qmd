@@ -17,7 +17,11 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt    
 import numpy as np
+from collections import defaultdict
+import random
+import math
 ```
+
 
 
 # Introduction
@@ -204,14 +208,14 @@ Three studies performed paired metagenomic sequencing and SARS-CoV-2 qPCR on swa
 ```{python}
 #| fig-cap: "**Figure 4: SARS-CoV-2 qPCR CT vs SARS-CoV-2 RA.**\nTop Figure: Throat Swabs. Data from Lu et al. 2021.\nBottom Figure: Nasopharyngeal Swabs. Data from Babiker et al. 2020."
 df_throat = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
-df_throat.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Inpatient/ED vs. Outpatient': 'patient_status'}, inplace=True)
-df_throat['scv2_ct'] = df_throat['scv2_ct'].replace(',', '.', regex=True).astype(float)
-
+df_throat.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
 df_nasopharyngeal = pd.read_csv('data/babiker_np_ct_mgs.tsv', sep='\t', skiprows=1)
-df_nasopharyngeal.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
+df_nasopharyngeal.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Inpatient/ED vs. Outpatient': 'patient_status'}, inplace=True)
+df_nasopharyngeal['scv2_ct'] = df_throat['scv2_ct'].replace(',', '.', regex=True).astype(float)
+
 
 fig, axs = plt.subplots(2, 1, figsize=(9, 6))
-for i, (ax, df) in enumerate(zip(axs, [df_nasopharyngeal, df_throat])):
+for i, (ax, df) in enumerate(zip(axs, [df_throat, df_nasopharyngeal])):
     if i == 1:
         # set dot colors
         sns_default_colors = sns.color_palette('tab10')
@@ -239,6 +243,78 @@ for i, (ax, df) in enumerate(zip(axs, [df_nasopharyngeal, df_throat])):
         ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
 ```
 
+# Simulating detection capability
+
+```{python}
+#| fig-cap: "**Figure 5: Simulated detection capability of pooled swab sampling.**\nLeft Figure: Throat Swabs. Data from Lu et al. 2021.\nRight Figure: Nasopharyngeal Swabs. Data from Babiker et al. 2020."
+def simulate_detection(positive_ras):
+    FRAC_SICK = 0.01  
+    SIMULATIONS = 10000
+    
+    def probabilistic_round(x):
+        return int(math.floor(x + random.random()))
+    
+    def simulate_once(n_swabs):
+        n_sick = probabilistic_round(FRAC_SICK*n_swabs)
+        if not n_sick:
+            return 0
+        ra = 0
+        for _ in range(n_sick):
+            ra = random.choice(positive_ras) 
+        return ra / n_swabs
+    
+    def simulate_many(n_simulations, n_swabs):
+        RAs = []
+        for _ in range(n_simulations):
+            RAs.append(simulate_once(n_swabs))
+        RAs.sort()
+    
+        return [RAs[probabilistic_round(len(RAs)*percentile/100)]
+                for percentile in range(100)]
+    data = defaultdict(list)
+    n_swab_range = [50, 100, 200, 400, 800]
+    for n_swabs in n_swab_range: 
+        for percentile, ra in enumerate(simulate_many(SIMULATIONS, n_swabs)):
+            data[percentile].append(ra)
+    df = pd.DataFrame(data).T
+    df.columns = n_swab_range 
+
+    return df
+df_throat = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
+df_throat.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
+
+df_nasopharyngeal = pd.read_csv('data/babiker_np_ct_mgs.tsv', sep='\t', skiprows=1)
+df_nasopharyngeal.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Inpatient/ED vs. Outpatient': 'patient_status'}, inplace=True)
+df_nasopharyngeal['scv2_ct'] = df_throat['scv2_ct'].replace(',', '.', regex=True).astype(float)
+
+df_throat_ras = df_throat['scv2_ra'].dropna().tolist()
+df_nasopharyngeal_ras = df_nasopharyngeal['scv2_ra'].dropna().tolist()
+fig, axs = plt.subplots(1, 2, figsize=(9, 5), sharey=True)
+n_swab_range = [50, 100, 200, 400, 800]
+for i, positive_ras in enumerate([df_throat_ras, df_nasopharyngeal_ras]):
+    df= simulate_detection(positive_ras)
+    for n_swabs in n_swab_range:
+        axs[i].plot(df.index, df[n_swabs], label=f'{n_swabs} swabs')
+    axs[i].set_xlabel('Percentile')
+    axs[i].set_ylabel('RA')
+    axs[i].set_yscale('log')
+    # turn on y tick labels for both plots
+    axs[i].yaxis.set_tick_params(labelleft=True)
+    for x in range (0, 100, 20):
+        axs[i].axvline(x=x, color='black', linestyle='--', linewidth=0.5, alpha=0.5)
+
+    for y in range (-1, -10, -1):
+        log_y = 10**y
+        axs[i].axhline(y=log_y, color='black', linestyle='--', linewidth=0.5, alpha=0.5)
+    if i == 0:
+        axs[i].set_title('Throat')    
+    else:
+        axs[i].set_title('Nasopharyngeal')
+
+
+    if i == 1:
+        axs[i].legend()
+```
 
 
 
