@@ -11,6 +11,8 @@ format:
     df-print: paged
 jupyter: venv
 engine: knitr
+filters:
+    - black-formatter
 ---
 
 # Table of contents.
