@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/quarto-test/index.html",
       "/posts/swab-sampling/index.html"
     ]
   }

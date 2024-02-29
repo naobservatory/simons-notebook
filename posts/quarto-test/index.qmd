@@ -1,0 +1,196 @@
+---
+title: "Test Quarto Markdown"
+author: "Simon Grimm "
+date: 2024-02-27  
+toc: true
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-link: true
+    df-print: paged
+jupyter: venv
+engine: knitr
+---
+
+# Table of contents.
+I turned on the table of contents in the YAML front matter. It should automatically show up on the right side of the blog post, staying there while scrolling up and down the blog post.
+
+# Text 
+## Text Formatting
+
+Here are various text formatting options in Quarto:
+
+- *Italics*, **bold**, and ***bold italics***
+- Superscript^2^ and subscript~2~
+- ~~Strikethrough~~
+- `Verbatim code`
+
+## Headings
+
+Demonstration of heading levels in Quarto:
+
+# Header 1
+
+## Header 2
+
+### Header 3
+
+#### Header 4
+
+##### Header 5
+
+###### Header 6
+
+## Written Text
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+## Lists
+
+* unordered list
+    + sub-item 1
+    + sub-item 2
+      - another item
+
+1. ordered list
+2. item 2
+    i) sub-item 1
+         A.  sub-sub-item 1
+
+
+## Math
+
+Inline math: $E = mc^{2}$
+
+Display math:
+
+$$E = mc^{2}$$
+
+
+## Quotes
+
+Here is a quote:
+
+> "This is a quote."
+
+# Figures
+
+
+## Showing a png
+Here is a figure with 100% width (it should be the same width as the text)
+![Example Figure](threat_detection.png){width=100%}
+Here is a figure with 50% width.
+
+![Example Figure at 50% Size](threat_detection.png){width=50%}
+
+Here is a paragraph of text for comparison:
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+## Figure with Python
+
+Here is a figure created in Python:
+
+```{python}
+#| fig-cap: "**Figure Caption:** Example figure with two exponential curves."
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import gamma
+
+x = np.linspace(0, 20, 400)  # x values
+a1, b1 = 1, 0.1  # Exponential curve 1 parameters
+a2, b2 = 1, 0.2  # Exponential curve 2 parameters
+k, theta = 2, 2  # Gamma distribution parameters
+
+exp_curve1 = a1 * np.exp(b1 * x)
+exp_curve2 = a2 * np.exp(b2 * x)
+
+
+plt.figure(figsize=(10, 6))
+plt.plot(x, exp_curve1, label='Exponential Curve 1: a=1, b=0.1', color='blue')
+plt.plot(x, exp_curve2, label='Exponential Curve 2: a=1, b=0.2', color='green')
+plt.title('Example Figure')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+## Figure with R
+
+Here is a figure created in R:
+
+```{r}
+mtcars2 <- mtcars
+mtcars2$am <- factor(
+  mtcars$am, labels = c('automatic', 'manual')
+)
+library(ggplot2)
+ggplot(mtcars2, aes(hp, mpg, color = am)) +
+  geom_point() +
+  geom_smooth(formula = y ~ x, method = "loess") +
+  theme(legend.position = 'bottom')
+```
+
+
+# Other features
+
+## Footnotes
+Test footnote 1[^1] and test footnote 2[^2]
+
+[^1]: This is the first footnote.
+[^2]: This is the second footnote.
+
+## Asides
+Asides are a feature by Quarto where you can put text on the right side or left side of your main body of text. 
+
+### Aside with Latex
+Here is an aside with Latex. 
+
+::: {.column-margin}
+We know from *the first fundamental theorem of calculus* that for $x$ in $[a, b]$:
+
+$$\frac{d}{dx}\left( \int_{a}^{x} f(u)\,du\right)=f(x).$$
+:::
+
+### Aside with a figure
+
+Here is an aside with a figure. We will probably use this quite rarely.
+
+
+
+```{r}
+#| fig-column: margin
+
+mtcars2 <- mtcars
+mtcars2$am <- factor(
+  mtcars$am, labels = c('automatic', 'manual')
+)
+library(ggplot2)
+ggplot(mtcars2, aes(hp, mpg, color = am)) +
+  geom_point() +
+  geom_smooth(formula = y ~ x, method = "loess") +
+  theme(legend.position = 'bottom')
+```
+
+
+### Full page figure
+Here is a full page figure, that uses the entire width of the web browser. Here some text for reference:
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
+```{r}
+#| column: screen-inset-shaded
+#| layout-nrow: 1
+
+plot(cars)
+plot(iris)
+plot(pressure)
+```
+
+
+
+
