@@ -222,11 +222,10 @@ In qPCR measurements, nasal swabs contain more virus copies than throat swabs. I
 
 Whatever the sample type, ultimately we will want to perform metagenomic sequencing to detect novel pathogens. As described in a [previous report](https://naobservatory.org/reports/comparing-sampling-strategies-for-early-detection-of-stealth-biothreats/), the value of a metagenomic sequencing sample will can be assessed across several dimensions:
 
-* What is the expected relative abundance of a human-infecting stealth virus?[^1]
+* What is the expected relative abundance of a human-infecting stealth virus?
 * How complex are individual sequencing samples? I.e, what is their species richness and evenness?
 * How much does the background complexity of a sample vary between individuals and over time?
 
-[^1]: The shedding dynamics of a **stealth pathogen** are likely to be different from SARS-CoV-2, so we need to be careful about generalizing from samples that originate from SARS-CoV-2 patients, particularly if they are hospitalized.
 
 The relative abundance of a target pathogen can be impacted by its microbial background, because the sequencing efficiency of a taxon is directly dependant on the sampling efficiency of the other taxa in the sample[^3]
 
@@ -356,8 +355,10 @@ for i, positive_ras in enumerate([df_throat_ras, df_nasopharyngeal_ras]):
 ```
 
 
-
-# Supplement
+## Next steps
+* Pull in additional qPCR studies.
+* Read into research on comparing CT values across studies and search for standard curves in existing papers.
+* Lay out what you would do if you had standard curves available.
 
 Create a figure for the remaining viruses not covered in Figure 3.
 
