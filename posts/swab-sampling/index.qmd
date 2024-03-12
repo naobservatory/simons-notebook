@@ -101,7 +101,7 @@ sns.stripplot(data=df, y='Study & Comparison', x='CT Difference', hue='Study & C
 plt.legend([],[], frameon=False)
 # drop y axis label
 plt.ylabel('')
-plt.xlabel('qPCR Cycle Threshold Value Difference')
+plt.xlabel(u'SARS-CoV-2 qPCR CT Δ (NP - Comparison)')
 plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
 for x in 5, 0, -5, -10, -15:
     if x == 0:
@@ -147,7 +147,7 @@ sns.stripplot(data=df, y='Study & Comparison', x='CT Difference', hue='Study & C
 plt.legend([],[], frameon=False)
 # drop y axis label
 plt.ylabel('')
-plt.xlabel('qPCR Cycle Threshold Value Difference')
+plt.xlabel(u'SARS-CoV-2 qPCR CT Δ (Nasal - Comparison)')
 plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
 
 for x in 5, 0, -5, -10, -15:
@@ -191,7 +191,7 @@ sns.stripplot(data=df, y='Study & Comparison', x='Genome Copy Number Difference'
 plt.legend([],[], frameon=False)
 # drop y axis label
 plt.ylabel('')
-plt.xlabel('Genome Copy Number Difference (Nasal - Throat Swabs), log10 scale')
+plt.xlabel(u'Genome Copy Number Δ (Nasal - Throat), Log scale')
 # flip x axis
 plt.gca().invert_xaxis()
 plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
@@ -241,28 +241,34 @@ df_nasopharyngeal.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2
 df_nasopharyngeal['scv2_ct'] = df_nasopharyngeal['scv2_ct'].replace(',', '.', regex=True).astype(float)
 
 fig, axs= plt.subplots(2, 1, figsize=(9, 6))
-for i, (ax, df) in enumerate(zip(axs, [df_throat, df_nasopharyngeal])):
-    x_lim = 12.5, 37.5
+for i, (ax, df) in enumerate(zip(axs, [df_throat, df_nasopharyngeal])):   
+    sns_default_colors = sns.color_palette()
+    # pick 4th and 10th color from palette
+
+    x_lim = 12.5, 40
+    y_lim = 10**-8, 10**0
     if i == 1:
         # set dot colors
-        sns_default_colors = sns.color_palette('tab10')
-        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='patient_status', style='patient_status',s=100, palette=sns_default_colors[2:4])
-        # set coordinates for legend
+        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='patient_status', style='patient_status', palette=sns_default_colors, s=70)
+        # set coordinates for legend:Quarto
         coordinates = (0.6, -0.2)
         ax.legend(title='', loc="upper left") # bbox_to_anchor=coordinates)
         ax.set_xlabel('SARS-CoV-2 qPCR CT Value')
         ax.set_xlim(x_lim)
-    else:
-        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', s=100) 
+        ax.set_ylim(10**-8, 10**0)
+    else:    
+        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', color=sns_default_colors[3], s=70)
         ax.set_xlabel('')
         ax.set_xlim(x_lim)
+        ax.set_ylim(y_lim)
+
     ax.set_yscale('log')
     ax.invert_xaxis()
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
     ax.set_ylabel('Relative Abundance')
-    for x in np.arange(15, 37.5, 2.5):
+    for x in np.arange(15, 40, 5):
         ax.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
     for y in range(-7, 1, 1):
         log_y = 10**y

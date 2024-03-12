@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/public-health-data/index.html",
       "/posts/quarto-test/index.html",
       "/posts/swab-sampling/index.html"
     ]

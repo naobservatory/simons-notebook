@@ -1,0 +1,24 @@
+Massachusetts Department of Public Health Influenza Reporting Dashboard				
+This Excel file contains the data used to create the interactive dashboard.				
+				
+"The Data Dictionary tab of this file defines every data field, contains source information, and includes any notes about that data field that are important for this interpretation of those data."				
+				
+"The Definitions tab include the definitions of terms used within the data and/or dashboard and resources where you can find. This information is displayed on the ""Resources"" page of the dashboard."				
+				
+"The Resources tab includes links to other websites where you can learn more about the topics and data in this dashboard. This information is displayed on the ""Resources"" page of the dashboard."				
+				
+If you are looking for specific data from the dashboard:				
+"The Overview page uses data from the ""Syndromic Surveillance"", ""Influenza Lab Tests Reported"", ""Influenza Mortality"" and ""Statewide Flu Activity"" tabs of this file."				
+"The Flu Activity Trends page uses data from the ""Syndromic Surveillance"" tab of this file."				
+"The Current Flu Activity page uses data from the ""Region Map"" and ""Statewide Flu Activity"" tabs of this file"				
+"The Lab Testing page uses data from the ""Influenza Lab Tests Reported"" and ""Testing at SPHL"" tabs of this file."				
+"The Deaths due to Influenza page uses data from the ""Influenza Mortality"" and ""Influenza Deaths by Season"" tabs of this file."				
+				
+This file and the corresponding dashboard will be updated once weekly. The file will be updated during the respiratory reporting season (July to June) and then archived at the end of the season.				
+				
+Data source(s):				
+"Please See the data dictionary tab for the correct source attribution for specific data points and for the date the data  were last updated. When citing these data, please note the date when the data were last updated and the date that the data were downloaded from Mass.gov. "				
+The source of data should be attributed as indicated below for all public facing reports or presentations generated from this data and include the data it was generated.				
+"Influenza Program, Division of Epidemiology, Bureau of Infectious Disease and Laboratory Sciences, Massachusetts Department of Public Health."				
+"Massachusetts State Public Health Laboratory, Bureau of Infectious Disease and Laboratory Sciences, Massachusetts Department of Public Health"				
+"Registry of Vital Records and Statistics, Massachusetts Department of Public Health."				

@@ -1,0 +1,7 @@
+1. Cases are assigend to weeks based on when the case tests positive. Deaths are assigned based on the date of death.				
+"2. Weeks are defined as Sunday to Saturday, aligning with the CDC's MMWR weeks."				
+3. Population denominators are calculated using 2020 Census data. 				
+"4. ""Season"" refers to the respriatory disease season. This is used as te reporting period for these data. The season starts during October and aligns with CDC's MMWR week 40."				
+5. Some demographic groups do not have population estimates available and therefore have no rates available.				
+"6. Data are suppressed for groups where the the population estimate is less than 50,000 and the number of patients is between 1 and 4 to protect patient privacy."				
+"7. For county level data, sum the City and Town Data tab by the County column"				

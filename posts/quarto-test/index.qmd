@@ -81,14 +81,16 @@ Here is a quote:
 
 ## Showing a png
 Here is a figure with 100% width (it should be the same width as the text)
-![Example Figure](threat_detection.png){width=100%}
+![Example Figure](images/threat_detection.png){width=100%}
 Here is a figure with 50% width.
 
-![Example Figure at 50% Size](threat_detection.png){width=50%}
+![Example Figure at 50% Size](images/threat_detection.png){width=50%}
 
 Here is a paragraph of text for comparison:
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+![Elephant](images/elephant.png)
 
 ## Figure with Python
 
