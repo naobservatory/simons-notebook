@@ -14,9 +14,9 @@ cap-location: bottom
 ---
 # Introduction
 
-This is a summary of the public health data for the state of Massachusetts obtained from the Massachusetts Department of Public Health (MADPH) and the National Respiratory and Enteric Viruses Surveillance System (NREVSS). The MADPH data for both COVID-19 and Influenza looks quite exciting because we see a sharp increase in positive tests and positive test percentages within the Project Runway Coverage Period. Positive tests start to rise at the beginning of November for COVID-19 and at the end of November for Influenza. The data from NREVSS is not as useful because the testing levels are quite a bit lower (positive tests for Flu and Covid reach a maximum of ~4250 and ~6000 respectively, while the most common NREVSS pathogen, Rhinovirus, caps out at ~130.)
+This is a summary of the public health data for the state of Massachusetts obtained from the Massachusetts Department of Public Health (MADPH) and the National Respiratory and Enteric Viruses Surveillance System (NREVSS). The MADPH data for both COVID-19 and Influenza looks quite exciting because we see a sharp increase in positive tests and positive test percentages within the Project Runway Coverage Period. Positive tests start to rise at the beginning of November for COVID-19 and at the end of November for Influenza. The data from NREVSS is not as useful because the testing levels are quite a bit lower (positive tests for Flu and COVID-19 reach a maximum of ~4250 and ~6000 respectively, while the most common NREVSS pathogen, Rhinovirus, caps out at ~130.)
 
-We still need to decide if we want to end up creating incidence estimates for all of these pathogens. But I already think that it will be interesting to check if the sequencing data will show an increase in pathogen abundance that matches the rate of increase in testing data.
+We still need to decide if we want to create incidence estimates for all of these pathogens. But I already think it will be interesting to check if the sequencing data show an increase in pathogen abundance that matches the rate of increase in testing data.
 
 # The Data
 
