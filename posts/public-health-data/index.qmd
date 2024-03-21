@@ -1,7 +1,7 @@
 ---
 title: "Public Health Data for Project Runway"
 author: "Simon Grimm "
-date: 2024-03-20
+date: 2024-003-20
 toc: true
 nocode: true
 format:
@@ -16,6 +16,8 @@ cap-location: bottom
 
 This is a summary of the public health data for the state of Massachusetts obtained from the Massachusetts Department of Public Health (MADPH) and the National Respiratory and Enteric Viruses Surveillance System (NREVSS). The MADPH data for both COVID-19 and Influenza looks quite exciting because we see a sharp increase in positive tests and positive test percentages within the Project Runway Coverage Period. Positive tests start to rise at the beginning of November for COVID-19 and at the end of November for Influenza. The data from NREVSS is not as useful because the testing levels are quite a bit lower (positive tests for Flu and Covid reach a maximum of ~4250 and ~6000 respectively, while the most common NREVSS pathogen, Rhinovirus, caps out at ~130.)
 
+We still need to decide if we want to end up creating incidence estimates for all of these pathogens. But I already think that it will be interesting to check if the sequencing data will show an increase in pathogen abundance that matches the rate of increase in testing data.
+
 # The Data
 
 From MADPH, we have data on COVID-19 (positive tests and positive test percentage) and on Influenza (positive tests). The data ranges from July 2023 to the end of February 2024.
@@ -25,14 +27,14 @@ From NREVSS, we have data on Parainfluenza, Rhinovirus, Enteric Adenovirus, Resp
 :::{.column-body-outset}
 | Pathogen | Source | Date Begin | Date End | Data Type |Spatial Resolution| Plotted |
 |---|---|---------------|----------------|-----------------|--------------------|----|
-| Human Parainfluenza  | [Gsheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 3-6-2023 | 30-12-2023  | PosTest + PosPerc | State | Yes |  |
-| Enteric Adenovirus| [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 3-6-2023 | 30-12-2023  | PosTest + PosPerc | State | No |  |
-| Respiratory Adenovirus  | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 3-6-2023 | 30-12-2023  | PosTest + PosPerc | State | Yes |
-| Human Metapneumovirus| [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 3-6-2023 | 30-12-2023  | PosTest + PosPerc | State | No  |
-| Seasonal Coronavirus | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 3-6-2023 | 30-12-2023  | PosTest + PosPerc | State | No | 
-| Rhinovirus  | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 3-6-2023 | 30-12-2023  | PosTest + PosPerc | State | Yes |
-| COVID-19 | [Mass.gov](https://www.mass.gov/info-details/covid-19-reporting)| 3-7-2024 | 2-11-2024| PosTest + PosPerc | County | Yes  |
-| Influenza| [Mass.gov](https://www.mass.gov/info-details/influenza-reporting)  | 3-7-2024 | 2-11-2024| PosTest | State | Yes |
+| Human Parainfluenza  | [Gsheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | Yes |  |
+| Enteric Adenovirus| [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | No |  |
+| Respiratory Adenovirus  | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | Yes |
+| Human Metapneumovirus| [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | No  |
+| Seasonal Coronavirus | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | No | 
+| Rhinovirus  | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | Yes |
+| COVID-19 | [Mass.gov](https://www.mass.gov/info-details/covid-19-reporting)| 02-07-2023 | 02-03-2024| PosTest + PosPerc | County | Yes  |
+| Influenza| [Mass.gov](https://www.mass.gov/info-details/influenza-reporting)  | 02-07-2023 | 02-03-2024| PosTest | State | Yes |
 
 :::
 
@@ -122,7 +124,7 @@ fig.clf()
 ```
 
 ## Influenza
-We do not have Percentage Positivity data for Influenza. Still, based on the number of positive tests the Influenza season started during the PR coverage period.
+We do not have Percentage Positivity data for Influenza. Still, based on the number of positive tests the Influenza season likely started during the PR coverage period.
 ```{python}
 #| warning: false
 df_flu['date'] = pd.to_datetime(df_flu['Week Start Date'], format='%m/%d/%y')
@@ -151,7 +153,7 @@ fig.clf()
 ```
 
 # CDC NREVSS
-Due to the lower number of tests, the data from NREVSS is a lot less useful. It might still be interesting to check if Rhinovirus relative abundance drops from October to end of December, as we see a decline in Rhinovirus tests and positive percentage rates during that time.
+Due to the lower number of tests, the data from NREVSS is a lot less useful. Nevertheless, it might still be interesting to check if Rhinovirus relative abundance drops from October to end of December, as we see a decline in Rhinovirus tests and positive percentage rates during that time.
 
 ## Respiratory Adenovirus
 

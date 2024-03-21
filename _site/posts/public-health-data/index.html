@@ -187,6 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>This is a summary of the public health data for the state of Massachusetts obtained from the Massachusetts Department of Public Health (MADPH) and the National Respiratory and Enteric Viruses Surveillance System (NREVSS). The MADPH data for both COVID-19 and Influenza looks quite exciting because we see a sharp increase in positive tests and positive test percentages within the Project Runway Coverage Period. Positive tests start to rise at the beginning of November for COVID-19 and at the end of November for Influenza. The data from NREVSS is not as useful because the testing levels are quite a bit lower (positive tests for Flu and Covid reach a maximum of ~4250 and ~6000 respectively, while the most common NREVSS pathogen, Rhinovirus, caps out at ~130.)</p>
+<p>We still need to decide if we want to end up creating incidence estimates for all of these pathogens. But I already think that it will be interesting to check if the sequencing data will show an increase in pathogen abundance that matches the rate of increase in testing data.</p>
 </section>
 <section id="the-data" class="level1 page-columns page-full">
 <h1>The Data</h1>
@@ -209,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>Human Parainfluenza</td>
 <td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">Gsheets</a></td>
-<td>3-6-2023</td>
+<td>03-06-2023</td>
 <td>30-12-2023</td>
 <td>PosTest + PosPerc</td>
 <td>State</td>
@@ -218,7 +219,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>Enteric Adenovirus</td>
 <td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
-<td>3-6-2023</td>
+<td>03-06-2023</td>
 <td>30-12-2023</td>
 <td>PosTest + PosPerc</td>
 <td>State</td>
@@ -227,7 +228,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>Respiratory Adenovirus</td>
 <td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
-<td>3-6-2023</td>
+<td>03-06-2023</td>
 <td>30-12-2023</td>
 <td>PosTest + PosPerc</td>
 <td>State</td>
@@ -236,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>Human Metapneumovirus</td>
 <td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
-<td>3-6-2023</td>
+<td>03-06-2023</td>
 <td>30-12-2023</td>
 <td>PosTest + PosPerc</td>
 <td>State</td>
@@ -245,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>Seasonal Coronavirus</td>
 <td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
-<td>3-6-2023</td>
+<td>03-06-2023</td>
 <td>30-12-2023</td>
 <td>PosTest + PosPerc</td>
 <td>State</td>
@@ -254,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>Rhinovirus</td>
 <td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
-<td>3-6-2023</td>
+<td>03-06-2023</td>
 <td>30-12-2023</td>
 <td>PosTest + PosPerc</td>
 <td>State</td>
@@ -263,8 +264,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>COVID-19</td>
 <td><a href="https://www.mass.gov/info-details/covid-19-reporting">Mass.gov</a></td>
-<td>3-7-2024</td>
-<td>2-11-2024</td>
+<td>02-07-2023</td>
+<td>02-03-2024</td>
 <td>PosTest + PosPerc</td>
 <td>County</td>
 <td>Yes</td>
@@ -272,8 +273,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>Influenza</td>
 <td><a href="https://www.mass.gov/info-details/influenza-reporting">Mass.gov</a></td>
-<td>3-7-2024</td>
-<td>2-11-2024</td>
+<td>02-07-2023</td>
+<td>02-03-2024</td>
 <td>PosTest</td>
 <td>State</td>
 <td>Yes</td>
@@ -298,7 +299,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>MA Counties</figcaption>
 </figure>
 </div>
-<div id="29bfcb4a" class="cell" data-execution_count="1">
+<div id="d325ae76" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -316,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="covid-19" class="level2">
 <h2 class="anchored" data-anchor-id="covid-19">COVID-19</h2>
 <p>The plot below shows data both for the entire state and the counties covered by Deer Island (Suffolk, Norfolk, Middlesex). COVID-19 cases see a decrease until the beginning of November and a sharp increase and peak over the rest of the Project Runway coverage period.</p>
-<div id="ab76cf3c" class="cell" data-execution_count="2">
+<div id="c5aed574" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -387,8 +388,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="influenza" class="level2">
 <h2 class="anchored" data-anchor-id="influenza">Influenza</h2>
-<p>We do not have Percentage Positivity data for Influenza. Still, based on the number of positive tests the Influenza season started during the PR coverage period.</p>
-<div id="f197a4ea" class="cell" data-execution_count="3">
+<p>We do not have Percentage Positivity data for Influenza. Still, based on the number of positive tests the Influenza season likely started during the PR coverage period.</p>
+<div id="1bd63c22" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_flu[<span class="st">'date'</span>] <span class="op">=</span> pd.to_datetime(df_flu[<span class="st">'Week Start Date'</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
@@ -426,10 +427,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="cdc-nrevss" class="level1">
 <h1>CDC NREVSS</h1>
-<p>Due to the lower number of tests, the data from NREVSS is a lot less useful. It might still be interesting to check if Rhinovirus relative abundance drops from October to end of December, as we see a decline in Rhinovirus tests and positive percentage rates during that time.</p>
+<p>Due to the lower number of tests, the data from NREVSS is a lot less useful. Nevertheless, it might still be interesting to check if Rhinovirus relative abundance drops from October to end of December, as we see a decline in Rhinovirus tests and positive percentage rates during that time.</p>
 <section id="respiratory-adenovirus" class="level2">
 <h2 class="anchored" data-anchor-id="respiratory-adenovirus">Respiratory Adenovirus</h2>
-<div id="54737844" class="cell" data-execution_count="4">
+<div id="99c9c003" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_adeno[df_adeno[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
@@ -473,7 +474,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="parainfluenza" class="level2">
 <h2 class="anchored" data-anchor-id="parainfluenza">Parainfluenza</h2>
-<div id="b8ec61f1" class="cell" data-execution_count="5">
+<div id="d97ee58c" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_parainfluenza[df_parainfluenza[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
@@ -520,7 +521,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="rhinovirus" class="level2">
 <h2 class="anchored" data-anchor-id="rhinovirus">Rhinovirus</h2>
-<div id="1482ed08" class="cell" data-execution_count="6">
+<div id="b1b908d1" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_rhino[<span class="st">'percent_positive'</span>] <span class="op">=</span> df_rhino[<span class="st">'Rhinopos'</span>] <span class="op">/</span> df_rhino[<span class="st">'Rhinotest'</span>] <span class="op">*</span> <span class="dv">100</span></span>

@@ -160,3 +160,8 @@ cython_debug/
 #.idea/
 
 /.quarto/
+
+# MacOS
+.DS_Store
+*.DS_Store
+**/.DS_Store
