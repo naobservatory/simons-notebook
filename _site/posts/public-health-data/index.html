@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Simon Grimm">
-<meta name="dcterms.date" content="2024-03-12">
+<meta name="dcterms.date" content="2024-03-20">
 
-<title>Simon’s Public NAO Notebook - Public Health Data</title>
+<title>Simon’s Public NAO Notebook - Public Health Data for Project Runway</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -128,7 +128,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Public Health Data</h1>
+      <h1 class="title">Public Health Data for Project Runway</h1>
                       </div>
   </div>
     
@@ -145,7 +145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">March 12, 2024</p>
+        <p class="date">March 20, 2024</p>
       </div>
     </div>
     
@@ -161,13 +161,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#madph" id="toc-madph" class="nav-link active" data-scroll-target="#madph">MADPH</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-data" id="toc-the-data" class="nav-link" data-scroll-target="#the-data">The Data</a></li>
+  <li><a href="#madph" id="toc-madph" class="nav-link" data-scroll-target="#madph">MADPH</a>
   <ul class="collapse">
   <li><a href="#covid-19" id="toc-covid-19" class="nav-link" data-scroll-target="#covid-19">COVID-19</a></li>
+  <li><a href="#influenza" id="toc-influenza" class="nav-link" data-scroll-target="#influenza">Influenza</a></li>
   </ul></li>
   <li><a href="#cdc-nrevss" id="toc-cdc-nrevss" class="nav-link" data-scroll-target="#cdc-nrevss">CDC NREVSS</a>
   <ul class="collapse">
-  <li><a href="#adenovirus" id="toc-adenovirus" class="nav-link" data-scroll-target="#adenovirus">Adenovirus</a></li>
+  <li><a href="#respiratory-adenovirus" id="toc-respiratory-adenovirus" class="nav-link" data-scroll-target="#respiratory-adenovirus">Respiratory Adenovirus</a></li>
   <li><a href="#parainfluenza" id="toc-parainfluenza" class="nav-link" data-scroll-target="#parainfluenza">Parainfluenza</a></li>
   <li><a href="#rhinovirus" id="toc-rhinovirus" class="nav-link" data-scroll-target="#rhinovirus">Rhinovirus</a></li>
   </ul></li>
@@ -175,143 +178,385 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
 
 
 
 
 
-<section id="madph" class="level2">
-<h2 class="anchored" data-anchor-id="madph">MADPH</h2>
-<div id="0f4a4145" class="cell" data-execution_count="1">
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>This is a summary of the public health data for the state of Massachusetts obtained from the Massachusetts Department of Public Health (MADPH) and the National Respiratory and Enteric Viruses Surveillance System (NREVSS). The MADPH data for both COVID-19 and Influenza looks quite exciting because we see a sharp increase in positive tests and positive test percentages within the Project Runway Coverage Period. Positive tests start to rise at the beginning of November for COVID-19 and at the end of November for Influenza. The data from NREVSS is not as useful because the testing levels are quite a bit lower (positive tests for Flu and Covid reach a maximum of ~4250 and ~6000 respectively, while the most common NREVSS pathogen, Rhinovirus, caps out at ~130.)</p>
+</section>
+<section id="the-data" class="level1 page-columns page-full">
+<h1>The Data</h1>
+<p>From MADPH, we have data on COVID-19 (positive tests and positive test percentage) and on Influenza (positive tests). The data ranges from July 2023 to the end of February 2024.</p>
+<p>From NREVSS, we have data on Parainfluenza, Rhinovirus, Enteric Adenovirus, Respiratory Adenovirus, Metapneumovirus, and Seasonal Coronavirus. However, the data for Enteric Adenovirus, Seasonal Coronavirus, and Metapneumovirus is not usable. Enteric Adenovirus shows 0 positive tests across the entire sampling period, Metapneumovirus shows a maximum of 6 positive tests per week (~2% positive test percentage), and Seasonal Coronavirus only gives a maximum of 4 positive tests per week, with no information on the total number of tests performed.</p>
+<div class="column-body-outset">
+<table class="table">
+<thead>
+<tr class="header">
+<th>Pathogen</th>
+<th>Source</th>
+<th>Date Begin</th>
+<th>Date End</th>
+<th>Data Type</th>
+<th>Spatial Resolution</th>
+<th>Plotted</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Human Parainfluenza</td>
+<td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">Gsheets</a></td>
+<td>3-6-2023</td>
+<td>30-12-2023</td>
+<td>PosTest + PosPerc</td>
+<td>State</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Enteric Adenovirus</td>
+<td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
+<td>3-6-2023</td>
+<td>30-12-2023</td>
+<td>PosTest + PosPerc</td>
+<td>State</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Respiratory Adenovirus</td>
+<td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
+<td>3-6-2023</td>
+<td>30-12-2023</td>
+<td>PosTest + PosPerc</td>
+<td>State</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Human Metapneumovirus</td>
+<td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
+<td>3-6-2023</td>
+<td>30-12-2023</td>
+<td>PosTest + PosPerc</td>
+<td>State</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Seasonal Coronavirus</td>
+<td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
+<td>3-6-2023</td>
+<td>30-12-2023</td>
+<td>PosTest + PosPerc</td>
+<td>State</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Rhinovirus</td>
+<td><a href="https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing">GSheets</a></td>
+<td>3-6-2023</td>
+<td>30-12-2023</td>
+<td>PosTest + PosPerc</td>
+<td>State</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>COVID-19</td>
+<td><a href="https://www.mass.gov/info-details/covid-19-reporting">Mass.gov</a></td>
+<td>3-7-2024</td>
+<td>2-11-2024</td>
+<td>PosTest + PosPerc</td>
+<td>County</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Influenza</td>
+<td><a href="https://www.mass.gov/info-details/influenza-reporting">Mass.gov</a></td>
+<td>3-7-2024</td>
+<td>2-11-2024</td>
+<td>PosTest</td>
+<td>State</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="madph" class="level1">
+<h1>MADPH</h1>
+<p>The COVID-19 data provided by MADPH has county-level, weekly resolution. This allows us to look at testing data matching the Deer Island catchment area.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mwra_coverage.png" class="img-fluid figure-img"></p>
+<figcaption>MWRA Coverage</figcaption>
+</figure>
+</div>
+<p>This area approximately matches Suffolk county and overlaps with Norfolk, and Middlesex.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ma_county_map.png" class="img-fluid figure-img"></p>
+<figcaption>MA Counties</figcaption>
+</figure>
+</div>
+<div id="29bfcb4a" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.dates <span class="im">as</span> mdates</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df_adeno <span class="op">=</span> pd.read_csv(<span class="st">'data/2024-02-27 NREVSS data request MA June-Dec 2023 - Respiratory Adenovirus.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df_parainfluenza <span class="op">=</span> pd.read_csv(<span class="st">'data/2024-02-27 NREVSS data request MA June-Dec 2023 - Human Parainfluenza.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df_rhino <span class="op">=</span> pd.read_csv(<span class="st">'data/2024-02-27 NREVSS data request MA June-Dec 2023 - Rhinovirus.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df_covid <span class="op">=</span> pd.read_csv(<span class="st">'data/covid-19-dashboard-03-07-24/County data-Table 1.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>df_flu <span class="op">=</span> pd.read_csv(<span class="st">'data/flu-dashboard-data-03-07-24/Influenza Lab Tests Reported-Table 1.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.lines <span class="im">import</span> Line2D</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df_adeno <span class="op">=</span> pd.read_csv(<span class="st">'data/2024-02-27 NREVSS data request MA June-Dec 2023 - Respiratory Adenovirus.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df_parainfluenza <span class="op">=</span> pd.read_csv(<span class="st">'data/2024-02-27 NREVSS data request MA June-Dec 2023 - Human Parainfluenza.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df_rhino <span class="op">=</span> pd.read_csv(<span class="st">'data/2024-02-27 NREVSS data request MA June-Dec 2023 - Rhinovirus.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>df_covid <span class="op">=</span> pd.read_csv(<span class="st">'data/covid-19-dashboard-03-07-24/County data-Table 1.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>df_flu <span class="op">=</span> pd.read_csv(<span class="st">'data/flu-dashboard-data-03-07-24/Influenza Lab Tests Reported-Table 1.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="covid-19" class="level3">
-<h3 class="anchored" data-anchor-id="covid-19">COVID-19</h3>
-</section>
-</section>
-<section id="cdc-nrevss" class="level2">
-<h2 class="anchored" data-anchor-id="cdc-nrevss">CDC NREVSS</h2>
-<section id="adenovirus" class="level3">
-<h3 class="anchored" data-anchor-id="adenovirus">Adenovirus</h3>
-<div id="bcc0b260" class="cell" data-execution_count="2">
+<section id="covid-19" class="level2">
+<h2 class="anchored" data-anchor-id="covid-19">COVID-19</h2>
+<p>The plot below shows data both for the entire state and the counties covered by Deer Island (Suffolk, Norfolk, Middlesex). COVID-19 cases see a decrease until the beginning of November and a sharp increase and peak over the rest of the Project Runway coverage period.</p>
+<div id="ab76cf3c" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_adeno[df_adeno[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'percent_positive'</span>] <span class="op">=</span> df[<span class="st">'RAdenopos'</span>] <span class="op">/</span> df[<span class="st">'RAdenotest'</span>] <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'RepWeekDate'</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">'RepWeekDate'</span>], dayfirst<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Months (2023-2024)'</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'% Positive Tests'</span>, color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ax1.plot(df[<span class="st">'RepWeekDate'</span>], df[<span class="st">'percent_positive'</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ax1.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_covid[df_covid[<span class="st">'County'</span>].isin([<span class="st">'Suffolk'</span>, <span class="st">'Norfolk'</span>, <span class="st">'Middlesex'</span>])]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">"Week Start Date"</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"pos_agg"</span>] <span class="op">=</span> df[<span class="st">"Positive tests the week"</span>].groupby(df[<span class="st">"date"</span>]).transform(<span class="st">'sum'</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"percent_positive_agg"</span>] <span class="op">=</span> df[<span class="st">"pos_agg"</span>] <span class="op">/</span> df.groupby(<span class="st">"date"</span>)[<span class="st">"Tests during the week"</span>].transform(<span class="st">'sum'</span>) <span class="op">*</span> <span class="dv">100</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> ax1.twinx() </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> <span class="st">'tab:red'</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'# Positive Tests'</span>, color<span class="op">=</span>color)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>ax2.plot(df[<span class="st">'RepWeekDate'</span>], df[<span class="st">'RAdenopos'</span>], color<span class="op">=</span>color)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>ax2.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span>color)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># make x axis show months only by turning dates into month strings</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_locator(mdates.MonthLocator())</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Months (2023-2024)'</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'Positive Percentage'</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ax1.plot(df[<span class="st">"date"</span>], df[<span class="st">"percent_positive_agg"</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Counties (% Positive)'</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>ax1.tick_params(axis<span class="op">=</span><span class="st">'y'</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> ax1.twinx()</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'Positive Tests per Week'</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>ax2.plot(df[<span class="st">"date"</span>], df[<span class="st">"pos_agg"</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Counties (# Positive)'</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>ax2.tick_params(axis<span class="op">=</span><span class="st">'y'</span>)</span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>df_ma <span class="op">=</span> df_covid[df_covid[<span class="st">'County'</span>] <span class="op">==</span> <span class="st">'Statewide (all of MA)'</span>]</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>df_ma[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(df_ma[<span class="st">"Week Start Date"</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>df_ma[<span class="st">"Week percent positivity"</span>] <span class="op">=</span> df_ma[<span class="st">"Week percent positivity"</span>].astype(<span class="bu">float</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>df_ma[<span class="st">"percent positive"</span>] <span class="op">=</span> df_ma[<span class="st">"Week percent positivity"</span>] <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>ax1.plot(df_ma[<span class="st">"date"</span>], df_ma[<span class="st">"percent positive"</span>], color<span class="op">=</span><span class="st">'tab:red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'MA (% Positive)'</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>ax2.plot(df_ma[<span class="st">"date"</span>], df_ma[<span class="st">"Positive tests the week"</span>], color<span class="op">=</span><span class="st">'tab:red'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'MA (# Positive)'</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_locator(mdates.MonthLocator())</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>ax1_yminlim, ax1_ymaxlim <span class="op">=</span> ax1.get_ylim()</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>ax1.set_ylim(<span class="dv">0</span>, ax1_ymaxlim)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>ax2_yminlim, ax2_ymaxlim <span class="op">=</span> ax2.get_ylim()</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>ax2.set_ylim(<span class="dv">0</span>, ax2_ymaxlim)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>ax1.axvspan(pd.to_datetime(<span class="st">'2023-10-01'</span>), pd.to_datetime(<span class="st">'2023-12-31'</span>), color<span class="op">=</span><span class="st">'lightgrey'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>ax1.text(pd.to_datetime(<span class="st">'2023-11-15'</span>), ax1_ymaxlim <span class="op">*</span> <span class="fl">1.02</span>, <span class="st">'Project Runway Sampling'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">int</span>(ax1_ymaxlim) <span class="op">+</span> <span class="dv">1</span>, <span class="dv">2</span>):</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    ax1.axhline(y, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, lw<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>ax2.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, right<span class="op">=</span><span class="va">False</span>, left<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>legend_elements <span class="op">=</span> [Line2D([<span class="dv">0</span>], [<span class="dv">0</span>], color<span class="op">=</span> <span class="st">'black'</span>,  linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Positive Tests'</span>),</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>                   Line2D([<span class="dv">0</span>], [<span class="dv">0</span>], color<span class="op">=</span> <span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Percentage Positivity'</span>),</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>                   Line2D([<span class="dv">0</span>], [<span class="dv">0</span>], color<span class="op">=</span> <span class="st">'tab:red'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Massachusetts'</span>),</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>                   Line2D([<span class="dv">0</span>], [<span class="dv">0</span>], color<span class="op">=</span> <span class="st">'tab:blue'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Suffolk, Norfolk, Middlesex'</span>)] </span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>                  </span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>ax1.legend(handles<span class="op">=</span>legend_elements, loc<span class="op">=</span><span class="st">'upper left'</span>)</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>fig.clf()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-3-output-1.png" width="758" height="566" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-3-output-1.png" width="758" height="567" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="parainfluenza" class="level3">
-<h3 class="anchored" data-anchor-id="parainfluenza">Parainfluenza</h3>
-<div id="fcd2c9aa" class="cell" data-execution_count="3">
+<section id="influenza" class="level2">
+<h2 class="anchored" data-anchor-id="influenza">Influenza</h2>
+<p>We do not have Percentage Positivity data for Influenza. Still, based on the number of positive tests the Influenza season started during the PR coverage period.</p>
+<div id="f197a4ea" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_parainfluenza[df_parainfluenza[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"PIVpos"</span>] <span class="op">=</span> df[<span class="st">"PIV1pos"</span>] <span class="op">+</span> df[<span class="st">"PIV2pos"</span>] <span class="op">+</span> df[<span class="st">"PIV3pos"</span>] <span class="op">+</span> df[<span class="st">"PIV4pos"</span>]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'percent_positive'</span>] <span class="op">=</span> df[<span class="st">'PIVpos'</span>] <span class="op">/</span> df[<span class="st">'PIVtest'</span>] <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'RepWeekDate'</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">'RepWeekDate'</span>], dayfirst<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Months (2023-2024)'</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'% Positive Tests'</span>, color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>ax1.plot(df[<span class="st">'RepWeekDate'</span>], df[<span class="st">'percent_positive'</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>ax1.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> ax1.twinx() </span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> <span class="st">'tab:red'</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'# Positive Tests'</span>, color<span class="op">=</span>color)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>ax2.plot(df[<span class="st">'RepWeekDate'</span>], df[<span class="st">'PIVpos'</span>], color<span class="op">=</span>color)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>ax2.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span>color)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># make x axis show months only by turning dates into month strings</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_locator(mdates.MonthLocator())</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_flu[<span class="st">'date'</span>] <span class="op">=</span> pd.to_datetime(df_flu[<span class="st">'Week Start Date'</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df_flu[<span class="st">'pos_tests_across_fly_types'</span>] <span class="op">=</span> df_flu.groupby(<span class="st">'date'</span>)[<span class="st">'Positive lab tests'</span>].transform(<span class="st">'sum'</span>) </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_flu</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Months (2023-2024)'</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Positive Tests per Week'</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>ax.plot(df[<span class="st">'date'</span>], df[<span class="st">'pos_tests_across_fly_types'</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Positive Tests'</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(mdates.MonthLocator())</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>ax_yminlim, ax_ymaxlim <span class="op">=</span> ax.get_ylim()</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, ax_ymaxlim)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">int</span>(ax_ymaxlim) <span class="op">+</span> <span class="dv">1</span>, <span class="dv">1000</span>):</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    ax.axhline(y, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, lw<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>ax.axvspan(pd.to_datetime(<span class="st">'2023-10-01'</span>), pd.to_datetime(<span class="st">'2023-12-31'</span>), color<span class="op">=</span><span class="st">'lightgrey'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>ax.text(pd.to_datetime(<span class="st">'2023-11-15'</span>), ax_ymaxlim <span class="op">*</span> <span class="fl">1.02</span>, <span class="st">'Project Runway Sampling'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>fig.clf()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-4-output-1.png" width="758" height="566" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-4-output-1.png" width="758" height="567" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="rhinovirus" class="level3">
-<h3 class="anchored" data-anchor-id="rhinovirus">Rhinovirus</h3>
-<div id="6933f220" class="cell" data-execution_count="4">
+</section>
+<section id="cdc-nrevss" class="level1">
+<h1>CDC NREVSS</h1>
+<p>Due to the lower number of tests, the data from NREVSS is a lot less useful. It might still be interesting to check if Rhinovirus relative abundance drops from October to end of December, as we see a decline in Rhinovirus tests and positive percentage rates during that time.</p>
+<section id="respiratory-adenovirus" class="level2">
+<h2 class="anchored" data-anchor-id="respiratory-adenovirus">Respiratory Adenovirus</h2>
+<div id="54737844" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming your dataframe is named df_rhino</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df_rhino[<span class="st">'percent_positive'</span>] <span class="op">=</span> df_rhino[<span class="st">'Rhinopos'</span>] <span class="op">/</span> df_rhino[<span class="st">'Rhinotest'</span>] <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df_rhino[<span class="st">'RepWeekDate'</span>] <span class="op">=</span> pd.to_datetime(df_rhino[<span class="st">'RepWeekDate'</span>], dayfirst<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Months (2023)'</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'% Positive Tests'</span>, color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>ax1.plot(df_rhino[<span class="st">'RepWeekDate'</span>], df_rhino[<span class="st">'percent_positive'</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>ax1.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> ax1.twinx() </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> <span class="st">'tab:red'</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'# Positive Tests'</span>, color<span class="op">=</span>color)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ax2.plot(df_rhino[<span class="st">'RepWeekDate'</span>], df_rhino[<span class="st">'Rhinopos'</span>], color<span class="op">=</span>color)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>ax2.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span>color)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_adeno[df_adeno[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'percent_positive'</span>] <span class="op">=</span> df[<span class="st">'RAdenopos'</span>] <span class="op">/</span> df[<span class="st">'RAdenotest'</span>] <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'RepWeekDate'</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">'RepWeekDate'</span>], dayfirst<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Months (2023-2024)'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'Positive Percentage'</span>, color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>ax1.plot(df[<span class="st">'RepWeekDate'</span>], df[<span class="st">'percent_positive'</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>ax1.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> ax1.twinx() </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> <span class="st">'tab:red'</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'Positive Tests per Week'</span>, color<span class="op">=</span>color)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>ax2.plot(df[<span class="st">'RepWeekDate'</span>], df[<span class="st">'RAdenopos'</span>], color<span class="op">=</span>color)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ax2.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span>color)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjusting the X-axis to show months only</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_locator(mdates.MonthLocator())</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_locator(mdates.MonthLocator())</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>ax1_yminlim, ax1_ymaxlim <span class="op">=</span> ax1.get_ylim()</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">int</span>(ax1_ymaxlim) <span class="op">+</span> <span class="dv">1</span>, <span class="dv">2</span>):</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    ax1.axhline(y, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, lw<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>ax1.axvspan(pd.to_datetime(<span class="st">'2023-10-01'</span>), pd.to_datetime(<span class="st">'2023-12-31'</span>), color<span class="op">=</span><span class="st">'lightgrey'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>ax1.text(pd.to_datetime(<span class="st">'2023-11-15'</span>), ax1_ymaxlim <span class="op">*</span> <span class="fl">1.02</span>, <span class="st">'Project Runway Sampling'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-5-output-1.png" width="758" height="566" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-5-output-1.png" width="758" height="567" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="parainfluenza" class="level2">
+<h2 class="anchored" data-anchor-id="parainfluenza">Parainfluenza</h2>
+<div id="b8ec61f1" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_parainfluenza[df_parainfluenza[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"PIVpos"</span>] <span class="op">=</span> df[<span class="st">"PIV1pos"</span>] <span class="op">+</span> df[<span class="st">"PIV2pos"</span>] <span class="op">+</span> df[<span class="st">"PIV3pos"</span>] <span class="op">+</span> df[<span class="st">"PIV4pos"</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'percent_positive'</span>] <span class="op">=</span> df[<span class="st">'PIVpos'</span>] <span class="op">/</span> df[<span class="st">'PIVtest'</span>] <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'RepWeekDate'</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">'RepWeekDate'</span>], dayfirst<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Months (2023-2024)'</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'Positive Percentage'</span>, color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>ax1.plot(df[<span class="st">'RepWeekDate'</span>], df[<span class="st">'percent_positive'</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>ax1.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> ax1.twinx() </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> <span class="st">'tab:red'</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'Positive Tests per Week'</span>, color<span class="op">=</span>color)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>ax2.plot(df[<span class="st">'RepWeekDate'</span>], df[<span class="st">'PIVpos'</span>], color<span class="op">=</span>color)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>ax2.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span>color)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_locator(mdates.MonthLocator())</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>ax1_yminlim, ax1_ymaxlim <span class="op">=</span> ax1.get_ylim()</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">int</span>(ax1_ymaxlim) <span class="op">+</span> <span class="dv">1</span>, <span class="dv">2</span>):</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    ax1.axhline(y, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, lw<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>ax1.axvspan(pd.to_datetime(<span class="st">'2023-10-01'</span>), pd.to_datetime(<span class="st">'2023-12-31'</span>), color<span class="op">=</span><span class="st">'lightgrey'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>ax1.text(pd.to_datetime(<span class="st">'2023-11-15'</span>), ax1_ymaxlim <span class="op">*</span> <span class="fl">1.02</span>, <span class="st">'Project Runway Sampling'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-6-output-1.png" width="758" height="567" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="rhinovirus" class="level2">
+<h2 class="anchored" data-anchor-id="rhinovirus">Rhinovirus</h2>
+<div id="1482ed08" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_rhino[<span class="st">'percent_positive'</span>] <span class="op">=</span> df_rhino[<span class="st">'Rhinopos'</span>] <span class="op">/</span> df_rhino[<span class="st">'Rhinotest'</span>] <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df_rhino[<span class="st">'RepWeekDate'</span>] <span class="op">=</span> pd.to_datetime(df_rhino[<span class="st">'RepWeekDate'</span>], dayfirst<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Months (2023)'</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'Positive Percentage'</span>, color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>ax1.plot(df_rhino[<span class="st">'RepWeekDate'</span>], df_rhino[<span class="st">'percent_positive'</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>ax1.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> ax1.twinx() </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> <span class="st">'tab:red'</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'Positive Tests per Week'</span>, color<span class="op">=</span>color)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>ax2.plot(df_rhino[<span class="st">'RepWeekDate'</span>], df_rhino[<span class="st">'Rhinopos'</span>], color<span class="op">=</span>color)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>ax2.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span>color)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_locator(mdates.MonthLocator())</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>ax1.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>ax1_yminlim, ax1_ymaxlim <span class="op">=</span> ax1.get_ylim()</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">int</span>(ax1_ymaxlim) <span class="op">+</span> <span class="dv">1</span>, <span class="dv">5</span>):</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    ax1.axhline(y, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, lw<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>ax1.axvspan(pd.to_datetime(<span class="st">'2023-10-01'</span>), pd.to_datetime(<span class="st">'2023-12-31'</span>), color<span class="op">=</span><span class="st">'lightgrey'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>ax1.text(pd.to_datetime(<span class="st">'2023-11-15'</span>), ax1_ymaxlim <span class="op">*</span> <span class="fl">1.05</span>, <span class="st">'Project Runway Sampling'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-7-output-1.png" width="758" height="568" class="figure-img"></p>
 </figure>
 </div>
 </div>

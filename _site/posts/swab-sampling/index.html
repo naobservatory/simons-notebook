@@ -164,17 +164,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div id="c1a27041" class="cell" data-execution_count="1">
+<div id="3c601e80" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="c1a27041"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="c1a27041-1"><a href="#c1a27041-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing packages</span></span>
-<span id="c1a27041-2"><a href="#c1a27041-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="c1a27041-3"><a href="#c1a27041-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="c1a27041-4"><a href="#c1a27041-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="c1a27041-5"><a href="#c1a27041-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="c1a27041-6"><a href="#c1a27041-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
-<span id="c1a27041-7"><a href="#c1a27041-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
-<span id="c1a27041-8"><a href="#c1a27041-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="3c601e80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="3c601e80-1"><a href="#3c601e80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing packages</span></span>
+<span id="3c601e80-2"><a href="#3c601e80-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="3c601e80-3"><a href="#3c601e80-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="3c601e80-4"><a href="#3c601e80-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="3c601e80-5"><a href="#3c601e80-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="3c601e80-6"><a href="#3c601e80-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
+<span id="3c601e80-7"><a href="#3c601e80-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="3c601e80-8"><a href="#3c601e80-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="introduction" class="level1">
@@ -262,46 +262,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="nasopharyngeal-swabs">Nasopharyngeal swabs</h4>
 <p>Most studies on swab sampling performance treat nasopharyngeal swabs (NP swabs) as the gold standard, against which, nasal (Kojima et al.&nbsp;2021; Tu et al.&nbsp;2020), mid-turbinate (Tu et al.&nbsp;2020; Muller et al.&nbsp;2021), and combined nasal/oropharyngeal (Desmet et al.&nbsp;2021) swabs are compared. NP swabs are commonly administered by a healthcare professional and a properly administered test absorbs material from below the inferior turbinate, and the nasopharynx located at the back of the nasal cavity.</p>
 <p>The CT value difference for paired NP/{Other} swabs are plotted in Figure 1. The CT value of the comparison swab is subtracted from the NP swab CT value. A lower CT is better, thus, a negative cycle threshold (CT) difference equates to a higher pathogen concentration in the NP swab.</p>
-<div id="96115d24" class="cell" data-execution_count="2">
+<div id="6fa9ba88" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="96115d24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="96115d24-1"><a href="#96115d24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All CT difference data were calculated in and are taken from https://docs.google.com/spreadsheets/d/1YP4mxT_vxiFwXU5ZuBM4obq_oscfhe05ODWwHFHEznM/</span></span>
-<span id="96115d24-2"><a href="#96115d24-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/np_ct_differences.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="96115d24-3"><a href="#96115d24-3" aria-hidden="true" tabindex="-1"></a>df.columns <span class="op">=</span> df.columns.<span class="bu">str</span>.replace(<span class="st">", "</span>, <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="96115d24-4"><a href="#96115d24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="96115d24-5"><a href="#96115d24-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.melt(var_name<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>, value_name<span class="op">=</span><span class="st">"CT Difference"</span>)</span>
-<span id="96115d24-6"><a href="#96115d24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="96115d24-7"><a href="#96115d24-7" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">3.5</span>))</span>
-<span id="96115d24-8"><a href="#96115d24-8" aria-hidden="true" tabindex="-1"></a>sns.stripplot(</span>
-<span id="96115d24-9"><a href="#96115d24-9" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df,</span>
-<span id="96115d24-10"><a href="#96115d24-10" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
-<span id="96115d24-11"><a href="#96115d24-11" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"CT Difference"</span>,</span>
-<span id="96115d24-12"><a href="#96115d24-12" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
-<span id="96115d24-13"><a href="#96115d24-13" aria-hidden="true" tabindex="-1"></a>    jitter<span class="op">=</span><span class="va">True</span>,</span>
-<span id="96115d24-14"><a href="#96115d24-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="96115d24-15"><a href="#96115d24-15" aria-hidden="true" tabindex="-1"></a>plt.legend([], [], frameon<span class="op">=</span><span class="va">False</span>)</span>
-<span id="96115d24-16"><a href="#96115d24-16" aria-hidden="true" tabindex="-1"></a><span class="co"># drop y axis label</span></span>
-<span id="96115d24-17"><a href="#96115d24-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">""</span>)</span>
-<span id="96115d24-18"><a href="#96115d24-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"SARS-CoV-2 qPCR CT Δ (NP - Comparison)"</span>)</span>
-<span id="96115d24-19"><a href="#96115d24-19" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">True</span>)</span>
-<span id="96115d24-20"><a href="#96115d24-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="dv">5</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">5</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">15</span>:</span>
-<span id="96115d24-21"><a href="#96115d24-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="96115d24-22"><a href="#96115d24-22" aria-hidden="true" tabindex="-1"></a>        plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"red"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="96115d24-23"><a href="#96115d24-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="96115d24-24"><a href="#96115d24-24" aria-hidden="true" tabindex="-1"></a>    plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="96115d24-25"><a href="#96115d24-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="96115d24-26"><a href="#96115d24-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">2.5</span>, <span class="fl">3.5</span>, <span class="fl">4.5</span>:</span>
-<span id="96115d24-27"><a href="#96115d24-27" aria-hidden="true" tabindex="-1"></a>    plt.axhline(y<span class="op">=</span>y, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="96115d24-28"><a href="#96115d24-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="96115d24-29"><a href="#96115d24-29" aria-hidden="true" tabindex="-1"></a>min_x, max_x <span class="op">=</span> plt.xlim()</span>
-<span id="96115d24-30"><a href="#96115d24-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="96115d24-31"><a href="#96115d24-31" aria-hidden="true" tabindex="-1"></a>plt.text(max_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Comparison"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="96115d24-32"><a href="#96115d24-32" aria-hidden="true" tabindex="-1"></a>plt.text(min_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors NP Swab"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="96115d24-33"><a href="#96115d24-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="96115d24-34"><a href="#96115d24-34" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="96115d24-35"><a href="#96115d24-35" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="96115d24-36"><a href="#96115d24-36" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"left"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="96115d24-37"><a href="#96115d24-37" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="6fa9ba88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="6fa9ba88-1"><a href="#6fa9ba88-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All CT difference data were calculated in and are taken from https://docs.google.com/spreadsheets/d/1YP4mxT_vxiFwXU5ZuBM4obq_oscfhe05ODWwHFHEznM/</span></span>
+<span id="6fa9ba88-2"><a href="#6fa9ba88-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/np_ct_differences.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="6fa9ba88-3"><a href="#6fa9ba88-3" aria-hidden="true" tabindex="-1"></a>df.columns <span class="op">=</span> df.columns.<span class="bu">str</span>.replace(<span class="st">", "</span>, <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="6fa9ba88-4"><a href="#6fa9ba88-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="6fa9ba88-5"><a href="#6fa9ba88-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.melt(var_name<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>, value_name<span class="op">=</span><span class="st">"CT Difference"</span>)</span>
+<span id="6fa9ba88-6"><a href="#6fa9ba88-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="6fa9ba88-7"><a href="#6fa9ba88-7" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">3.5</span>))</span>
+<span id="6fa9ba88-8"><a href="#6fa9ba88-8" aria-hidden="true" tabindex="-1"></a>sns.stripplot(</span>
+<span id="6fa9ba88-9"><a href="#6fa9ba88-9" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df,</span>
+<span id="6fa9ba88-10"><a href="#6fa9ba88-10" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
+<span id="6fa9ba88-11"><a href="#6fa9ba88-11" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"CT Difference"</span>,</span>
+<span id="6fa9ba88-12"><a href="#6fa9ba88-12" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
+<span id="6fa9ba88-13"><a href="#6fa9ba88-13" aria-hidden="true" tabindex="-1"></a>    jitter<span class="op">=</span><span class="va">True</span>,</span>
+<span id="6fa9ba88-14"><a href="#6fa9ba88-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="6fa9ba88-15"><a href="#6fa9ba88-15" aria-hidden="true" tabindex="-1"></a>plt.legend([], [], frameon<span class="op">=</span><span class="va">False</span>)</span>
+<span id="6fa9ba88-16"><a href="#6fa9ba88-16" aria-hidden="true" tabindex="-1"></a><span class="co"># drop y axis label</span></span>
+<span id="6fa9ba88-17"><a href="#6fa9ba88-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">""</span>)</span>
+<span id="6fa9ba88-18"><a href="#6fa9ba88-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"SARS-CoV-2 qPCR CT Δ (NP - Comparison)"</span>)</span>
+<span id="6fa9ba88-19"><a href="#6fa9ba88-19" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">True</span>)</span>
+<span id="6fa9ba88-20"><a href="#6fa9ba88-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="dv">5</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">5</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">15</span>:</span>
+<span id="6fa9ba88-21"><a href="#6fa9ba88-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="6fa9ba88-22"><a href="#6fa9ba88-22" aria-hidden="true" tabindex="-1"></a>        plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"red"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="6fa9ba88-23"><a href="#6fa9ba88-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="6fa9ba88-24"><a href="#6fa9ba88-24" aria-hidden="true" tabindex="-1"></a>    plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="6fa9ba88-25"><a href="#6fa9ba88-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="6fa9ba88-26"><a href="#6fa9ba88-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">2.5</span>, <span class="fl">3.5</span>, <span class="fl">4.5</span>:</span>
+<span id="6fa9ba88-27"><a href="#6fa9ba88-27" aria-hidden="true" tabindex="-1"></a>    plt.axhline(y<span class="op">=</span>y, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="6fa9ba88-28"><a href="#6fa9ba88-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="6fa9ba88-29"><a href="#6fa9ba88-29" aria-hidden="true" tabindex="-1"></a>min_x, max_x <span class="op">=</span> plt.xlim()</span>
+<span id="6fa9ba88-30"><a href="#6fa9ba88-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="6fa9ba88-31"><a href="#6fa9ba88-31" aria-hidden="true" tabindex="-1"></a>plt.text(max_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Comparison"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="6fa9ba88-32"><a href="#6fa9ba88-32" aria-hidden="true" tabindex="-1"></a>plt.text(min_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors NP Swab"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="6fa9ba88-33"><a href="#6fa9ba88-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="6fa9ba88-34"><a href="#6fa9ba88-34" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="6fa9ba88-35"><a href="#6fa9ba88-35" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="6fa9ba88-36"><a href="#6fa9ba88-36" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"left"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="6fa9ba88-37"><a href="#6fa9ba88-37" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -319,105 +319,105 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nasal-swabs" class="level3">
 <h3 class="anchored" data-anchor-id="nasal-swabs">Nasal Swabs</h3>
 <p>Note that the second plot shows the difference in genome copy numbers, rather than CT values<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
-<div id="c2dcb315" class="cell" data-execution_count="3">
+<div id="0b90e2d6" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="c2dcb315"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="c2dcb315-1"><a href="#c2dcb315-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/nasal_ct_differences.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="c2dcb315-2"><a href="#c2dcb315-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-3"><a href="#c2dcb315-3" aria-hidden="true" tabindex="-1"></a>df.columns <span class="op">=</span> df.columns.<span class="bu">str</span>.replace(<span class="st">", "</span>, <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="c2dcb315-4"><a href="#c2dcb315-4" aria-hidden="true" tabindex="-1"></a><span class="co"># reshape dataframe to long format</span></span>
-<span id="c2dcb315-5"><a href="#c2dcb315-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.melt(var_name<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>, value_name<span class="op">=</span><span class="st">"CT Difference"</span>)</span>
-<span id="c2dcb315-6"><a href="#c2dcb315-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-7"><a href="#c2dcb315-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-8"><a href="#c2dcb315-8" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">1.5</span>))</span>
-<span id="c2dcb315-9"><a href="#c2dcb315-9" aria-hidden="true" tabindex="-1"></a>sns.stripplot(</span>
-<span id="c2dcb315-10"><a href="#c2dcb315-10" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df,</span>
-<span id="c2dcb315-11"><a href="#c2dcb315-11" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
-<span id="c2dcb315-12"><a href="#c2dcb315-12" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"CT Difference"</span>,</span>
-<span id="c2dcb315-13"><a href="#c2dcb315-13" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
-<span id="c2dcb315-14"><a href="#c2dcb315-14" aria-hidden="true" tabindex="-1"></a>    jitter<span class="op">=</span><span class="va">True</span>,</span>
-<span id="c2dcb315-15"><a href="#c2dcb315-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="c2dcb315-16"><a href="#c2dcb315-16" aria-hidden="true" tabindex="-1"></a>plt.legend([], [], frameon<span class="op">=</span><span class="va">False</span>)</span>
-<span id="c2dcb315-17"><a href="#c2dcb315-17" aria-hidden="true" tabindex="-1"></a><span class="co"># drop y axis label</span></span>
-<span id="c2dcb315-18"><a href="#c2dcb315-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">""</span>)</span>
-<span id="c2dcb315-19"><a href="#c2dcb315-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"SARS-CoV-2 qPCR CT Δ (Nasal - Comparison)"</span>)</span>
-<span id="c2dcb315-20"><a href="#c2dcb315-20" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">True</span>)</span>
-<span id="c2dcb315-21"><a href="#c2dcb315-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-22"><a href="#c2dcb315-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="dv">5</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">5</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">15</span>:</span>
-<span id="c2dcb315-23"><a href="#c2dcb315-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="c2dcb315-24"><a href="#c2dcb315-24" aria-hidden="true" tabindex="-1"></a>        plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"red"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="c2dcb315-25"><a href="#c2dcb315-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="c2dcb315-26"><a href="#c2dcb315-26" aria-hidden="true" tabindex="-1"></a>    plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="c2dcb315-27"><a href="#c2dcb315-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-28"><a href="#c2dcb315-28" aria-hidden="true" tabindex="-1"></a>plt.axhline(y<span class="op">=</span><span class="fl">0.5</span>, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="c2dcb315-29"><a href="#c2dcb315-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-30"><a href="#c2dcb315-30" aria-hidden="true" tabindex="-1"></a>min_x, max_x <span class="op">=</span> plt.xlim()</span>
-<span id="c2dcb315-31"><a href="#c2dcb315-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-32"><a href="#c2dcb315-32" aria-hidden="true" tabindex="-1"></a>plt.text(max_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Comparison"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="c2dcb315-33"><a href="#c2dcb315-33" aria-hidden="true" tabindex="-1"></a>plt.text(min_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Nasal Swab"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="c2dcb315-34"><a href="#c2dcb315-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-35"><a href="#c2dcb315-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-36"><a href="#c2dcb315-36" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="c2dcb315-37"><a href="#c2dcb315-37" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="c2dcb315-38"><a href="#c2dcb315-38" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"left"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="c2dcb315-39"><a href="#c2dcb315-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="c2dcb315-40"><a href="#c2dcb315-40" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="0b90e2d6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="0b90e2d6-1"><a href="#0b90e2d6-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/nasal_ct_differences.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="0b90e2d6-2"><a href="#0b90e2d6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-3"><a href="#0b90e2d6-3" aria-hidden="true" tabindex="-1"></a>df.columns <span class="op">=</span> df.columns.<span class="bu">str</span>.replace(<span class="st">", "</span>, <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="0b90e2d6-4"><a href="#0b90e2d6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># reshape dataframe to long format</span></span>
+<span id="0b90e2d6-5"><a href="#0b90e2d6-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.melt(var_name<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>, value_name<span class="op">=</span><span class="st">"CT Difference"</span>)</span>
+<span id="0b90e2d6-6"><a href="#0b90e2d6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-7"><a href="#0b90e2d6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-8"><a href="#0b90e2d6-8" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">1.5</span>))</span>
+<span id="0b90e2d6-9"><a href="#0b90e2d6-9" aria-hidden="true" tabindex="-1"></a>sns.stripplot(</span>
+<span id="0b90e2d6-10"><a href="#0b90e2d6-10" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df,</span>
+<span id="0b90e2d6-11"><a href="#0b90e2d6-11" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
+<span id="0b90e2d6-12"><a href="#0b90e2d6-12" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"CT Difference"</span>,</span>
+<span id="0b90e2d6-13"><a href="#0b90e2d6-13" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
+<span id="0b90e2d6-14"><a href="#0b90e2d6-14" aria-hidden="true" tabindex="-1"></a>    jitter<span class="op">=</span><span class="va">True</span>,</span>
+<span id="0b90e2d6-15"><a href="#0b90e2d6-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="0b90e2d6-16"><a href="#0b90e2d6-16" aria-hidden="true" tabindex="-1"></a>plt.legend([], [], frameon<span class="op">=</span><span class="va">False</span>)</span>
+<span id="0b90e2d6-17"><a href="#0b90e2d6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># drop y axis label</span></span>
+<span id="0b90e2d6-18"><a href="#0b90e2d6-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">""</span>)</span>
+<span id="0b90e2d6-19"><a href="#0b90e2d6-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"SARS-CoV-2 qPCR CT Δ (Nasal - Comparison)"</span>)</span>
+<span id="0b90e2d6-20"><a href="#0b90e2d6-20" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">True</span>)</span>
+<span id="0b90e2d6-21"><a href="#0b90e2d6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-22"><a href="#0b90e2d6-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="dv">5</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">5</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">15</span>:</span>
+<span id="0b90e2d6-23"><a href="#0b90e2d6-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="0b90e2d6-24"><a href="#0b90e2d6-24" aria-hidden="true" tabindex="-1"></a>        plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"red"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="0b90e2d6-25"><a href="#0b90e2d6-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="0b90e2d6-26"><a href="#0b90e2d6-26" aria-hidden="true" tabindex="-1"></a>        plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="0b90e2d6-27"><a href="#0b90e2d6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-28"><a href="#0b90e2d6-28" aria-hidden="true" tabindex="-1"></a>plt.axhline(y<span class="op">=</span><span class="fl">0.5</span>, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="0b90e2d6-29"><a href="#0b90e2d6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-30"><a href="#0b90e2d6-30" aria-hidden="true" tabindex="-1"></a>min_x, max_x <span class="op">=</span> plt.xlim()</span>
+<span id="0b90e2d6-31"><a href="#0b90e2d6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-32"><a href="#0b90e2d6-32" aria-hidden="true" tabindex="-1"></a>plt.text(max_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Comparison"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="0b90e2d6-33"><a href="#0b90e2d6-33" aria-hidden="true" tabindex="-1"></a>plt.text(min_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Nasal Swab"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="0b90e2d6-34"><a href="#0b90e2d6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-35"><a href="#0b90e2d6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-36"><a href="#0b90e2d6-36" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="0b90e2d6-37"><a href="#0b90e2d6-37" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="0b90e2d6-38"><a href="#0b90e2d6-38" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"left"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="0b90e2d6-39"><a href="#0b90e2d6-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="0b90e2d6-40"><a href="#0b90e2d6-40" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="index_files/figure-html/cell-4-output-1.png" width="820" height="186" class="figure-img"></p>
-<figcaption><strong>Figure 2: Nasal swabs vs Oro-pharyngeal and combined nasal/oro-pharyngeal swabs.</strong> All data is taken from Goddall et al.&nbsp;2022.</figcaption>
+<figcaption><strong>Figure 2: Nasal swabs vs Oro-pharyngeal and combined nasal/oro-pharyngeal swabs.</strong> All data is taken from Goodall et al.&nbsp;2022.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="99fda8da" class="cell" data-execution_count="4">
+<div id="d847d2bd" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="99fda8da"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="99fda8da-1"><a href="#99fda8da-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All CT difference data was calculated and is taken from https://docs.google.com/spreadsheets/d/1YP4mxT_vxiFwXU5ZuBM4obq_oscfhe05ODWwHFHEznM/</span></span>
-<span id="99fda8da-2"><a href="#99fda8da-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="99fda8da-3"><a href="#99fda8da-3" aria-hidden="true" tabindex="-1"></a><span class="co"># turn tsv into dataframe. Ignore first row. Second row is column names.</span></span>
-<span id="99fda8da-4"><a href="#99fda8da-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/leung_genome_copy_differences.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="99fda8da-5"><a href="#99fda8da-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="99fda8da-6"><a href="#99fda8da-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="99fda8da-7"><a href="#99fda8da-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.melt(var_name<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>, value_name<span class="op">=</span><span class="st">"Genome Copy Number Difference"</span>)</span>
-<span id="99fda8da-8"><a href="#99fda8da-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="99fda8da-9"><a href="#99fda8da-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Study &amp; Comparison"</span>] <span class="op">=</span> df[<span class="st">"Study &amp; Comparison"</span>].<span class="bu">str</span>.split(<span class="st">","</span>).<span class="bu">str</span>[<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="99fda8da-10"><a href="#99fda8da-10" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">2</span>))</span>
-<span id="99fda8da-11"><a href="#99fda8da-11" aria-hidden="true" tabindex="-1"></a>sns.stripplot(</span>
-<span id="99fda8da-12"><a href="#99fda8da-12" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df,</span>
-<span id="99fda8da-13"><a href="#99fda8da-13" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
-<span id="99fda8da-14"><a href="#99fda8da-14" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"Genome Copy Number Difference"</span>,</span>
-<span id="99fda8da-15"><a href="#99fda8da-15" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
-<span id="99fda8da-16"><a href="#99fda8da-16" aria-hidden="true" tabindex="-1"></a>    jitter<span class="op">=</span><span class="va">True</span>,</span>
-<span id="99fda8da-17"><a href="#99fda8da-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="99fda8da-18"><a href="#99fda8da-18" aria-hidden="true" tabindex="-1"></a>plt.legend([], [], frameon<span class="op">=</span><span class="va">False</span>)</span>
-<span id="99fda8da-19"><a href="#99fda8da-19" aria-hidden="true" tabindex="-1"></a><span class="co"># drop y axis label</span></span>
-<span id="99fda8da-20"><a href="#99fda8da-20" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">""</span>)</span>
-<span id="99fda8da-21"><a href="#99fda8da-21" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Genome Copy Number Δ (Nasal - Throat), Log scale"</span>)</span>
-<span id="99fda8da-22"><a href="#99fda8da-22" aria-hidden="true" tabindex="-1"></a><span class="co"># flip x axis</span></span>
-<span id="99fda8da-23"><a href="#99fda8da-23" aria-hidden="true" tabindex="-1"></a>plt.gca().invert_xaxis()</span>
-<span id="99fda8da-24"><a href="#99fda8da-24" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">True</span>)</span>
-<span id="99fda8da-25"><a href="#99fda8da-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="op">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>:</span>
-<span id="99fda8da-26"><a href="#99fda8da-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="99fda8da-27"><a href="#99fda8da-27" aria-hidden="true" tabindex="-1"></a>        plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"red"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="99fda8da-28"><a href="#99fda8da-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="99fda8da-29"><a href="#99fda8da-29" aria-hidden="true" tabindex="-1"></a>    plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="99fda8da-30"><a href="#99fda8da-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="99fda8da-31"><a href="#99fda8da-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="fl">0.5</span>, <span class="fl">1.5</span>:</span>
-<span id="99fda8da-32"><a href="#99fda8da-32" aria-hidden="true" tabindex="-1"></a>    plt.axhline(y<span class="op">=</span>y, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="99fda8da-33"><a href="#99fda8da-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="99fda8da-34"><a href="#99fda8da-34" aria-hidden="true" tabindex="-1"></a>min_x, max_x <span class="op">=</span> plt.xlim()</span>
-<span id="99fda8da-35"><a href="#99fda8da-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="99fda8da-36"><a href="#99fda8da-36" aria-hidden="true" tabindex="-1"></a>plt.text(max_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Throat Swab"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="99fda8da-37"><a href="#99fda8da-37" aria-hidden="true" tabindex="-1"></a>plt.text(min_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Nasal Swab"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="99fda8da-38"><a href="#99fda8da-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="99fda8da-39"><a href="#99fda8da-39" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="99fda8da-40"><a href="#99fda8da-40" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="99fda8da-41"><a href="#99fda8da-41" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"left"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="99fda8da-42"><a href="#99fda8da-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="99fda8da-43"><a href="#99fda8da-43" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="d847d2bd"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="d847d2bd-1"><a href="#d847d2bd-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All CT difference data was calculated and is taken from https://docs.google.com/spreadsheets/d/1YP4mxT_vxiFwXU5ZuBM4obq_oscfhe05ODWwHFHEznM/</span></span>
+<span id="d847d2bd-2"><a href="#d847d2bd-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="d847d2bd-3"><a href="#d847d2bd-3" aria-hidden="true" tabindex="-1"></a><span class="co"># turn tsv into dataframe. Ignore first row. Second row is column names.</span></span>
+<span id="d847d2bd-4"><a href="#d847d2bd-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/leung_genome_copy_differences.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="d847d2bd-5"><a href="#d847d2bd-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="d847d2bd-6"><a href="#d847d2bd-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="d847d2bd-7"><a href="#d847d2bd-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.melt(var_name<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>, value_name<span class="op">=</span><span class="st">"Genome Copy Number Difference"</span>)</span>
+<span id="d847d2bd-8"><a href="#d847d2bd-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="d847d2bd-9"><a href="#d847d2bd-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Study &amp; Comparison"</span>] <span class="op">=</span> df[<span class="st">"Study &amp; Comparison"</span>].<span class="bu">str</span>.split(<span class="st">","</span>).<span class="bu">str</span>[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="d847d2bd-10"><a href="#d847d2bd-10" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">2</span>))</span>
+<span id="d847d2bd-11"><a href="#d847d2bd-11" aria-hidden="true" tabindex="-1"></a>sns.stripplot(</span>
+<span id="d847d2bd-12"><a href="#d847d2bd-12" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df,</span>
+<span id="d847d2bd-13"><a href="#d847d2bd-13" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
+<span id="d847d2bd-14"><a href="#d847d2bd-14" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"Genome Copy Number Difference"</span>,</span>
+<span id="d847d2bd-15"><a href="#d847d2bd-15" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="st">"Study &amp; Comparison"</span>,</span>
+<span id="d847d2bd-16"><a href="#d847d2bd-16" aria-hidden="true" tabindex="-1"></a>    jitter<span class="op">=</span><span class="va">True</span>,</span>
+<span id="d847d2bd-17"><a href="#d847d2bd-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="d847d2bd-18"><a href="#d847d2bd-18" aria-hidden="true" tabindex="-1"></a>plt.legend([], [], frameon<span class="op">=</span><span class="va">False</span>)</span>
+<span id="d847d2bd-19"><a href="#d847d2bd-19" aria-hidden="true" tabindex="-1"></a><span class="co"># drop y axis label</span></span>
+<span id="d847d2bd-20"><a href="#d847d2bd-20" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">""</span>)</span>
+<span id="d847d2bd-21"><a href="#d847d2bd-21" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Genome Copy Number Δ (Nasal - Throat), Logged"</span>)</span>
+<span id="d847d2bd-22"><a href="#d847d2bd-22" aria-hidden="true" tabindex="-1"></a><span class="co"># flip x axis</span></span>
+<span id="d847d2bd-23"><a href="#d847d2bd-23" aria-hidden="true" tabindex="-1"></a>plt.gca().invert_xaxis()</span>
+<span id="d847d2bd-24"><a href="#d847d2bd-24" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">True</span>)</span>
+<span id="d847d2bd-25"><a href="#d847d2bd-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="op">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>:</span>
+<span id="d847d2bd-26"><a href="#d847d2bd-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="d847d2bd-27"><a href="#d847d2bd-27" aria-hidden="true" tabindex="-1"></a>        plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"red"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="d847d2bd-28"><a href="#d847d2bd-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="d847d2bd-29"><a href="#d847d2bd-29" aria-hidden="true" tabindex="-1"></a>    plt.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="d847d2bd-30"><a href="#d847d2bd-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="d847d2bd-31"><a href="#d847d2bd-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="fl">0.5</span>, <span class="fl">1.5</span>:</span>
+<span id="d847d2bd-32"><a href="#d847d2bd-32" aria-hidden="true" tabindex="-1"></a>    plt.axhline(y<span class="op">=</span>y, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="d847d2bd-33"><a href="#d847d2bd-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="d847d2bd-34"><a href="#d847d2bd-34" aria-hidden="true" tabindex="-1"></a>min_x, max_x <span class="op">=</span> plt.xlim()</span>
+<span id="d847d2bd-35"><a href="#d847d2bd-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="d847d2bd-36"><a href="#d847d2bd-36" aria-hidden="true" tabindex="-1"></a>plt.text(max_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Throat Swab"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="d847d2bd-37"><a href="#d847d2bd-37" aria-hidden="true" tabindex="-1"></a>plt.text(min_x <span class="op">/</span> <span class="dv">2</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="st">"Favors Nasal Swab"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"black"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="d847d2bd-38"><a href="#d847d2bd-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="d847d2bd-39"><a href="#d847d2bd-39" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="d847d2bd-40"><a href="#d847d2bd-40" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="d847d2bd-41"><a href="#d847d2bd-41" aria-hidden="true" tabindex="-1"></a>plt.gca().spines[<span class="st">"left"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="d847d2bd-42"><a href="#d847d2bd-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="d847d2bd-43"><a href="#d847d2bd-43" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -442,81 +442,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>The relative abundance of a target pathogen can be impacted by its microbial background, because the sequencing efficiency of a taxon is directly dependant on the sampling efficiency of the other taxa in the sample<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 <p>We identified two studies that performed paired metagenomic sequencing and SARS-CoV-2 qPCR on swab samples Lu et al.&nbsp;2021, Babiker et al.&nbsp;2020. We’ve reached out to the authors of two further studies that didn’t have publicly available data.</p>
-<div id="ecb452bd" class="cell" data-execution_count="5">
+<div id="62571bd2" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="ecb452bd"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="ecb452bd-1"><a href="#ecb452bd-1" aria-hidden="true" tabindex="-1"></a>df_throat <span class="op">=</span> pd.read_csv(<span class="st">"data/lu_throat_ct_mgs.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="ecb452bd-2"><a href="#ecb452bd-2" aria-hidden="true" tabindex="-1"></a>df_throat.rename(</span>
-<span id="ecb452bd-3"><a href="#ecb452bd-3" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{<span class="st">"SCV-2 Relative Abundance"</span>: <span class="st">"scv2_ra"</span>, <span class="st">"Ct value"</span>: <span class="st">"scv2_ct"</span>}, inplace<span class="op">=</span><span class="va">True</span></span>
-<span id="ecb452bd-4"><a href="#ecb452bd-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="ecb452bd-5"><a href="#ecb452bd-5" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal <span class="op">=</span> pd.read_csv(<span class="st">"data/babiker_np_ct_mgs.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="ecb452bd-6"><a href="#ecb452bd-6" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal.rename(</span>
-<span id="ecb452bd-7"><a href="#ecb452bd-7" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{</span>
-<span id="ecb452bd-8"><a href="#ecb452bd-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SARS-CoV-2 RT-PCR Ct"</span>: <span class="st">"scv2_ct"</span>,</span>
-<span id="ecb452bd-9"><a href="#ecb452bd-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SARS-CoV-2 RA"</span>: <span class="st">"scv2_ra"</span>,</span>
-<span id="ecb452bd-10"><a href="#ecb452bd-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Inpatient/ED vs. Outpatient"</span>: <span class="st">"patient_status"</span>,</span>
-<span id="ecb452bd-11"><a href="#ecb452bd-11" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="ecb452bd-12"><a href="#ecb452bd-12" aria-hidden="true" tabindex="-1"></a>    inplace<span class="op">=</span><span class="va">True</span>,</span>
-<span id="ecb452bd-13"><a href="#ecb452bd-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="ecb452bd-14"><a href="#ecb452bd-14" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal[<span class="st">"scv2_ct"</span>] <span class="op">=</span> (</span>
-<span id="ecb452bd-15"><a href="#ecb452bd-15" aria-hidden="true" tabindex="-1"></a>    df_nasopharyngeal[<span class="st">"scv2_ct"</span>].replace(<span class="st">","</span>, <span class="st">"."</span>, regex<span class="op">=</span><span class="va">True</span>).astype(<span class="bu">float</span>)</span>
-<span id="ecb452bd-16"><a href="#ecb452bd-16" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="ecb452bd-17"><a href="#ecb452bd-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="ecb452bd-18"><a href="#ecb452bd-18" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
-<span id="ecb452bd-19"><a href="#ecb452bd-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (ax, df) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(axs, [df_throat, df_nasopharyngeal])):</span>
-<span id="ecb452bd-20"><a href="#ecb452bd-20" aria-hidden="true" tabindex="-1"></a>    sns_default_colors <span class="op">=</span> sns.color_palette()</span>
-<span id="ecb452bd-21"><a href="#ecb452bd-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pick 4th and 10th color from palette</span></span>
-<span id="ecb452bd-22"><a href="#ecb452bd-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="ecb452bd-23"><a href="#ecb452bd-23" aria-hidden="true" tabindex="-1"></a>    x_lim <span class="op">=</span> <span class="fl">12.5</span>, <span class="dv">40</span></span>
-<span id="ecb452bd-24"><a href="#ecb452bd-24" aria-hidden="true" tabindex="-1"></a>    y_lim <span class="op">=</span> <span class="dv">10</span><span class="op">**-</span><span class="dv">8</span>, <span class="dv">10</span><span class="op">**</span><span class="dv">0</span></span>
-<span id="ecb452bd-25"><a href="#ecb452bd-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="ecb452bd-26"><a href="#ecb452bd-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># set dot colors</span></span>
-<span id="ecb452bd-27"><a href="#ecb452bd-27" aria-hidden="true" tabindex="-1"></a>        sns.scatterplot(</span>
-<span id="ecb452bd-28"><a href="#ecb452bd-28" aria-hidden="true" tabindex="-1"></a>            ax<span class="op">=</span>ax,</span>
-<span id="ecb452bd-29"><a href="#ecb452bd-29" aria-hidden="true" tabindex="-1"></a>            data<span class="op">=</span>df,</span>
-<span id="ecb452bd-30"><a href="#ecb452bd-30" aria-hidden="true" tabindex="-1"></a>            x<span class="op">=</span><span class="st">"scv2_ct"</span>,</span>
-<span id="ecb452bd-31"><a href="#ecb452bd-31" aria-hidden="true" tabindex="-1"></a>            y<span class="op">=</span><span class="st">"scv2_ra"</span>,</span>
-<span id="ecb452bd-32"><a href="#ecb452bd-32" aria-hidden="true" tabindex="-1"></a>            hue<span class="op">=</span><span class="st">"patient_status"</span>,</span>
-<span id="ecb452bd-33"><a href="#ecb452bd-33" aria-hidden="true" tabindex="-1"></a>            style<span class="op">=</span><span class="st">"patient_status"</span>,</span>
-<span id="ecb452bd-34"><a href="#ecb452bd-34" aria-hidden="true" tabindex="-1"></a>            palette<span class="op">=</span>sns_default_colors,</span>
-<span id="ecb452bd-35"><a href="#ecb452bd-35" aria-hidden="true" tabindex="-1"></a>            s<span class="op">=</span><span class="dv">70</span>,</span>
-<span id="ecb452bd-36"><a href="#ecb452bd-36" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="ecb452bd-37"><a href="#ecb452bd-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># set coordinates for legend:Quarto</span></span>
-<span id="ecb452bd-38"><a href="#ecb452bd-38" aria-hidden="true" tabindex="-1"></a>        coordinates <span class="op">=</span> (<span class="fl">0.6</span>, <span class="op">-</span><span class="fl">0.2</span>)</span>
-<span id="ecb452bd-39"><a href="#ecb452bd-39" aria-hidden="true" tabindex="-1"></a>        ax.legend(title<span class="op">=</span><span class="st">""</span>, loc<span class="op">=</span><span class="st">"upper left"</span>)  <span class="co"># bbox_to_anchor=coordinates)</span></span>
-<span id="ecb452bd-40"><a href="#ecb452bd-40" aria-hidden="true" tabindex="-1"></a>        ax.set_xlabel(<span class="st">"SARS-CoV-2 qPCR CT Value"</span>)</span>
-<span id="ecb452bd-41"><a href="#ecb452bd-41" aria-hidden="true" tabindex="-1"></a>        ax.set_xlim(x_lim)</span>
-<span id="ecb452bd-42"><a href="#ecb452bd-42" aria-hidden="true" tabindex="-1"></a>        ax.set_ylim(<span class="dv">10</span><span class="op">**-</span><span class="dv">8</span>, <span class="dv">10</span><span class="op">**</span><span class="dv">0</span>)</span>
-<span id="ecb452bd-43"><a href="#ecb452bd-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="ecb452bd-44"><a href="#ecb452bd-44" aria-hidden="true" tabindex="-1"></a>        sns.scatterplot(</span>
-<span id="ecb452bd-45"><a href="#ecb452bd-45" aria-hidden="true" tabindex="-1"></a>            ax<span class="op">=</span>ax, data<span class="op">=</span>df, x<span class="op">=</span><span class="st">"scv2_ct"</span>, y<span class="op">=</span><span class="st">"scv2_ra"</span>, color<span class="op">=</span>sns_default_colors[<span class="dv">3</span>], s<span class="op">=</span><span class="dv">70</span></span>
-<span id="ecb452bd-46"><a href="#ecb452bd-46" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="ecb452bd-47"><a href="#ecb452bd-47" aria-hidden="true" tabindex="-1"></a>        ax.set_xlabel(<span class="st">""</span>)</span>
-<span id="ecb452bd-48"><a href="#ecb452bd-48" aria-hidden="true" tabindex="-1"></a>        ax.set_xlim(x_lim)</span>
-<span id="ecb452bd-49"><a href="#ecb452bd-49" aria-hidden="true" tabindex="-1"></a>        ax.set_ylim(y_lim)</span>
-<span id="ecb452bd-50"><a href="#ecb452bd-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="ecb452bd-51"><a href="#ecb452bd-51" aria-hidden="true" tabindex="-1"></a>    ax.set_yscale(<span class="st">"log"</span>)</span>
-<span id="ecb452bd-52"><a href="#ecb452bd-52" aria-hidden="true" tabindex="-1"></a>    ax.invert_xaxis()</span>
-<span id="ecb452bd-53"><a href="#ecb452bd-53" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="ecb452bd-54"><a href="#ecb452bd-54" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="ecb452bd-55"><a href="#ecb452bd-55" aria-hidden="true" tabindex="-1"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">True</span>)</span>
-<span id="ecb452bd-56"><a href="#ecb452bd-56" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Relative Abundance"</span>)</span>
-<span id="ecb452bd-57"><a href="#ecb452bd-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> np.arange(<span class="dv">15</span>, <span class="dv">40</span>, <span class="dv">5</span>):</span>
-<span id="ecb452bd-58"><a href="#ecb452bd-58" aria-hidden="true" tabindex="-1"></a>        ax.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="ecb452bd-59"><a href="#ecb452bd-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span><span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">1</span>):</span>
-<span id="ecb452bd-60"><a href="#ecb452bd-60" aria-hidden="true" tabindex="-1"></a>        log_y <span class="op">=</span> <span class="dv">10</span><span class="op">**</span>y</span>
-<span id="ecb452bd-61"><a href="#ecb452bd-61" aria-hidden="true" tabindex="-1"></a>        ax.axhline(y<span class="op">=</span>log_y, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="62571bd2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="62571bd2-1"><a href="#62571bd2-1" aria-hidden="true" tabindex="-1"></a>df_throat <span class="op">=</span> pd.read_csv(<span class="st">"data/lu_throat_ct_mgs.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="62571bd2-2"><a href="#62571bd2-2" aria-hidden="true" tabindex="-1"></a>df_throat.rename(</span>
+<span id="62571bd2-3"><a href="#62571bd2-3" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{<span class="st">"SCV-2 Relative Abundance"</span>: <span class="st">"scv2_ra"</span>, <span class="st">"Ct value"</span>: <span class="st">"scv2_ct"</span>}, inplace<span class="op">=</span><span class="va">True</span></span>
+<span id="62571bd2-4"><a href="#62571bd2-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="62571bd2-5"><a href="#62571bd2-5" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal <span class="op">=</span> pd.read_csv(<span class="st">"data/babiker_np_ct_mgs.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="62571bd2-6"><a href="#62571bd2-6" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal.rename(</span>
+<span id="62571bd2-7"><a href="#62571bd2-7" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{</span>
+<span id="62571bd2-8"><a href="#62571bd2-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SARS-CoV-2 RT-PCR Ct"</span>: <span class="st">"scv2_ct"</span>,</span>
+<span id="62571bd2-9"><a href="#62571bd2-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SARS-CoV-2 RA"</span>: <span class="st">"scv2_ra"</span>,</span>
+<span id="62571bd2-10"><a href="#62571bd2-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Inpatient/ED vs. Outpatient"</span>: <span class="st">"patient_status"</span>,</span>
+<span id="62571bd2-11"><a href="#62571bd2-11" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="62571bd2-12"><a href="#62571bd2-12" aria-hidden="true" tabindex="-1"></a>    inplace<span class="op">=</span><span class="va">True</span>,</span>
+<span id="62571bd2-13"><a href="#62571bd2-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="62571bd2-14"><a href="#62571bd2-14" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal[<span class="st">"scv2_ct"</span>] <span class="op">=</span> (</span>
+<span id="62571bd2-15"><a href="#62571bd2-15" aria-hidden="true" tabindex="-1"></a>    df_nasopharyngeal[<span class="st">"scv2_ct"</span>].replace(<span class="st">","</span>, <span class="st">"."</span>, regex<span class="op">=</span><span class="va">True</span>).astype(<span class="bu">float</span>)</span>
+<span id="62571bd2-16"><a href="#62571bd2-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="62571bd2-17"><a href="#62571bd2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="62571bd2-18"><a href="#62571bd2-18" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="62571bd2-19"><a href="#62571bd2-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (ax, df) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(axs, [df_throat, df_nasopharyngeal])):</span>
+<span id="62571bd2-20"><a href="#62571bd2-20" aria-hidden="true" tabindex="-1"></a>    sns_default_colors <span class="op">=</span> sns.color_palette()</span>
+<span id="62571bd2-21"><a href="#62571bd2-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pick 4th and 10th color from palette</span></span>
+<span id="62571bd2-22"><a href="#62571bd2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="62571bd2-23"><a href="#62571bd2-23" aria-hidden="true" tabindex="-1"></a>    x_lim <span class="op">=</span> <span class="fl">12.5</span>, <span class="dv">40</span></span>
+<span id="62571bd2-24"><a href="#62571bd2-24" aria-hidden="true" tabindex="-1"></a>    y_lim <span class="op">=</span> <span class="dv">10</span><span class="op">**-</span><span class="dv">8</span>, <span class="dv">10</span><span class="op">**</span><span class="dv">0</span></span>
+<span id="62571bd2-25"><a href="#62571bd2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="62571bd2-26"><a href="#62571bd2-26" aria-hidden="true" tabindex="-1"></a>        sns.scatterplot(</span>
+<span id="62571bd2-27"><a href="#62571bd2-27" aria-hidden="true" tabindex="-1"></a>            ax<span class="op">=</span>ax,</span>
+<span id="62571bd2-28"><a href="#62571bd2-28" aria-hidden="true" tabindex="-1"></a>            data<span class="op">=</span>df,</span>
+<span id="62571bd2-29"><a href="#62571bd2-29" aria-hidden="true" tabindex="-1"></a>            x<span class="op">=</span><span class="st">"scv2_ct"</span>,</span>
+<span id="62571bd2-30"><a href="#62571bd2-30" aria-hidden="true" tabindex="-1"></a>            y<span class="op">=</span><span class="st">"scv2_ra"</span>,</span>
+<span id="62571bd2-31"><a href="#62571bd2-31" aria-hidden="true" tabindex="-1"></a>            hue<span class="op">=</span><span class="st">"patient_status"</span>,</span>
+<span id="62571bd2-32"><a href="#62571bd2-32" aria-hidden="true" tabindex="-1"></a>            style<span class="op">=</span><span class="st">"patient_status"</span>,</span>
+<span id="62571bd2-33"><a href="#62571bd2-33" aria-hidden="true" tabindex="-1"></a>            palette<span class="op">=</span>sns_default_colors,</span>
+<span id="62571bd2-34"><a href="#62571bd2-34" aria-hidden="true" tabindex="-1"></a>            s<span class="op">=</span><span class="dv">70</span>,</span>
+<span id="62571bd2-35"><a href="#62571bd2-35" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="62571bd2-36"><a href="#62571bd2-36" aria-hidden="true" tabindex="-1"></a>        ax.legend(title<span class="op">=</span><span class="st">""</span>, loc<span class="op">=</span><span class="st">"upper left"</span>)</span>
+<span id="62571bd2-37"><a href="#62571bd2-37" aria-hidden="true" tabindex="-1"></a>        ax.set_xlabel(<span class="st">"SARS-CoV-2 qPCR CT Value"</span>)</span>
+<span id="62571bd2-38"><a href="#62571bd2-38" aria-hidden="true" tabindex="-1"></a>        ax.set_xlim(x_lim)</span>
+<span id="62571bd2-39"><a href="#62571bd2-39" aria-hidden="true" tabindex="-1"></a>        ax.set_ylim(<span class="dv">10</span><span class="op">**-</span><span class="dv">8</span>, <span class="dv">10</span><span class="op">**</span><span class="dv">0</span>)</span>
+<span id="62571bd2-40"><a href="#62571bd2-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="62571bd2-41"><a href="#62571bd2-41" aria-hidden="true" tabindex="-1"></a>        sns.scatterplot(</span>
+<span id="62571bd2-42"><a href="#62571bd2-42" aria-hidden="true" tabindex="-1"></a>            ax<span class="op">=</span>ax, data<span class="op">=</span>df, x<span class="op">=</span><span class="st">"scv2_ct"</span>, y<span class="op">=</span><span class="st">"scv2_ra"</span>, color<span class="op">=</span>sns_default_colors[<span class="dv">3</span>], s<span class="op">=</span><span class="dv">70</span></span>
+<span id="62571bd2-43"><a href="#62571bd2-43" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="62571bd2-44"><a href="#62571bd2-44" aria-hidden="true" tabindex="-1"></a>        ax.set_xlabel(<span class="st">""</span>)</span>
+<span id="62571bd2-45"><a href="#62571bd2-45" aria-hidden="true" tabindex="-1"></a>        ax.set_xlim(x_lim)</span>
+<span id="62571bd2-46"><a href="#62571bd2-46" aria-hidden="true" tabindex="-1"></a>        ax.set_ylim(y_lim)</span>
+<span id="62571bd2-47"><a href="#62571bd2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="62571bd2-48"><a href="#62571bd2-48" aria-hidden="true" tabindex="-1"></a>    ax.set_yscale(<span class="st">"log"</span>)</span>
+<span id="62571bd2-49"><a href="#62571bd2-49" aria-hidden="true" tabindex="-1"></a>    ax.invert_xaxis()</span>
+<span id="62571bd2-50"><a href="#62571bd2-50" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="62571bd2-51"><a href="#62571bd2-51" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="62571bd2-52"><a href="#62571bd2-52" aria-hidden="true" tabindex="-1"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">True</span>)</span>
+<span id="62571bd2-53"><a href="#62571bd2-53" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Relative Abundance"</span>)</span>
+<span id="62571bd2-54"><a href="#62571bd2-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> np.arange(<span class="dv">15</span>, <span class="dv">40</span>, <span class="dv">5</span>):</span>
+<span id="62571bd2-55"><a href="#62571bd2-55" aria-hidden="true" tabindex="-1"></a>        ax.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="62571bd2-56"><a href="#62571bd2-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span><span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">1</span>):</span>
+<span id="62571bd2-57"><a href="#62571bd2-57" aria-hidden="true" tabindex="-1"></a>        log_y <span class="op">=</span> <span class="dv">10</span><span class="op">**</span>y</span>
+<span id="62571bd2-58"><a href="#62571bd2-58" aria-hidden="true" tabindex="-1"></a>        ax.axhline(y<span class="op">=</span>log_y, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/gm/txqg8t5d57z34sqfjcvpcjj00000gn/T/ipykernel_35519/1516740153.py:16: UserWarning:
-
-The palette list has more values (10) than needed (2), which may not be intended.
-</code></pre>
-</div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-6-output-2.png" width="748" height="509" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-6-output-1.png" width="748" height="509" class="figure-img"></p>
 <figcaption><strong>Figure 4: SARS-CoV-2 qPCR CT vs SARS-CoV-2 RA.</strong> Top Figure: Throat Swabs. Data from Lu et al.&nbsp;2021. Bottom Figure: Nasopharyngeal Swabs. Data from Babiker et al.&nbsp;2020.</figcaption>
 </figure>
 </div>
@@ -528,104 +519,153 @@ The palette list has more values (10) than needed (2), which may not be intended
 <li>For the same CT value, Lu et al.&nbsp;2021 returns higher relative abundance.</li>
 <li>Outpatients in Lu et al.&nbsp;have slightly higher relative abundances for the same CT value.</li>
 </ul>
+<section id="influenza-a" class="level3">
+<h3 class="anchored" data-anchor-id="influenza-a">Influenza A</h3>
+<div id="e3670fba" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="e3670fba"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="e3670fba-1"><a href="#e3670fba-1" aria-hidden="true" tabindex="-1"></a>df_influenza <span class="op">=</span> pd.read_csv(<span class="st">"data/fischer_influenza_ct_mgs.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="e3670fba-2"><a href="#e3670fba-2" aria-hidden="true" tabindex="-1"></a>df_influenza.rename(</span>
+<span id="e3670fba-3"><a href="#e3670fba-3" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{<span class="st">"FluA CT"</span>: <span class="st">"flua_ct"</span>, <span class="st">"Relative Abundance"</span>: <span class="st">"flua_mgs"</span>}, inplace<span class="op">=</span><span class="va">True</span></span>
+<span id="e3670fba-4"><a href="#e3670fba-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="e3670fba-5"><a href="#e3670fba-5" aria-hidden="true" tabindex="-1"></a><span class="co"># drop rows where flua_ct is a string</span></span>
+<span id="e3670fba-6"><a href="#e3670fba-6" aria-hidden="true" tabindex="-1"></a><span class="co"># print(df_influenza['flua_ct'].unique())</span></span>
+<span id="e3670fba-7"><a href="#e3670fba-7" aria-hidden="true" tabindex="-1"></a>df_influenza[<span class="st">"flua_ct"</span>] <span class="op">=</span> df_influenza[df_influenza[<span class="st">"flua_ct"</span>] <span class="op">!=</span> <span class="st">"Neg"</span>][</span>
+<span id="e3670fba-8"><a href="#e3670fba-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"flua_ct"</span></span>
+<span id="e3670fba-9"><a href="#e3670fba-9" aria-hidden="true" tabindex="-1"></a>].astype(<span class="bu">int</span>)</span>
+<span id="e3670fba-10"><a href="#e3670fba-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="e3670fba-11"><a href="#e3670fba-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="e3670fba-12"><a href="#e3670fba-12" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
+<span id="e3670fba-13"><a href="#e3670fba-13" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="fl">12.5</span>, <span class="dv">40</span>)</span>
+<span id="e3670fba-14"><a href="#e3670fba-14" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">10</span><span class="op">**-</span><span class="dv">8</span>, <span class="dv">10</span><span class="op">**</span><span class="dv">0</span>)</span>
+<span id="e3670fba-15"><a href="#e3670fba-15" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(</span>
+<span id="e3670fba-16"><a href="#e3670fba-16" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df_influenza,</span>
+<span id="e3670fba-17"><a href="#e3670fba-17" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"flua_ct"</span>,</span>
+<span id="e3670fba-18"><a href="#e3670fba-18" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"flua_mgs"</span>,</span>
+<span id="e3670fba-19"><a href="#e3670fba-19" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="st">"Sample Type"</span>,</span>
+<span id="e3670fba-20"><a href="#e3670fba-20" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>sns_default_colors,</span>
+<span id="e3670fba-21"><a href="#e3670fba-21" aria-hidden="true" tabindex="-1"></a>    s<span class="op">=</span><span class="dv">70</span>,</span>
+<span id="e3670fba-22"><a href="#e3670fba-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="e3670fba-23"><a href="#e3670fba-23" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Influenza A qPCR CT Value"</span>)</span>
+<span id="e3670fba-24"><a href="#e3670fba-24" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Relative Abundance"</span>)</span>
+<span id="e3670fba-25"><a href="#e3670fba-25" aria-hidden="true" tabindex="-1"></a>ax.set_yscale(<span class="st">"log"</span>)</span>
+<span id="e3670fba-26"><a href="#e3670fba-26" aria-hidden="true" tabindex="-1"></a>ax.invert_xaxis()</span>
+<span id="e3670fba-27"><a href="#e3670fba-27" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="e3670fba-28"><a href="#e3670fba-28" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="e3670fba-29"><a href="#e3670fba-29" aria-hidden="true" tabindex="-1"></a>ax.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">True</span>)</span>
+<span id="e3670fba-30"><a href="#e3670fba-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> np.arange(<span class="dv">15</span>, <span class="dv">40</span>, <span class="dv">5</span>):</span>
+<span id="e3670fba-31"><a href="#e3670fba-31" aria-hidden="true" tabindex="-1"></a>    ax.axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="e3670fba-32"><a href="#e3670fba-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span><span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">1</span>):</span>
+<span id="e3670fba-33"><a href="#e3670fba-33" aria-hidden="true" tabindex="-1"></a>    log_y <span class="op">=</span> <span class="dv">10</span><span class="op">**</span>y</span>
+<span id="e3670fba-34"><a href="#e3670fba-34" aria-hidden="true" tabindex="-1"></a>    ax.axhline(y<span class="op">=</span>log_y, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-7-output-1.png" width="748" height="287" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="simulating-detection-capability" class="level1">
 <h1>Simulating detection capability</h1>
 <p>We can use the above data to replicate research by Jeff Kaufman. Let’s say we get a random set of swabs from a population which contains 1% sick people. On average 1% of all swabs will return positive, and the relative abundance in that positive sample is picked randomly among the relative abundances given in Lu et al.&nbsp;2021 and Babiker et al.&nbsp;2020, respectively.</p>
 <p>Based on this, the median RA(1%) in a pooled sample with 200 swabs is ~ 10^-4.8 Lu et al.&nbsp;2021 (throat swabs) and 10^-5.9 in Babiker et al.&nbsp;2020 (NP swabs)</p>
-<div id="18b617fc" class="cell" data-execution_count="6">
+<div id="c072fb7d" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="18b617fc"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="18b617fc-1"><a href="#18b617fc-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> simulate_detection(positive_ras):</span>
-<span id="18b617fc-2"><a href="#18b617fc-2" aria-hidden="true" tabindex="-1"></a>    FRAC_SICK <span class="op">=</span> <span class="fl">0.01</span></span>
-<span id="18b617fc-3"><a href="#18b617fc-3" aria-hidden="true" tabindex="-1"></a>    SIMULATIONS <span class="op">=</span> <span class="dv">10000</span></span>
-<span id="18b617fc-4"><a href="#18b617fc-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-5"><a href="#18b617fc-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> probabilistic_round(x):</span>
-<span id="18b617fc-6"><a href="#18b617fc-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">int</span>(math.floor(x <span class="op">+</span> random.random()))</span>
-<span id="18b617fc-7"><a href="#18b617fc-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-8"><a href="#18b617fc-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> simulate_once(n_swabs):</span>
-<span id="18b617fc-9"><a href="#18b617fc-9" aria-hidden="true" tabindex="-1"></a>        n_sick <span class="op">=</span> probabilistic_round(FRAC_SICK <span class="op">*</span> n_swabs)</span>
-<span id="18b617fc-10"><a href="#18b617fc-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> n_sick:</span>
-<span id="18b617fc-11"><a href="#18b617fc-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="dv">0</span></span>
-<span id="18b617fc-12"><a href="#18b617fc-12" aria-hidden="true" tabindex="-1"></a>        ra <span class="op">=</span> <span class="dv">0</span></span>
-<span id="18b617fc-13"><a href="#18b617fc-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_sick):</span>
-<span id="18b617fc-14"><a href="#18b617fc-14" aria-hidden="true" tabindex="-1"></a>            ra <span class="op">=</span> random.choice(positive_ras)</span>
-<span id="18b617fc-15"><a href="#18b617fc-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ra <span class="op">/</span> n_swabs</span>
-<span id="18b617fc-16"><a href="#18b617fc-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-17"><a href="#18b617fc-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> simulate_many(n_simulations, n_swabs):</span>
-<span id="18b617fc-18"><a href="#18b617fc-18" aria-hidden="true" tabindex="-1"></a>        RAs <span class="op">=</span> []</span>
-<span id="18b617fc-19"><a href="#18b617fc-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_simulations):</span>
-<span id="18b617fc-20"><a href="#18b617fc-20" aria-hidden="true" tabindex="-1"></a>            RAs.append(simulate_once(n_swabs))</span>
-<span id="18b617fc-21"><a href="#18b617fc-21" aria-hidden="true" tabindex="-1"></a>        RAs.sort()</span>
-<span id="18b617fc-22"><a href="#18b617fc-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-23"><a href="#18b617fc-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [</span>
-<span id="18b617fc-24"><a href="#18b617fc-24" aria-hidden="true" tabindex="-1"></a>            RAs[probabilistic_round(<span class="bu">len</span>(RAs) <span class="op">*</span> percentile <span class="op">/</span> <span class="dv">100</span>)]</span>
-<span id="18b617fc-25"><a href="#18b617fc-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> percentile <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>)</span>
-<span id="18b617fc-26"><a href="#18b617fc-26" aria-hidden="true" tabindex="-1"></a>        ]</span>
-<span id="18b617fc-27"><a href="#18b617fc-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-28"><a href="#18b617fc-28" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
-<span id="18b617fc-29"><a href="#18b617fc-29" aria-hidden="true" tabindex="-1"></a>    n_swab_range <span class="op">=</span> [<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>, <span class="dv">800</span>]</span>
-<span id="18b617fc-30"><a href="#18b617fc-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n_swabs <span class="kw">in</span> n_swab_range:</span>
-<span id="18b617fc-31"><a href="#18b617fc-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> percentile, ra <span class="kw">in</span> <span class="bu">enumerate</span>(simulate_many(SIMULATIONS, n_swabs)):</span>
-<span id="18b617fc-32"><a href="#18b617fc-32" aria-hidden="true" tabindex="-1"></a>            data[percentile].append(ra)</span>
-<span id="18b617fc-33"><a href="#18b617fc-33" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame(data).T</span>
-<span id="18b617fc-34"><a href="#18b617fc-34" aria-hidden="true" tabindex="-1"></a>    df.columns <span class="op">=</span> n_swab_range</span>
-<span id="18b617fc-35"><a href="#18b617fc-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-36"><a href="#18b617fc-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
-<span id="18b617fc-37"><a href="#18b617fc-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-38"><a href="#18b617fc-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-39"><a href="#18b617fc-39" aria-hidden="true" tabindex="-1"></a>df_throat <span class="op">=</span> pd.read_csv(<span class="st">"data/lu_throat_ct_mgs.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="18b617fc-40"><a href="#18b617fc-40" aria-hidden="true" tabindex="-1"></a>df_throat.rename(</span>
-<span id="18b617fc-41"><a href="#18b617fc-41" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{<span class="st">"SCV-2 Relative Abundance"</span>: <span class="st">"scv2_ra"</span>, <span class="st">"Ct value"</span>: <span class="st">"scv2_ct"</span>}, inplace<span class="op">=</span><span class="va">True</span></span>
-<span id="18b617fc-42"><a href="#18b617fc-42" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="18b617fc-43"><a href="#18b617fc-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-44"><a href="#18b617fc-44" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal <span class="op">=</span> pd.read_csv(<span class="st">"data/babiker_np_ct_mgs.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="18b617fc-45"><a href="#18b617fc-45" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal.rename(</span>
-<span id="18b617fc-46"><a href="#18b617fc-46" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{</span>
-<span id="18b617fc-47"><a href="#18b617fc-47" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SARS-CoV-2 RT-PCR Ct"</span>: <span class="st">"scv2_ct"</span>,</span>
-<span id="18b617fc-48"><a href="#18b617fc-48" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SARS-CoV-2 RA"</span>: <span class="st">"scv2_ra"</span>,</span>
-<span id="18b617fc-49"><a href="#18b617fc-49" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Inpatient/ED vs. Outpatient"</span>: <span class="st">"patient_status"</span>,</span>
-<span id="18b617fc-50"><a href="#18b617fc-50" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="18b617fc-51"><a href="#18b617fc-51" aria-hidden="true" tabindex="-1"></a>    inplace<span class="op">=</span><span class="va">True</span>,</span>
-<span id="18b617fc-52"><a href="#18b617fc-52" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="18b617fc-53"><a href="#18b617fc-53" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal[<span class="st">"scv2_ct"</span>] <span class="op">=</span> (</span>
-<span id="18b617fc-54"><a href="#18b617fc-54" aria-hidden="true" tabindex="-1"></a>    df_throat[<span class="st">"scv2_ct"</span>].replace(<span class="st">","</span>, <span class="st">"."</span>, regex<span class="op">=</span><span class="va">True</span>).astype(<span class="bu">float</span>)</span>
-<span id="18b617fc-55"><a href="#18b617fc-55" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="18b617fc-56"><a href="#18b617fc-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-57"><a href="#18b617fc-57" aria-hidden="true" tabindex="-1"></a>df_throat_ras <span class="op">=</span> df_throat[<span class="st">"scv2_ra"</span>].dropna().tolist()</span>
-<span id="18b617fc-58"><a href="#18b617fc-58" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal_ras <span class="op">=</span> df_nasopharyngeal[<span class="st">"scv2_ra"</span>].dropna().tolist()</span>
-<span id="18b617fc-59"><a href="#18b617fc-59" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
-<span id="18b617fc-60"><a href="#18b617fc-60" aria-hidden="true" tabindex="-1"></a>n_swab_range <span class="op">=</span> [<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>, <span class="dv">800</span>]</span>
-<span id="18b617fc-61"><a href="#18b617fc-61" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, positive_ras <span class="kw">in</span> <span class="bu">enumerate</span>([df_throat_ras, df_nasopharyngeal_ras]):</span>
-<span id="18b617fc-62"><a href="#18b617fc-62" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> simulate_detection(positive_ras)</span>
-<span id="18b617fc-63"><a href="#18b617fc-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n_swabs <span class="kw">in</span> n_swab_range:</span>
-<span id="18b617fc-64"><a href="#18b617fc-64" aria-hidden="true" tabindex="-1"></a>        axs[i].plot(df.index, df[n_swabs], label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>n_swabs<span class="sc">}</span><span class="ss"> swabs"</span>)</span>
-<span id="18b617fc-65"><a href="#18b617fc-65" aria-hidden="true" tabindex="-1"></a>    axs[i].set_xlabel(<span class="st">"Percentile"</span>)</span>
-<span id="18b617fc-66"><a href="#18b617fc-66" aria-hidden="true" tabindex="-1"></a>    axs[i].set_ylabel(<span class="st">"RA"</span>)</span>
-<span id="18b617fc-67"><a href="#18b617fc-67" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yscale(<span class="st">"log"</span>)</span>
-<span id="18b617fc-68"><a href="#18b617fc-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># turn on y tick labels for both plots</span></span>
-<span id="18b617fc-69"><a href="#18b617fc-69" aria-hidden="true" tabindex="-1"></a>    axs[i].yaxis.set_tick_params(labelleft<span class="op">=</span><span class="va">True</span>)</span>
-<span id="18b617fc-70"><a href="#18b617fc-70" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">20</span>):</span>
-<span id="18b617fc-71"><a href="#18b617fc-71" aria-hidden="true" tabindex="-1"></a>        axs[i].axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="18b617fc-72"><a href="#18b617fc-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-73"><a href="#18b617fc-73" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">1</span>):</span>
-<span id="18b617fc-74"><a href="#18b617fc-74" aria-hidden="true" tabindex="-1"></a>        log_y <span class="op">=</span> <span class="dv">10</span><span class="op">**</span>y</span>
-<span id="18b617fc-75"><a href="#18b617fc-75" aria-hidden="true" tabindex="-1"></a>        axs[i].axhline(y<span class="op">=</span>log_y, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="18b617fc-76"><a href="#18b617fc-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="18b617fc-77"><a href="#18b617fc-77" aria-hidden="true" tabindex="-1"></a>        axs[i].set_title(<span class="st">"Throat"</span>)</span>
-<span id="18b617fc-78"><a href="#18b617fc-78" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="18b617fc-79"><a href="#18b617fc-79" aria-hidden="true" tabindex="-1"></a>        axs[i].set_title(<span class="st">"Nasopharyngeal"</span>)</span>
-<span id="18b617fc-80"><a href="#18b617fc-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="18b617fc-81"><a href="#18b617fc-81" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="18b617fc-82"><a href="#18b617fc-82" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="18b617fc-83"><a href="#18b617fc-83" aria-hidden="true" tabindex="-1"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">"x"</span>, which<span class="op">=</span><span class="st">"both"</span>, bottom<span class="op">=</span><span class="va">False</span>, top<span class="op">=</span><span class="va">False</span>, labelbottom<span class="op">=</span><span class="va">True</span>)</span>
-<span id="18b617fc-84"><a href="#18b617fc-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="18b617fc-85"><a href="#18b617fc-85" aria-hidden="true" tabindex="-1"></a>        axs[i].legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="c072fb7d"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="c072fb7d-1"><a href="#c072fb7d-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> simulate_detection(positive_ras):</span>
+<span id="c072fb7d-2"><a href="#c072fb7d-2" aria-hidden="true" tabindex="-1"></a>    FRAC_SICK <span class="op">=</span> <span class="fl">0.01</span></span>
+<span id="c072fb7d-3"><a href="#c072fb7d-3" aria-hidden="true" tabindex="-1"></a>    SIMULATIONS <span class="op">=</span> <span class="dv">10000</span></span>
+<span id="c072fb7d-4"><a href="#c072fb7d-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-5"><a href="#c072fb7d-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> probabilistic_round(x):</span>
+<span id="c072fb7d-6"><a href="#c072fb7d-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">int</span>(math.floor(x <span class="op">+</span> random.random()))</span>
+<span id="c072fb7d-7"><a href="#c072fb7d-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-8"><a href="#c072fb7d-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> simulate_once(n_swabs):</span>
+<span id="c072fb7d-9"><a href="#c072fb7d-9" aria-hidden="true" tabindex="-1"></a>        n_sick <span class="op">=</span> probabilistic_round(FRAC_SICK <span class="op">*</span> n_swabs)</span>
+<span id="c072fb7d-10"><a href="#c072fb7d-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> n_sick:</span>
+<span id="c072fb7d-11"><a href="#c072fb7d-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="c072fb7d-12"><a href="#c072fb7d-12" aria-hidden="true" tabindex="-1"></a>        ra <span class="op">=</span> <span class="dv">0</span></span>
+<span id="c072fb7d-13"><a href="#c072fb7d-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_sick):</span>
+<span id="c072fb7d-14"><a href="#c072fb7d-14" aria-hidden="true" tabindex="-1"></a>            ra <span class="op">=</span> random.choice(positive_ras)</span>
+<span id="c072fb7d-15"><a href="#c072fb7d-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ra <span class="op">/</span> n_swabs</span>
+<span id="c072fb7d-16"><a href="#c072fb7d-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-17"><a href="#c072fb7d-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> simulate_many(n_simulations, n_swabs):</span>
+<span id="c072fb7d-18"><a href="#c072fb7d-18" aria-hidden="true" tabindex="-1"></a>        RAs <span class="op">=</span> []</span>
+<span id="c072fb7d-19"><a href="#c072fb7d-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_simulations):</span>
+<span id="c072fb7d-20"><a href="#c072fb7d-20" aria-hidden="true" tabindex="-1"></a>            RAs.append(simulate_once(n_swabs))</span>
+<span id="c072fb7d-21"><a href="#c072fb7d-21" aria-hidden="true" tabindex="-1"></a>        RAs.sort()</span>
+<span id="c072fb7d-22"><a href="#c072fb7d-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-23"><a href="#c072fb7d-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [</span>
+<span id="c072fb7d-24"><a href="#c072fb7d-24" aria-hidden="true" tabindex="-1"></a>            RAs[probabilistic_round(<span class="bu">len</span>(RAs) <span class="op">*</span> percentile <span class="op">/</span> <span class="dv">100</span>)]</span>
+<span id="c072fb7d-25"><a href="#c072fb7d-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> percentile <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>)</span>
+<span id="c072fb7d-26"><a href="#c072fb7d-26" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="c072fb7d-27"><a href="#c072fb7d-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-28"><a href="#c072fb7d-28" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
+<span id="c072fb7d-29"><a href="#c072fb7d-29" aria-hidden="true" tabindex="-1"></a>    n_swab_range <span class="op">=</span> [<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>, <span class="dv">800</span>]</span>
+<span id="c072fb7d-30"><a href="#c072fb7d-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n_swabs <span class="kw">in</span> n_swab_range:</span>
+<span id="c072fb7d-31"><a href="#c072fb7d-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> percentile, ra <span class="kw">in</span> <span class="bu">enumerate</span>(simulate_many(SIMULATIONS, n_swabs)):</span>
+<span id="c072fb7d-32"><a href="#c072fb7d-32" aria-hidden="true" tabindex="-1"></a>            data[percentile].append(ra)</span>
+<span id="c072fb7d-33"><a href="#c072fb7d-33" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame(data).T</span>
+<span id="c072fb7d-34"><a href="#c072fb7d-34" aria-hidden="true" tabindex="-1"></a>    df.columns <span class="op">=</span> n_swab_range</span>
+<span id="c072fb7d-35"><a href="#c072fb7d-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-36"><a href="#c072fb7d-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="c072fb7d-37"><a href="#c072fb7d-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-38"><a href="#c072fb7d-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-39"><a href="#c072fb7d-39" aria-hidden="true" tabindex="-1"></a>df_throat <span class="op">=</span> pd.read_csv(<span class="st">"data/lu_throat_ct_mgs.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="c072fb7d-40"><a href="#c072fb7d-40" aria-hidden="true" tabindex="-1"></a>df_throat.rename(</span>
+<span id="c072fb7d-41"><a href="#c072fb7d-41" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{<span class="st">"SCV-2 Relative Abundance"</span>: <span class="st">"scv2_ra"</span>, <span class="st">"Ct value"</span>: <span class="st">"scv2_ct"</span>}, inplace<span class="op">=</span><span class="va">True</span></span>
+<span id="c072fb7d-42"><a href="#c072fb7d-42" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="c072fb7d-43"><a href="#c072fb7d-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-44"><a href="#c072fb7d-44" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal <span class="op">=</span> pd.read_csv(<span class="st">"data/babiker_np_ct_mgs.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, skiprows<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="c072fb7d-45"><a href="#c072fb7d-45" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal.rename(</span>
+<span id="c072fb7d-46"><a href="#c072fb7d-46" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{</span>
+<span id="c072fb7d-47"><a href="#c072fb7d-47" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SARS-CoV-2 RT-PCR Ct"</span>: <span class="st">"scv2_ct"</span>,</span>
+<span id="c072fb7d-48"><a href="#c072fb7d-48" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SARS-CoV-2 RA"</span>: <span class="st">"scv2_ra"</span>,</span>
+<span id="c072fb7d-49"><a href="#c072fb7d-49" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Inpatient/ED vs. Outpatient"</span>: <span class="st">"patient_status"</span>,</span>
+<span id="c072fb7d-50"><a href="#c072fb7d-50" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="c072fb7d-51"><a href="#c072fb7d-51" aria-hidden="true" tabindex="-1"></a>    inplace<span class="op">=</span><span class="va">True</span>,</span>
+<span id="c072fb7d-52"><a href="#c072fb7d-52" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="c072fb7d-53"><a href="#c072fb7d-53" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal[<span class="st">"scv2_ct"</span>] <span class="op">=</span> (</span>
+<span id="c072fb7d-54"><a href="#c072fb7d-54" aria-hidden="true" tabindex="-1"></a>    df_throat[<span class="st">"scv2_ct"</span>].replace(<span class="st">","</span>, <span class="st">"."</span>, regex<span class="op">=</span><span class="va">True</span>).astype(<span class="bu">float</span>)</span>
+<span id="c072fb7d-55"><a href="#c072fb7d-55" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="c072fb7d-56"><a href="#c072fb7d-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-57"><a href="#c072fb7d-57" aria-hidden="true" tabindex="-1"></a>df_throat_ras <span class="op">=</span> df_throat[<span class="st">"scv2_ra"</span>].dropna().tolist()</span>
+<span id="c072fb7d-58"><a href="#c072fb7d-58" aria-hidden="true" tabindex="-1"></a>df_nasopharyngeal_ras <span class="op">=</span> df_nasopharyngeal[<span class="st">"scv2_ra"</span>].dropna().tolist()</span>
+<span id="c072fb7d-59"><a href="#c072fb7d-59" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="c072fb7d-60"><a href="#c072fb7d-60" aria-hidden="true" tabindex="-1"></a>n_swab_range <span class="op">=</span> [<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>, <span class="dv">800</span>]</span>
+<span id="c072fb7d-61"><a href="#c072fb7d-61" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, positive_ras <span class="kw">in</span> <span class="bu">enumerate</span>([df_throat_ras, df_nasopharyngeal_ras]):</span>
+<span id="c072fb7d-62"><a href="#c072fb7d-62" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> simulate_detection(positive_ras)</span>
+<span id="c072fb7d-63"><a href="#c072fb7d-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n_swabs <span class="kw">in</span> n_swab_range:</span>
+<span id="c072fb7d-64"><a href="#c072fb7d-64" aria-hidden="true" tabindex="-1"></a>        axs[i].plot(df.index, df[n_swabs], label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>n_swabs<span class="sc">}</span><span class="ss"> swabs"</span>)</span>
+<span id="c072fb7d-65"><a href="#c072fb7d-65" aria-hidden="true" tabindex="-1"></a>    axs[i].set_xlabel(<span class="st">"Percentile"</span>)</span>
+<span id="c072fb7d-66"><a href="#c072fb7d-66" aria-hidden="true" tabindex="-1"></a>    axs[i].set_ylabel(<span class="st">"RA"</span>)</span>
+<span id="c072fb7d-67"><a href="#c072fb7d-67" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yscale(<span class="st">"log"</span>)</span>
+<span id="c072fb7d-68"><a href="#c072fb7d-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># turn on y tick labels for both plots</span></span>
+<span id="c072fb7d-69"><a href="#c072fb7d-69" aria-hidden="true" tabindex="-1"></a>    axs[i].yaxis.set_tick_params(labelleft<span class="op">=</span><span class="va">True</span>)</span>
+<span id="c072fb7d-70"><a href="#c072fb7d-70" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">20</span>):</span>
+<span id="c072fb7d-71"><a href="#c072fb7d-71" aria-hidden="true" tabindex="-1"></a>        axs[i].axvline(x<span class="op">=</span>x, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="c072fb7d-72"><a href="#c072fb7d-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-73"><a href="#c072fb7d-73" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">1</span>):</span>
+<span id="c072fb7d-74"><a href="#c072fb7d-74" aria-hidden="true" tabindex="-1"></a>        log_y <span class="op">=</span> <span class="dv">10</span><span class="op">**</span>y</span>
+<span id="c072fb7d-75"><a href="#c072fb7d-75" aria-hidden="true" tabindex="-1"></a>        axs[i].axhline(y<span class="op">=</span>log_y, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="c072fb7d-76"><a href="#c072fb7d-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="c072fb7d-77"><a href="#c072fb7d-77" aria-hidden="true" tabindex="-1"></a>        axs[i].set_title(<span class="st">"Throat"</span>)</span>
+<span id="c072fb7d-78"><a href="#c072fb7d-78" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="c072fb7d-79"><a href="#c072fb7d-79" aria-hidden="true" tabindex="-1"></a>        axs[i].set_title(<span class="st">"Nasopharyngeal"</span>)</span>
+<span id="c072fb7d-80"><a href="#c072fb7d-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c072fb7d-81"><a href="#c072fb7d-81" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="c072fb7d-82"><a href="#c072fb7d-82" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="c072fb7d-83"><a href="#c072fb7d-83" aria-hidden="true" tabindex="-1"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">"x"</span>, which<span class="op">=</span><span class="st">"both"</span>, bottom<span class="op">=</span><span class="va">False</span>, top<span class="op">=</span><span class="va">False</span>, labelbottom<span class="op">=</span><span class="va">True</span>)</span>
+<span id="c072fb7d-84"><a href="#c072fb7d-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="c072fb7d-85"><a href="#c072fb7d-85" aria-hidden="true" tabindex="-1"></a>        axs[i].legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-7-output-1.png" width="749" height="449" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-8-output-1.png" width="749" height="449" class="figure-img"></p>
 <figcaption><strong>Figure 5: Simulated detection capability of pooled swab sampling.</strong> Left Figure: Throat Swabs. Data from Lu et al.&nbsp;2021. Right Figure: Nasopharyngeal Swabs. Data from Babiker et al.&nbsp;2020.</figcaption>
 </figure>
 </div>

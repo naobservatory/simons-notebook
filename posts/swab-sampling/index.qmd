@@ -133,7 +133,7 @@ Note that the second plot shows the difference in genome copy numbers, rather th
 [^2]: A 1-log difference in genome copy number is equivalent to a 3.3 CT difference. This is because each cycle in a qPCR machine approxiately equates to doubling of the genome copy number. 
 
 ```{python}
-#| fig-cap: "**Figure 2: Nasal swabs vs Oro-pharyngeal and combined nasal/oro-pharyngeal swabs.** All data is taken from Goddall et al. 2022."
+#| fig-cap: "**Figure 2: Nasal swabs vs Oro-pharyngeal and combined nasal/oro-pharyngeal swabs.** All data is taken from Goodall et al. 2022."
 
 df = pd.read_csv('data/nasal_ct_differences.tsv', sep='\t', skiprows=1)
 
@@ -153,8 +153,8 @@ plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
 for x in 5, 0, -5, -10, -15:
     if x == 0:
         plt.axvline(x=x, color='red', linestyle='--', alpha=0.5) 
-        continue
-    plt.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+    else:
+        plt.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
 
 plt.axhline(y=0.5, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
 
@@ -191,7 +191,7 @@ sns.stripplot(data=df, y='Study & Comparison', x='Genome Copy Number Difference'
 plt.legend([],[], frameon=False)
 # drop y axis label
 plt.ylabel('')
-plt.xlabel(u'Genome Copy Number Δ (Nasal - Throat), Log scale')
+plt.xlabel(u'Genome Copy Number Δ (Nasal - Throat), Logged')
 # flip x axis
 plt.gca().invert_xaxis()
 plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
@@ -233,6 +233,7 @@ The relative abundance of a target pathogen can be impacted by its microbial bac
 
 We identified two studies that performed paired metagenomic sequencing and SARS-CoV-2 qPCR on swab samples Lu et al. 2021, Babiker et al. 2020. We've reached out to the authors of two further studies that didn't have publicly available data.
 ```{python}
+#| warning: false
 #| fig-cap: "**Figure 4: SARS-CoV-2 qPCR CT vs SARS-CoV-2 RA.**\nTop Figure: Throat Swabs. Data from Lu et al. 2021.\nBottom Figure: Nasopharyngeal Swabs. Data from Babiker et al. 2020."
 df_throat = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
 df_throat.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
@@ -248,11 +249,8 @@ for i, (ax, df) in enumerate(zip(axs, [df_throat, df_nasopharyngeal])):
     x_lim = 12.5, 40
     y_lim = 10**-8, 10**0
     if i == 1:
-        # set dot colors
         sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='patient_status', style='patient_status', palette=sns_default_colors, s=70)
-        # set coordinates for legend:Quarto
-        coordinates = (0.6, -0.2)
-        ax.legend(title='', loc="upper left") # bbox_to_anchor=coordinates)
+        ax.legend(title='', loc="upper left") 
         ax.set_xlabel('SARS-CoV-2 qPCR CT Value')
         ax.set_xlim(x_lim)
         ax.set_ylim(10**-8, 10**0)
@@ -280,6 +278,61 @@ Some observations:
 * Though comparing qPCR values between studies is tricky, we do see the expected difference in CT values, where nasopharyngeal swabs have lower CT values.
 * For the same CT value, Lu et al. 2021 returns higher relative abundance.
 * Outpatients in Lu et al. have slightly higher relative abundances for the same CT value.
+
+### Influenza A
+
+```{python}
+
+df_influenza = pd.read_csv('data/fischer_influenza_ct_mgs.tsv', sep='\t', skiprows=1)
+df_influenza.rename(columns={"FluA CT":"flua_ct", "Relative Abundance": "flua_mgs"}, inplace=True)
+#drop rows where flua_ct is a string
+#print(df_influenza['flua_ct'].unique())
+df_influenza['flua_ct'] = df_influenza[df_influenza['flua_ct'] != 'Neg']['flua_ct'].astype(int)
+
+
+
+
+fig, ax = plt.subplots(1, 1, figsize=(9, 3))
+ax.set_xlim(12.5, 40)
+ax.set_ylim(10**-8, 10**0)
+sns.scatterplot(data=df_influenza, x='flua_ct', y='flua_mgs', hue='Sample Type', color=sns_default_colors, s=70)
+ax.set_xlabel('Influenza A qPCR CT Value')
+ax.set_ylabel('Relative Abundance')
+ax.set_yscale('log')
+ax.invert_xaxis()
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+for x in np.arange(15, 40, 5):
+    ax.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+for y in range(-7, 1, 1):
+    log_y = 10**y
+    ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Simulating detection capability
