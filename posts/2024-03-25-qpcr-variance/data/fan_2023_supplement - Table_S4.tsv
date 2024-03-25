@@ -1,0 +1,55 @@
+Lab code	2.0×103 copies/mL				1.0×103 copies/mL				5.0×102 copies/mL				2.0×102 copies/mL		
+	mean	SD	sample No.		mean	SD	sample No.		mean	SD	sample No.		mean	SD	sample No.
+Ct values for ORF1ab determined by Tianlong nucleic extraction kit and BioGerm RT-PCR kit combined with Gentier PCR instrument															
+1110084	32.2	0.8367	5		33.2	0.8367	5		34.33	1.528	5		36	0.8165	4
+1110100	32	0.8165	4		32.75	0.5	4		34	0	4		35	0	3
+1110155	30.25	1.708	4		32.2	1.304	5		34	0.8165	4		33.75	2.63	4
+1111187	32.6	0.8944	5		33.6	1.673	5		32.25	2.217	5		35.5	1.291	4
+110002B6	32.6	0.5477	5		33.25	0.5	4		34.4	1.817	5		35.75	0.9574	4
+110046B1	31.33	0.5774	3		32	1	3		34.4	0.5477	3		34.67	1.155	3
+															
+Ct values for ORF1ab determined by Tianlong nucleic extraction kit and BioGerm RT-PCR kit combined with SLAN PCR instrument															
+1110051	31.33	0.5774	3		32.33	0.5774	3		33.67	0.5774	3		34	1	3
+1110057	32.4	0.8944	5		34	1.633	4		34.4	1.342	5		35.25	0.5	4
+1110091	31.8	0.8367	5		32.8	1.643	5		34.2	1.095	5		36	1.826	4
+															
+Ct values for ORF1ab determined by Tianlong nucleic extraction kit and BioGerm RT-PCR kit combined with ABI 7500 PCR instrument															
+1110006	31	1.155	4		32.25	0.9574	4		33	0.8165	4		34.67	1.155	3
+1110011	32.33	1.155	3		33.33	1.528	3		34.33	0.5774	3		36.33	1.528	3
+1110017	31.2	0.4472	5		32.6	1.14	5		33.4	0.5477	5		35.25	0.9574	4
+1110081	31.2	1.304	5		32.2	1.304	5		32.8	2.168	5		34.5	1	4
+1110143	31.33	0.5774	3		32	1	3		33.67	0.5774	3		35	0	3
+1110560	34.5	2.517	4		35	2.449	4		35.75	2.062	4		37	3	3
+1110739	31.8	1.789	5		32.8	1.643	5		34.2	2.168	5		35	2.449	4
+															
+Ct values for ORF1ab determined by BioGerm nucleic extraction kit and BioGerm RT-PCR kit combined with ABI 7500 PCR instrument															
+1110061	33.4	2.702	5		34.4	2.191	5		34.8	1.924	5		36.25	0.9574	4
+1110125	31.67	0.5774	3		32.67	0.5774	3		33.67	2.517	3		37.75	2.872	4
+110013B3	35	0.8165	4		35	1.414	4		36	1.414	4		37.25	0.9574	4
+															
+Ct values for N determined by Tianlong nucleic extraction kit and BioGerm RT-PCR kit combined with Gentier PCR instrument															
+1110084	33.4	0.8944	5		34.8	1.304	5		35.6	1.14	5		36.75	0.9574	4
+1110100	33.75	0.5	4		34.75	0.5	4		35.75	0.5	4		36.33	0.5774	3
+1110155	32.67	1.155	3		33.67	1.155	3		34.67	0.5774	3		36	0	3
+1111187	33.6	1.14	5		34.2	1.095	5		34.8	1.304	5		35.75	1.708	4
+110002B6	33.6	1.14	5		34.6	0.5477	5		35	1	5		36	0.8165	4
+110046B1	32.67	0.5774	3		33.33	0.5774	3		34.33	0.5774	3		34.67	1.155	3
+															
+Ct values for N determined by Tianlong nucleic extraction kit and BioGerm RT-PCR kit combined with SLAN PCR instrument															
+1110051	32.67	0.5774	3		33.67	0.5774	3		34.33	0.5774	3		35.33	1.155	3
+1110057	33.2	0.8367	5		34	1	5		35.2	1.095	5		35.5	0.5774	4
+1110091	33	1.225	5		33.8	1.304	5		34.6	1.14	5		36	1.826	4
+															
+Ct values for N determined by Tianlong nucleic extraction kit and BioGerm RT-PCR kit combined with ABI7500 PCR instrument															
+1110006	32.25	0.9574	4		33.75	0.9574	4		34.5	0.5774	4		35.33	1.155	3
+1110011	33.67	0.5774	3		35	1	3		35.33	0.5774	3		37	1	3
+1110017	33.6	1.14	5		34.8	0.4472	5		35.4	0.5477	5		36.5	0.5774	4
+1110081	32.4	1.342	5		33.4	1.342	5		34.4	1.517	5		35.5	1	4
+1110143	33	1	3		34	1	3		35	1	3		35.67	1.528	3
+1110560	35	1.414	4		35	1.826	4		35.75	1.5	4		36.67	1.528	3
+1110739	34	1.871	5		34.8	1.643	5		35.2	1.483	5		36.5	2.082	4
+															
+Ct values for N determined by BioGerm nucleic extraction kit and BioGerm RT-PCR kit combined with ABI 7500 PCR instrument															
+1110061	34.6	1.817	5		35.6	2.074	5		35.8	1.304	5		36	0.8165	4
+1110127	33.6	0.8944	5		34.2	0.4472	5		35.4	0.8944	5		36.75	0.9574	4
+110013B3	35.75	0.9574	4		35.5	1	4		36.75	1.893	4		37.25	1.708	4

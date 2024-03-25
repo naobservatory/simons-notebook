@@ -1,0 +1,25 @@
+PCR instruments	2.0×103 copies/mL				1.0×103 copies/mL				5.0×102 copies/mL				2.0×102 copies/mL		
+	mean	SD	Lab No.		mean	SD	Lab No.		mean	SD	Lab No.		mean	SD	Lab No.
+Ct values for ORF1ab determined by Tianlong nucleic extraction kit and BioGerm RT-PCR kit combined with different PCR instruments															
+ABI 7500	31.79	1.673	33		32.79	1.556	33		33.76	1.601	33		35.26	1.607	27
+Roche Light Cycler 480	31.13	1.808	8		31.5	1.195	8		32.5	1.309	8		33	1.155	7
+SLAN	32.13	1.204	31		33.06	1.413	31		34.06	1.162	32		35.43	1.55	28
+Gentier	31.85	1.149	33		32.85	1.093	33		33.97	1.334	33		35.15	1.379	27
+															
+Ct values for N determined by Tianlong nucleic extraction kit and BioGerm RT-PCR kit combined with different PCR instruments															
+ABI 7500	33.27	1.485	33		34.24	1.324	33		34.88	1.219	33		36.04	1.315	27
+Roche Light Cycler 480	31.75	1.982	8		32.38	1.188	8		33.38	0.744	8		34.29	0.488	7
+SLAN	33.1	1.274	31		33.93	1.258	30		34.74	1.154	31		35.7	1.137	27
+Gentier	32.94	1.87	33		33.88	1.867	33		34.67	1.831	33		35.67	1.881	27
+															
+Ct values for ORF1ab determined by Zybio nucleic acid extraction kit and BioGerm RT-PCR kit combined with different PCR instruments															
+ABI 7500	31.54	2.47	13		32.69	2.562	13		34.31	2.25	13		35.36	2.873	11
+Roche Light Cycler 480	30.33	2.958	9		31.22	2.906	9		31.56	3.127	9		34.43	2.37	7
+SLAN	32.4	0.8433	10		33.1	0.7379	10		34.5	0.8498	10		35.56	0.7265	9
+Bio-Rad CFX96	33	2	5		33.8	2.49	5		35.6	2.302	5		35.25	2.217	4
+															
+Ct values for N determined by Zybio nucleic acid extraction kit and BioGerm RT-PCR kit combined with different PCR instruments															
+ABI 7500	32.38	1.502	13		33.69	1.843	13		34.38	1.758	13		35	1.549	11
+Roche Light Cycler 480	31.78	1.986	9		32.44	2.404	9		33	1.936	9		34.86	1.574	7
+SLAN	33.3	0.9487	10		34.5	1.08	10		35.4	1.075	10		36.33	0.7071	9
+Bio-Rad CFX96	34.4	0.8944	5		35	1.225	5		36.2	1.304	5		37.5	1.291	4
