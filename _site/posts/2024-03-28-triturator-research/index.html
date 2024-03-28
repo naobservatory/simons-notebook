@@ -166,149 +166,149 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="beef49ed" class="cell" data-execution_count="1">
+<div id="fd2776d6" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="beef49ed"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="beef49ed-1"><a href="#beef49ed-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing packages</span></span>
-<span id="beef49ed-2"><a href="#beef49ed-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="beef49ed-3"><a href="#beef49ed-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="beef49ed-4"><a href="#beef49ed-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="beef49ed-5"><a href="#beef49ed-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="beef49ed-6"><a href="#beef49ed-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime <span class="im">as</span> dt</span>
-<span id="beef49ed-7"><a href="#beef49ed-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ast</span>
-<span id="beef49ed-8"><a href="#beef49ed-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
-<span id="beef49ed-9"><a href="#beef49ed-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown</span>
-<span id="beef49ed-10"><a href="#beef49ed-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
-<span id="beef49ed-11"><a href="#beef49ed-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tabulate <span class="im">import</span> tabulate</span>
-<span id="beef49ed-12"><a href="#beef49ed-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="beef49ed-13"><a href="#beef49ed-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-14"><a href="#beef49ed-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-15"><a href="#beef49ed-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_airline_trit_dict():</span>
-<span id="beef49ed-16"><a href="#beef49ed-16" aria-hidden="true" tabindex="-1"></a>    airline_trit_dict <span class="op">=</span> defaultdict(<span class="bu">str</span>)</span>
-<span id="beef49ed-17"><a href="#beef49ed-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"data/2024-03-27_airlines_triturators.tsv"</span>) <span class="im">as</span> infile:</span>
-<span id="beef49ed-18"><a href="#beef49ed-18" aria-hidden="true" tabindex="-1"></a>        lines <span class="op">=</span> infile.readlines()</span>
-<span id="beef49ed-19"><a href="#beef49ed-19" aria-hidden="true" tabindex="-1"></a>        lines <span class="op">=</span> lines[<span class="dv">1</span>:]</span>
-<span id="beef49ed-20"><a href="#beef49ed-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> line <span class="kw">in</span> lines:</span>
-<span id="beef49ed-21"><a href="#beef49ed-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-22"><a href="#beef49ed-22" aria-hidden="true" tabindex="-1"></a>            airline, triturator, ground_handling, source <span class="op">=</span> line.split(<span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
-<span id="beef49ed-23"><a href="#beef49ed-23" aria-hidden="true" tabindex="-1"></a>            prettier_triturator <span class="op">=</span> {</span>
-<span id="beef49ed-24"><a href="#beef49ed-24" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Swissport"</span>: <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span>,</span>
-<span id="beef49ed-25"><a href="#beef49ed-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">"American Airlines"</span>: <span class="st">"American Airlines</span><span class="ch">\n</span><span class="st">Triturator"</span>,</span>
-<span id="beef49ed-26"><a href="#beef49ed-26" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Unknown"</span>: <span class="st">"Unknown"</span>,</span>
-<span id="beef49ed-27"><a href="#beef49ed-27" aria-hidden="true" tabindex="-1"></a>                <span class="st">"None"</span>: <span class="st">"No Triturator used"</span>,</span>
-<span id="beef49ed-28"><a href="#beef49ed-28" aria-hidden="true" tabindex="-1"></a>            }</span>
-<span id="beef49ed-29"><a href="#beef49ed-29" aria-hidden="true" tabindex="-1"></a>            airline <span class="op">=</span> airline.strip()</span>
-<span id="beef49ed-30"><a href="#beef49ed-30" aria-hidden="true" tabindex="-1"></a>            triturator <span class="op">=</span> triturator.strip()</span>
-<span id="beef49ed-31"><a href="#beef49ed-31" aria-hidden="true" tabindex="-1"></a>            triturator <span class="op">=</span> prettier_triturator[triturator]</span>
-<span id="beef49ed-32"><a href="#beef49ed-32" aria-hidden="true" tabindex="-1"></a>            airline_trit_dict[airline] <span class="op">=</span> triturator</span>
-<span id="beef49ed-33"><a href="#beef49ed-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> airline_trit_dict</span>
-<span id="beef49ed-34"><a href="#beef49ed-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-35"><a href="#beef49ed-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-36"><a href="#beef49ed-36" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_flights():</span>
-<span id="beef49ed-37"><a href="#beef49ed-37" aria-hidden="true" tabindex="-1"></a>    airline_trit_dict <span class="op">=</span> return_airline_trit_dict()</span>
-<span id="beef49ed-38"><a href="#beef49ed-38" aria-hidden="true" tabindex="-1"></a>    unmatched_airlines <span class="op">=</span> defaultdict(<span class="bu">int</span>)</span>
-<span id="beef49ed-39"><a href="#beef49ed-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"all_flights.tsv"</span>) <span class="im">as</span> infile:</span>
-<span id="beef49ed-40"><a href="#beef49ed-40" aria-hidden="true" tabindex="-1"></a>        lines <span class="op">=</span> infile.readlines()</span>
-<span id="beef49ed-41"><a href="#beef49ed-41" aria-hidden="true" tabindex="-1"></a>        us_flights <span class="op">=</span> []</span>
-<span id="beef49ed-42"><a href="#beef49ed-42" aria-hidden="true" tabindex="-1"></a>        lines <span class="op">=</span> lines[<span class="dv">1</span>:]</span>
-<span id="beef49ed-43"><a href="#beef49ed-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> line <span class="kw">in</span> lines:</span>
-<span id="beef49ed-44"><a href="#beef49ed-44" aria-hidden="true" tabindex="-1"></a>            (</span>
-<span id="beef49ed-45"><a href="#beef49ed-45" aria-hidden="true" tabindex="-1"></a>                origin,</span>
-<span id="beef49ed-46"><a href="#beef49ed-46" aria-hidden="true" tabindex="-1"></a>                origin_code,</span>
-<span id="beef49ed-47"><a href="#beef49ed-47" aria-hidden="true" tabindex="-1"></a>                date,</span>
-<span id="beef49ed-48"><a href="#beef49ed-48" aria-hidden="true" tabindex="-1"></a>                terminal,</span>
-<span id="beef49ed-49"><a href="#beef49ed-49" aria-hidden="true" tabindex="-1"></a>                equipment,</span>
-<span id="beef49ed-50"><a href="#beef49ed-50" aria-hidden="true" tabindex="-1"></a>                flight,</span>
-<span id="beef49ed-51"><a href="#beef49ed-51" aria-hidden="true" tabindex="-1"></a>                airline,</span>
-<span id="beef49ed-52"><a href="#beef49ed-52" aria-hidden="true" tabindex="-1"></a>                nation,</span>
-<span id="beef49ed-53"><a href="#beef49ed-53" aria-hidden="true" tabindex="-1"></a>                state,</span>
-<span id="beef49ed-54"><a href="#beef49ed-54" aria-hidden="true" tabindex="-1"></a>                flight_time,</span>
-<span id="beef49ed-55"><a href="#beef49ed-55" aria-hidden="true" tabindex="-1"></a>            ) <span class="op">=</span> line.split(<span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
-<span id="beef49ed-56"><a href="#beef49ed-56" aria-hidden="true" tabindex="-1"></a>            airlines <span class="op">=</span> ast.literal_eval(airline)</span>
-<span id="beef49ed-57"><a href="#beef49ed-57" aria-hidden="true" tabindex="-1"></a>            prime_airline <span class="op">=</span> airlines[<span class="dv">0</span>]</span>
-<span id="beef49ed-58"><a href="#beef49ed-58" aria-hidden="true" tabindex="-1"></a>            prime_airline <span class="op">=</span> prime_airline.strip()</span>
-<span id="beef49ed-59"><a href="#beef49ed-59" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> nation <span class="op">==</span> <span class="st">"Canada"</span>:</span>
-<span id="beef49ed-60"><a href="#beef49ed-60" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> <span class="st">"Unknown"</span></span>
-<span id="beef49ed-61"><a href="#beef49ed-61" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> prime_airline <span class="kw">in</span> airline_trit_dict:</span>
-<span id="beef49ed-62"><a href="#beef49ed-62" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> airline_trit_dict[prime_airline]</span>
-<span id="beef49ed-63"><a href="#beef49ed-63" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> (</span>
-<span id="beef49ed-64"><a href="#beef49ed-64" aria-hidden="true" tabindex="-1"></a>                prime_airline <span class="op">==</span> <span class="st">"JetBlue"</span></span>
-<span id="beef49ed-65"><a href="#beef49ed-65" aria-hidden="true" tabindex="-1"></a>            ):  <span class="co"># Sometimes it's JetBlue, sometimes it's JetBlue Airways</span></span>
-<span id="beef49ed-66"><a href="#beef49ed-66" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span></span>
-<span id="beef49ed-67"><a href="#beef49ed-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-68"><a href="#beef49ed-68" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> nation <span class="op">!=</span> <span class="st">"United States"</span>:</span>
-<span id="beef49ed-69"><a href="#beef49ed-69" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span></span>
-<span id="beef49ed-70"><a href="#beef49ed-70" aria-hidden="true" tabindex="-1"></a>                unmatched_airlines[prime_airline] <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="beef49ed-71"><a href="#beef49ed-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-72"><a href="#beef49ed-72" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
-<span id="beef49ed-73"><a href="#beef49ed-73" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> <span class="st">"Unknown"</span></span>
-<span id="beef49ed-74"><a href="#beef49ed-74" aria-hidden="true" tabindex="-1"></a>                unmatched_airlines[prime_airline] <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="beef49ed-75"><a href="#beef49ed-75" aria-hidden="true" tabindex="-1"></a>            us_flights.append(</span>
-<span id="beef49ed-76"><a href="#beef49ed-76" aria-hidden="true" tabindex="-1"></a>                [</span>
-<span id="beef49ed-77"><a href="#beef49ed-77" aria-hidden="true" tabindex="-1"></a>                    origin,</span>
-<span id="beef49ed-78"><a href="#beef49ed-78" aria-hidden="true" tabindex="-1"></a>                    origin_code,</span>
-<span id="beef49ed-79"><a href="#beef49ed-79" aria-hidden="true" tabindex="-1"></a>                    date,</span>
-<span id="beef49ed-80"><a href="#beef49ed-80" aria-hidden="true" tabindex="-1"></a>                    terminal,</span>
-<span id="beef49ed-81"><a href="#beef49ed-81" aria-hidden="true" tabindex="-1"></a>                    equipment,</span>
-<span id="beef49ed-82"><a href="#beef49ed-82" aria-hidden="true" tabindex="-1"></a>                    flight,</span>
-<span id="beef49ed-83"><a href="#beef49ed-83" aria-hidden="true" tabindex="-1"></a>                    prime_airline,</span>
-<span id="beef49ed-84"><a href="#beef49ed-84" aria-hidden="true" tabindex="-1"></a>                    nation,</span>
-<span id="beef49ed-85"><a href="#beef49ed-85" aria-hidden="true" tabindex="-1"></a>                    state,</span>
-<span id="beef49ed-86"><a href="#beef49ed-86" aria-hidden="true" tabindex="-1"></a>                    flight_time,</span>
-<span id="beef49ed-87"><a href="#beef49ed-87" aria-hidden="true" tabindex="-1"></a>                    triturator_status,</span>
-<span id="beef49ed-88"><a href="#beef49ed-88" aria-hidden="true" tabindex="-1"></a>                ]</span>
-<span id="beef49ed-89"><a href="#beef49ed-89" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="beef49ed-90"><a href="#beef49ed-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-91"><a href="#beef49ed-91" aria-hidden="true" tabindex="-1"></a>        us_flights_df <span class="op">=</span> pd.DataFrame(us_flights)</span>
-<span id="beef49ed-92"><a href="#beef49ed-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-93"><a href="#beef49ed-93" aria-hidden="true" tabindex="-1"></a>        us_flights_df.columns <span class="op">=</span> [</span>
-<span id="beef49ed-94"><a href="#beef49ed-94" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Origin"</span>,</span>
-<span id="beef49ed-95"><a href="#beef49ed-95" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Origin Code"</span>,</span>
-<span id="beef49ed-96"><a href="#beef49ed-96" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Date"</span>,</span>
-<span id="beef49ed-97"><a href="#beef49ed-97" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Terminal"</span>,</span>
-<span id="beef49ed-98"><a href="#beef49ed-98" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Equipment"</span>,</span>
-<span id="beef49ed-99"><a href="#beef49ed-99" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Flight"</span>,</span>
-<span id="beef49ed-100"><a href="#beef49ed-100" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Prime Airline"</span>,</span>
-<span id="beef49ed-101"><a href="#beef49ed-101" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Nation"</span>,</span>
-<span id="beef49ed-102"><a href="#beef49ed-102" aria-hidden="true" tabindex="-1"></a>            <span class="st">"State"</span>,</span>
-<span id="beef49ed-103"><a href="#beef49ed-103" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Flight Time"</span>,</span>
-<span id="beef49ed-104"><a href="#beef49ed-104" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Triturator Status"</span>,</span>
-<span id="beef49ed-105"><a href="#beef49ed-105" aria-hidden="true" tabindex="-1"></a>        ]</span>
-<span id="beef49ed-106"><a href="#beef49ed-106" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> us_flights_df</span>
-<span id="beef49ed-107"><a href="#beef49ed-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-108"><a href="#beef49ed-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-109"><a href="#beef49ed-109" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> origin_to_nation_dict():</span>
-<span id="beef49ed-110"><a href="#beef49ed-110" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
-<span id="beef49ed-111"><a href="#beef49ed-111" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Plotting Origin"</span>] <span class="op">=</span> np.where(</span>
-<span id="beef49ed-112"><a href="#beef49ed-112" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>] <span class="op">==</span> <span class="st">"United States"</span>,</span>
-<span id="beef49ed-113"><a href="#beef49ed-113" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"State"</span>],</span>
-<span id="beef49ed-114"><a href="#beef49ed-114" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>],</span>
-<span id="beef49ed-115"><a href="#beef49ed-115" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="beef49ed-116"><a href="#beef49ed-116" aria-hidden="true" tabindex="-1"></a>    nation_dict <span class="op">=</span> df.set_index(<span class="st">"Plotting Origin"</span>)[<span class="st">"Nation"</span>].to_dict()</span>
-<span id="beef49ed-117"><a href="#beef49ed-117" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> nation_dict</span>
-<span id="beef49ed-118"><a href="#beef49ed-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-119"><a href="#beef49ed-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-120"><a href="#beef49ed-120" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> time_to_float(time):</span>
-<span id="beef49ed-121"><a href="#beef49ed-121" aria-hidden="true" tabindex="-1"></a>    time <span class="op">=</span> time.strip()</span>
-<span id="beef49ed-122"><a href="#beef49ed-122" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="beef49ed-123"><a href="#beef49ed-123" aria-hidden="true" tabindex="-1"></a>        time_object <span class="op">=</span> dt.datetime.strptime(time, <span class="st">"%H:%M:%S"</span>)</span>
-<span id="beef49ed-124"><a href="#beef49ed-124" aria-hidden="true" tabindex="-1"></a>        hours <span class="op">=</span> time_object.hour <span class="op">+</span> time_object.minute <span class="op">/</span> <span class="dv">60</span> <span class="op">+</span> time_object.second <span class="op">/</span> <span class="dv">3600</span></span>
-<span id="beef49ed-125"><a href="#beef49ed-125" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> hours</span>
-<span id="beef49ed-126"><a href="#beef49ed-126" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
-<span id="beef49ed-127"><a href="#beef49ed-127" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"conversion of time </span><span class="sc">{</span>time<span class="sc">}</span><span class="ss"> failed: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="beef49ed-128"><a href="#beef49ed-128" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
-<span id="beef49ed-129"><a href="#beef49ed-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-130"><a href="#beef49ed-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-131"><a href="#beef49ed-131" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_first_date_and_last_date():</span>
-<span id="beef49ed-132"><a href="#beef49ed-132" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
-<span id="beef49ed-133"><a href="#beef49ed-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-134"><a href="#beef49ed-134" aria-hidden="true" tabindex="-1"></a>    first_date <span class="op">=</span> df[<span class="st">"Date"</span>].<span class="bu">min</span>()</span>
-<span id="beef49ed-135"><a href="#beef49ed-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-136"><a href="#beef49ed-136" aria-hidden="true" tabindex="-1"></a>    last_date <span class="op">=</span> df[<span class="st">"Date"</span>].<span class="bu">max</span>()</span>
-<span id="beef49ed-137"><a href="#beef49ed-137" aria-hidden="true" tabindex="-1"></a>    last_date <span class="op">=</span> pd.to_datetime(last_date, <span class="bu">format</span><span class="op">=</span><span class="st">"%B </span><span class="sc">%d</span><span class="st">, %Y"</span>)</span>
-<span id="beef49ed-138"><a href="#beef49ed-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="beef49ed-139"><a href="#beef49ed-139" aria-hidden="true" tabindex="-1"></a>    last_date <span class="op">=</span> last_date.strftime(<span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st">"</span>)</span>
-<span id="beef49ed-140"><a href="#beef49ed-140" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> first_date, last_date</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="fd2776d6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="fd2776d6-1"><a href="#fd2776d6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing packages</span></span>
+<span id="fd2776d6-2"><a href="#fd2776d6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="fd2776d6-3"><a href="#fd2776d6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="fd2776d6-4"><a href="#fd2776d6-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="fd2776d6-5"><a href="#fd2776d6-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="fd2776d6-6"><a href="#fd2776d6-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime <span class="im">as</span> dt</span>
+<span id="fd2776d6-7"><a href="#fd2776d6-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ast</span>
+<span id="fd2776d6-8"><a href="#fd2776d6-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
+<span id="fd2776d6-9"><a href="#fd2776d6-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown</span>
+<span id="fd2776d6-10"><a href="#fd2776d6-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="fd2776d6-11"><a href="#fd2776d6-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tabulate <span class="im">import</span> tabulate</span>
+<span id="fd2776d6-12"><a href="#fd2776d6-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="fd2776d6-13"><a href="#fd2776d6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-14"><a href="#fd2776d6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-15"><a href="#fd2776d6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_airline_trit_dict():</span>
+<span id="fd2776d6-16"><a href="#fd2776d6-16" aria-hidden="true" tabindex="-1"></a>    airline_trit_dict <span class="op">=</span> defaultdict(<span class="bu">str</span>)</span>
+<span id="fd2776d6-17"><a href="#fd2776d6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"data/2024-03-27_airlines_triturators.tsv"</span>) <span class="im">as</span> infile:</span>
+<span id="fd2776d6-18"><a href="#fd2776d6-18" aria-hidden="true" tabindex="-1"></a>        lines <span class="op">=</span> infile.readlines()</span>
+<span id="fd2776d6-19"><a href="#fd2776d6-19" aria-hidden="true" tabindex="-1"></a>        lines <span class="op">=</span> lines[<span class="dv">1</span>:]</span>
+<span id="fd2776d6-20"><a href="#fd2776d6-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> line <span class="kw">in</span> lines:</span>
+<span id="fd2776d6-21"><a href="#fd2776d6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-22"><a href="#fd2776d6-22" aria-hidden="true" tabindex="-1"></a>            airline, triturator, ground_handling, source <span class="op">=</span> line.split(<span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="fd2776d6-23"><a href="#fd2776d6-23" aria-hidden="true" tabindex="-1"></a>            prettier_triturator <span class="op">=</span> {</span>
+<span id="fd2776d6-24"><a href="#fd2776d6-24" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Swissport"</span>: <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span>,</span>
+<span id="fd2776d6-25"><a href="#fd2776d6-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">"American Airlines"</span>: <span class="st">"American Airlines</span><span class="ch">\n</span><span class="st">Triturator"</span>,</span>
+<span id="fd2776d6-26"><a href="#fd2776d6-26" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Unknown"</span>: <span class="st">"Unknown"</span>,</span>
+<span id="fd2776d6-27"><a href="#fd2776d6-27" aria-hidden="true" tabindex="-1"></a>                <span class="st">"None"</span>: <span class="st">"No Triturator used"</span>,</span>
+<span id="fd2776d6-28"><a href="#fd2776d6-28" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="fd2776d6-29"><a href="#fd2776d6-29" aria-hidden="true" tabindex="-1"></a>            airline <span class="op">=</span> airline.strip()</span>
+<span id="fd2776d6-30"><a href="#fd2776d6-30" aria-hidden="true" tabindex="-1"></a>            triturator <span class="op">=</span> triturator.strip()</span>
+<span id="fd2776d6-31"><a href="#fd2776d6-31" aria-hidden="true" tabindex="-1"></a>            triturator <span class="op">=</span> prettier_triturator[triturator]</span>
+<span id="fd2776d6-32"><a href="#fd2776d6-32" aria-hidden="true" tabindex="-1"></a>            airline_trit_dict[airline] <span class="op">=</span> triturator</span>
+<span id="fd2776d6-33"><a href="#fd2776d6-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> airline_trit_dict</span>
+<span id="fd2776d6-34"><a href="#fd2776d6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-35"><a href="#fd2776d6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-36"><a href="#fd2776d6-36" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_flights():</span>
+<span id="fd2776d6-37"><a href="#fd2776d6-37" aria-hidden="true" tabindex="-1"></a>    airline_trit_dict <span class="op">=</span> return_airline_trit_dict()</span>
+<span id="fd2776d6-38"><a href="#fd2776d6-38" aria-hidden="true" tabindex="-1"></a>    unmatched_airlines <span class="op">=</span> defaultdict(<span class="bu">int</span>)</span>
+<span id="fd2776d6-39"><a href="#fd2776d6-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"all_flights.tsv"</span>) <span class="im">as</span> infile:</span>
+<span id="fd2776d6-40"><a href="#fd2776d6-40" aria-hidden="true" tabindex="-1"></a>        lines <span class="op">=</span> infile.readlines()</span>
+<span id="fd2776d6-41"><a href="#fd2776d6-41" aria-hidden="true" tabindex="-1"></a>        us_flights <span class="op">=</span> []</span>
+<span id="fd2776d6-42"><a href="#fd2776d6-42" aria-hidden="true" tabindex="-1"></a>        lines <span class="op">=</span> lines[<span class="dv">1</span>:]</span>
+<span id="fd2776d6-43"><a href="#fd2776d6-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> line <span class="kw">in</span> lines:</span>
+<span id="fd2776d6-44"><a href="#fd2776d6-44" aria-hidden="true" tabindex="-1"></a>            (</span>
+<span id="fd2776d6-45"><a href="#fd2776d6-45" aria-hidden="true" tabindex="-1"></a>                origin,</span>
+<span id="fd2776d6-46"><a href="#fd2776d6-46" aria-hidden="true" tabindex="-1"></a>                origin_code,</span>
+<span id="fd2776d6-47"><a href="#fd2776d6-47" aria-hidden="true" tabindex="-1"></a>                date,</span>
+<span id="fd2776d6-48"><a href="#fd2776d6-48" aria-hidden="true" tabindex="-1"></a>                terminal,</span>
+<span id="fd2776d6-49"><a href="#fd2776d6-49" aria-hidden="true" tabindex="-1"></a>                equipment,</span>
+<span id="fd2776d6-50"><a href="#fd2776d6-50" aria-hidden="true" tabindex="-1"></a>                flight,</span>
+<span id="fd2776d6-51"><a href="#fd2776d6-51" aria-hidden="true" tabindex="-1"></a>                airline,</span>
+<span id="fd2776d6-52"><a href="#fd2776d6-52" aria-hidden="true" tabindex="-1"></a>                nation,</span>
+<span id="fd2776d6-53"><a href="#fd2776d6-53" aria-hidden="true" tabindex="-1"></a>                state,</span>
+<span id="fd2776d6-54"><a href="#fd2776d6-54" aria-hidden="true" tabindex="-1"></a>                flight_time,</span>
+<span id="fd2776d6-55"><a href="#fd2776d6-55" aria-hidden="true" tabindex="-1"></a>            ) <span class="op">=</span> line.split(<span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="fd2776d6-56"><a href="#fd2776d6-56" aria-hidden="true" tabindex="-1"></a>            airlines <span class="op">=</span> ast.literal_eval(airline)</span>
+<span id="fd2776d6-57"><a href="#fd2776d6-57" aria-hidden="true" tabindex="-1"></a>            prime_airline <span class="op">=</span> airlines[<span class="dv">0</span>]</span>
+<span id="fd2776d6-58"><a href="#fd2776d6-58" aria-hidden="true" tabindex="-1"></a>            prime_airline <span class="op">=</span> prime_airline.strip()</span>
+<span id="fd2776d6-59"><a href="#fd2776d6-59" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> nation <span class="op">==</span> <span class="st">"Canada"</span>:</span>
+<span id="fd2776d6-60"><a href="#fd2776d6-60" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> <span class="st">"Unknown"</span></span>
+<span id="fd2776d6-61"><a href="#fd2776d6-61" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> prime_airline <span class="kw">in</span> airline_trit_dict:</span>
+<span id="fd2776d6-62"><a href="#fd2776d6-62" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> airline_trit_dict[prime_airline]</span>
+<span id="fd2776d6-63"><a href="#fd2776d6-63" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> (</span>
+<span id="fd2776d6-64"><a href="#fd2776d6-64" aria-hidden="true" tabindex="-1"></a>                prime_airline <span class="op">==</span> <span class="st">"JetBlue"</span></span>
+<span id="fd2776d6-65"><a href="#fd2776d6-65" aria-hidden="true" tabindex="-1"></a>            ):  <span class="co"># Sometimes it's JetBlue, sometimes it's JetBlue Airways</span></span>
+<span id="fd2776d6-66"><a href="#fd2776d6-66" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span></span>
+<span id="fd2776d6-67"><a href="#fd2776d6-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-68"><a href="#fd2776d6-68" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> nation <span class="op">!=</span> <span class="st">"United States"</span>:</span>
+<span id="fd2776d6-69"><a href="#fd2776d6-69" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span></span>
+<span id="fd2776d6-70"><a href="#fd2776d6-70" aria-hidden="true" tabindex="-1"></a>                unmatched_airlines[prime_airline] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="fd2776d6-71"><a href="#fd2776d6-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-72"><a href="#fd2776d6-72" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="fd2776d6-73"><a href="#fd2776d6-73" aria-hidden="true" tabindex="-1"></a>                triturator_status <span class="op">=</span> <span class="st">"Unknown"</span></span>
+<span id="fd2776d6-74"><a href="#fd2776d6-74" aria-hidden="true" tabindex="-1"></a>                unmatched_airlines[prime_airline] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="fd2776d6-75"><a href="#fd2776d6-75" aria-hidden="true" tabindex="-1"></a>            us_flights.append(</span>
+<span id="fd2776d6-76"><a href="#fd2776d6-76" aria-hidden="true" tabindex="-1"></a>                [</span>
+<span id="fd2776d6-77"><a href="#fd2776d6-77" aria-hidden="true" tabindex="-1"></a>                    origin,</span>
+<span id="fd2776d6-78"><a href="#fd2776d6-78" aria-hidden="true" tabindex="-1"></a>                    origin_code,</span>
+<span id="fd2776d6-79"><a href="#fd2776d6-79" aria-hidden="true" tabindex="-1"></a>                    date,</span>
+<span id="fd2776d6-80"><a href="#fd2776d6-80" aria-hidden="true" tabindex="-1"></a>                    terminal,</span>
+<span id="fd2776d6-81"><a href="#fd2776d6-81" aria-hidden="true" tabindex="-1"></a>                    equipment,</span>
+<span id="fd2776d6-82"><a href="#fd2776d6-82" aria-hidden="true" tabindex="-1"></a>                    flight,</span>
+<span id="fd2776d6-83"><a href="#fd2776d6-83" aria-hidden="true" tabindex="-1"></a>                    prime_airline,</span>
+<span id="fd2776d6-84"><a href="#fd2776d6-84" aria-hidden="true" tabindex="-1"></a>                    nation,</span>
+<span id="fd2776d6-85"><a href="#fd2776d6-85" aria-hidden="true" tabindex="-1"></a>                    state,</span>
+<span id="fd2776d6-86"><a href="#fd2776d6-86" aria-hidden="true" tabindex="-1"></a>                    flight_time,</span>
+<span id="fd2776d6-87"><a href="#fd2776d6-87" aria-hidden="true" tabindex="-1"></a>                    triturator_status,</span>
+<span id="fd2776d6-88"><a href="#fd2776d6-88" aria-hidden="true" tabindex="-1"></a>                ]</span>
+<span id="fd2776d6-89"><a href="#fd2776d6-89" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="fd2776d6-90"><a href="#fd2776d6-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-91"><a href="#fd2776d6-91" aria-hidden="true" tabindex="-1"></a>        us_flights_df <span class="op">=</span> pd.DataFrame(us_flights)</span>
+<span id="fd2776d6-92"><a href="#fd2776d6-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-93"><a href="#fd2776d6-93" aria-hidden="true" tabindex="-1"></a>        us_flights_df.columns <span class="op">=</span> [</span>
+<span id="fd2776d6-94"><a href="#fd2776d6-94" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Origin"</span>,</span>
+<span id="fd2776d6-95"><a href="#fd2776d6-95" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Origin Code"</span>,</span>
+<span id="fd2776d6-96"><a href="#fd2776d6-96" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Date"</span>,</span>
+<span id="fd2776d6-97"><a href="#fd2776d6-97" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Terminal"</span>,</span>
+<span id="fd2776d6-98"><a href="#fd2776d6-98" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Equipment"</span>,</span>
+<span id="fd2776d6-99"><a href="#fd2776d6-99" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Flight"</span>,</span>
+<span id="fd2776d6-100"><a href="#fd2776d6-100" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Prime Airline"</span>,</span>
+<span id="fd2776d6-101"><a href="#fd2776d6-101" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Nation"</span>,</span>
+<span id="fd2776d6-102"><a href="#fd2776d6-102" aria-hidden="true" tabindex="-1"></a>            <span class="st">"State"</span>,</span>
+<span id="fd2776d6-103"><a href="#fd2776d6-103" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Flight Time"</span>,</span>
+<span id="fd2776d6-104"><a href="#fd2776d6-104" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Triturator Status"</span>,</span>
+<span id="fd2776d6-105"><a href="#fd2776d6-105" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="fd2776d6-106"><a href="#fd2776d6-106" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> us_flights_df</span>
+<span id="fd2776d6-107"><a href="#fd2776d6-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-108"><a href="#fd2776d6-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-109"><a href="#fd2776d6-109" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> origin_to_nation_dict():</span>
+<span id="fd2776d6-110"><a href="#fd2776d6-110" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
+<span id="fd2776d6-111"><a href="#fd2776d6-111" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Plotting Origin"</span>] <span class="op">=</span> np.where(</span>
+<span id="fd2776d6-112"><a href="#fd2776d6-112" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>] <span class="op">==</span> <span class="st">"United States"</span>,</span>
+<span id="fd2776d6-113"><a href="#fd2776d6-113" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"State"</span>],</span>
+<span id="fd2776d6-114"><a href="#fd2776d6-114" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>],</span>
+<span id="fd2776d6-115"><a href="#fd2776d6-115" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="fd2776d6-116"><a href="#fd2776d6-116" aria-hidden="true" tabindex="-1"></a>    nation_dict <span class="op">=</span> df.set_index(<span class="st">"Plotting Origin"</span>)[<span class="st">"Nation"</span>].to_dict()</span>
+<span id="fd2776d6-117"><a href="#fd2776d6-117" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> nation_dict</span>
+<span id="fd2776d6-118"><a href="#fd2776d6-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-119"><a href="#fd2776d6-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-120"><a href="#fd2776d6-120" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> time_to_float(time):</span>
+<span id="fd2776d6-121"><a href="#fd2776d6-121" aria-hidden="true" tabindex="-1"></a>    time <span class="op">=</span> time.strip()</span>
+<span id="fd2776d6-122"><a href="#fd2776d6-122" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="fd2776d6-123"><a href="#fd2776d6-123" aria-hidden="true" tabindex="-1"></a>        time_object <span class="op">=</span> dt.datetime.strptime(time, <span class="st">"%H:%M:%S"</span>)</span>
+<span id="fd2776d6-124"><a href="#fd2776d6-124" aria-hidden="true" tabindex="-1"></a>        hours <span class="op">=</span> time_object.hour <span class="op">+</span> time_object.minute <span class="op">/</span> <span class="dv">60</span> <span class="op">+</span> time_object.second <span class="op">/</span> <span class="dv">3600</span></span>
+<span id="fd2776d6-125"><a href="#fd2776d6-125" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> hours</span>
+<span id="fd2776d6-126"><a href="#fd2776d6-126" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="fd2776d6-127"><a href="#fd2776d6-127" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"conversion of time </span><span class="sc">{</span>time<span class="sc">}</span><span class="ss"> failed: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="fd2776d6-128"><a href="#fd2776d6-128" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="fd2776d6-129"><a href="#fd2776d6-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-130"><a href="#fd2776d6-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-131"><a href="#fd2776d6-131" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_first_date_and_last_date():</span>
+<span id="fd2776d6-132"><a href="#fd2776d6-132" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
+<span id="fd2776d6-133"><a href="#fd2776d6-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-134"><a href="#fd2776d6-134" aria-hidden="true" tabindex="-1"></a>    first_date <span class="op">=</span> df[<span class="st">"Date"</span>].<span class="bu">min</span>()</span>
+<span id="fd2776d6-135"><a href="#fd2776d6-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-136"><a href="#fd2776d6-136" aria-hidden="true" tabindex="-1"></a>    last_date <span class="op">=</span> df[<span class="st">"Date"</span>].<span class="bu">max</span>()</span>
+<span id="fd2776d6-137"><a href="#fd2776d6-137" aria-hidden="true" tabindex="-1"></a>    last_date <span class="op">=</span> pd.to_datetime(last_date, <span class="bu">format</span><span class="op">=</span><span class="st">"%B </span><span class="sc">%d</span><span class="st">, %Y"</span>)</span>
+<span id="fd2776d6-138"><a href="#fd2776d6-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fd2776d6-139"><a href="#fd2776d6-139" aria-hidden="true" tabindex="-1"></a>    last_date <span class="op">=</span> last_date.strftime(<span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st">"</span>)</span>
+<span id="fd2776d6-140"><a href="#fd2776d6-140" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> first_date, last_date</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -335,7 +335,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cell-airline_triturators-12"><a href="#cell-airline_triturators-12" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cell-airline_triturators-13"><a href="#cell-airline_triturators-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div id="airline_triturators" class="cell-output cell-output-display cell-output-markdown" data-execution_count="18">
+<div id="airline_triturators" class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
 <table class="table table-sm table-striped small">
 <caption>Airline Triturator Assignments {#cell-airline_triturators}</caption>
 <thead>
@@ -561,60 +561,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<div id="d842cc39" class="cell" data-execution_count="3">
+<div id="edd3026d" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="d842cc39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="d842cc39-1"><a href="#d842cc39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
-<span id="d842cc39-2"><a href="#d842cc39-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
-<span id="d842cc39-3"><a href="#d842cc39-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-4"><a href="#d842cc39-4" aria-hidden="true" tabindex="-1"></a>    nicer_trit_labels <span class="op">=</span> {</span>
-<span id="d842cc39-5"><a href="#d842cc39-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"aa_triturator"</span>: <span class="st">"American Airlines </span><span class="ch">\n</span><span class="st">Triturator"</span>,</span>
-<span id="d842cc39-6"><a href="#d842cc39-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"pr_triturator"</span>: <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span>,</span>
-<span id="d842cc39-7"><a href="#d842cc39-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"unknown"</span>: <span class="st">"Unknown"</span>,</span>
-<span id="d842cc39-8"><a href="#d842cc39-8" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="d842cc39-9"><a href="#d842cc39-9" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.replace({<span class="st">"Triturator Status"</span>: nicer_trit_labels})</span>
-<span id="d842cc39-10"><a href="#d842cc39-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-11"><a href="#d842cc39-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create a df with number of flights per triturator</span></span>
-<span id="d842cc39-12"><a href="#d842cc39-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.groupby(<span class="st">"Triturator Status"</span>).size().reset_index(name<span class="op">=</span><span class="st">"Flights"</span>)</span>
-<span id="d842cc39-13"><a href="#d842cc39-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sort the df by number of flights</span></span>
-<span id="d842cc39-14"><a href="#d842cc39-14" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Flights"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="d842cc39-15"><a href="#d842cc39-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
-<span id="d842cc39-16"><a href="#d842cc39-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-17"><a href="#d842cc39-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-18"><a href="#d842cc39-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit():</span>
-<span id="d842cc39-19"><a href="#d842cc39-19" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
-<span id="d842cc39-20"><a href="#d842cc39-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-21"><a href="#d842cc39-21" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
-<span id="d842cc39-22"><a href="#d842cc39-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-23"><a href="#d842cc39-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sns colors (tab). no trit = orange, unknown = red swissport = green, american airlines = blue</span></span>
-<span id="d842cc39-24"><a href="#d842cc39-24" aria-hidden="true" tabindex="-1"></a>    colors <span class="op">=</span> {</span>
-<span id="d842cc39-25"><a href="#d842cc39-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">"No Triturator used"</span>: <span class="st">"tab:orange"</span>,</span>
-<span id="d842cc39-26"><a href="#d842cc39-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Unknown"</span>: <span class="st">"tab:red"</span>,</span>
-<span id="d842cc39-27"><a href="#d842cc39-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span>: <span class="st">"tab:green"</span>,</span>
-<span id="d842cc39-28"><a href="#d842cc39-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"American Airlines</span><span class="ch">\n</span><span class="st">Triturator"</span>: <span class="st">"tab:blue"</span>,</span>
-<span id="d842cc39-29"><a href="#d842cc39-29" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="d842cc39-30"><a href="#d842cc39-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-31"><a href="#d842cc39-31" aria-hidden="true" tabindex="-1"></a>    df.plot(</span>
-<span id="d842cc39-32"><a href="#d842cc39-32" aria-hidden="true" tabindex="-1"></a>        kind<span class="op">=</span><span class="st">"barh"</span>,</span>
-<span id="d842cc39-33"><a href="#d842cc39-33" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="st">"Triturator Status"</span>,</span>
-<span id="d842cc39-34"><a href="#d842cc39-34" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">"Flights"</span>,</span>
-<span id="d842cc39-35"><a href="#d842cc39-35" aria-hidden="true" tabindex="-1"></a>        ax<span class="op">=</span>ax,</span>
-<span id="d842cc39-36"><a href="#d842cc39-36" aria-hidden="true" tabindex="-1"></a>        legend<span class="op">=</span><span class="va">False</span>,</span>
-<span id="d842cc39-37"><a href="#d842cc39-37" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>[colors[i] <span class="cf">for</span> i <span class="kw">in</span> df[<span class="st">"Triturator Status"</span>]],</span>
-<span id="d842cc39-38"><a href="#d842cc39-38" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="d842cc39-39"><a href="#d842cc39-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-40"><a href="#d842cc39-40" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="d842cc39-41"><a href="#d842cc39-41" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="d842cc39-42"><a href="#d842cc39-42" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
-<span id="d842cc39-43"><a href="#d842cc39-43" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
-<span id="d842cc39-44"><a href="#d842cc39-44" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flights"</span>)</span>
-<span id="d842cc39-45"><a href="#d842cc39-45" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">"Total Flights per Triturator and Airline"</span>)</span>
-<span id="d842cc39-46"><a href="#d842cc39-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-47"><a href="#d842cc39-47" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
-<span id="d842cc39-48"><a href="#d842cc39-48" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="d842cc39-49"><a href="#d842cc39-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-50"><a href="#d842cc39-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="d842cc39-51"><a href="#d842cc39-51" aria-hidden="true" tabindex="-1"></a>return_destination_trit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="edd3026d"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="edd3026d-1"><a href="#edd3026d-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
+<span id="edd3026d-2"><a href="#edd3026d-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
+<span id="edd3026d-3"><a href="#edd3026d-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-4"><a href="#edd3026d-4" aria-hidden="true" tabindex="-1"></a>    nicer_trit_labels <span class="op">=</span> {</span>
+<span id="edd3026d-5"><a href="#edd3026d-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"aa_triturator"</span>: <span class="st">"American Airlines </span><span class="ch">\n</span><span class="st">Triturator"</span>,</span>
+<span id="edd3026d-6"><a href="#edd3026d-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"pr_triturator"</span>: <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span>,</span>
+<span id="edd3026d-7"><a href="#edd3026d-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"unknown"</span>: <span class="st">"Unknown"</span>,</span>
+<span id="edd3026d-8"><a href="#edd3026d-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="edd3026d-9"><a href="#edd3026d-9" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.replace({<span class="st">"Triturator Status"</span>: nicer_trit_labels})</span>
+<span id="edd3026d-10"><a href="#edd3026d-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-11"><a href="#edd3026d-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create a df with number of flights per triturator</span></span>
+<span id="edd3026d-12"><a href="#edd3026d-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.groupby(<span class="st">"Triturator Status"</span>).size().reset_index(name<span class="op">=</span><span class="st">"Flights"</span>)</span>
+<span id="edd3026d-13"><a href="#edd3026d-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sort the df by number of flights</span></span>
+<span id="edd3026d-14"><a href="#edd3026d-14" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Flights"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="edd3026d-15"><a href="#edd3026d-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="edd3026d-16"><a href="#edd3026d-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-17"><a href="#edd3026d-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-18"><a href="#edd3026d-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit():</span>
+<span id="edd3026d-19"><a href="#edd3026d-19" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
+<span id="edd3026d-20"><a href="#edd3026d-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-21"><a href="#edd3026d-21" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
+<span id="edd3026d-22"><a href="#edd3026d-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-23"><a href="#edd3026d-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sns colors (tab). no trit = orange, unknown = red swissport = green, american airlines = blue</span></span>
+<span id="edd3026d-24"><a href="#edd3026d-24" aria-hidden="true" tabindex="-1"></a>    colors <span class="op">=</span> {</span>
+<span id="edd3026d-25"><a href="#edd3026d-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">"No Triturator used"</span>: <span class="st">"tab:orange"</span>,</span>
+<span id="edd3026d-26"><a href="#edd3026d-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Unknown"</span>: <span class="st">"tab:red"</span>,</span>
+<span id="edd3026d-27"><a href="#edd3026d-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Swissport</span><span class="ch">\n</span><span class="st">Triturator"</span>: <span class="st">"tab:green"</span>,</span>
+<span id="edd3026d-28"><a href="#edd3026d-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"American Airlines</span><span class="ch">\n</span><span class="st">Triturator"</span>: <span class="st">"tab:blue"</span>,</span>
+<span id="edd3026d-29"><a href="#edd3026d-29" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="edd3026d-30"><a href="#edd3026d-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-31"><a href="#edd3026d-31" aria-hidden="true" tabindex="-1"></a>    df.plot(</span>
+<span id="edd3026d-32"><a href="#edd3026d-32" aria-hidden="true" tabindex="-1"></a>        kind<span class="op">=</span><span class="st">"barh"</span>,</span>
+<span id="edd3026d-33"><a href="#edd3026d-33" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="st">"Triturator Status"</span>,</span>
+<span id="edd3026d-34"><a href="#edd3026d-34" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">"Flights"</span>,</span>
+<span id="edd3026d-35"><a href="#edd3026d-35" aria-hidden="true" tabindex="-1"></a>        ax<span class="op">=</span>ax,</span>
+<span id="edd3026d-36"><a href="#edd3026d-36" aria-hidden="true" tabindex="-1"></a>        legend<span class="op">=</span><span class="va">False</span>,</span>
+<span id="edd3026d-37"><a href="#edd3026d-37" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>[colors[i] <span class="cf">for</span> i <span class="kw">in</span> df[<span class="st">"Triturator Status"</span>]],</span>
+<span id="edd3026d-38"><a href="#edd3026d-38" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="edd3026d-39"><a href="#edd3026d-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-40"><a href="#edd3026d-40" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="edd3026d-41"><a href="#edd3026d-41" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="edd3026d-42"><a href="#edd3026d-42" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
+<span id="edd3026d-43"><a href="#edd3026d-43" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
+<span id="edd3026d-44"><a href="#edd3026d-44" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flights"</span>)</span>
+<span id="edd3026d-45"><a href="#edd3026d-45" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">"Total Flights per Triturator and Airline"</span>)</span>
+<span id="edd3026d-46"><a href="#edd3026d-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-47"><a href="#edd3026d-47" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="edd3026d-48"><a href="#edd3026d-48" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="edd3026d-49"><a href="#edd3026d-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-50"><a href="#edd3026d-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="edd3026d-51"><a href="#edd3026d-51" aria-hidden="true" tabindex="-1"></a>return_destination_trit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -630,47 +630,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="flights-per-airline" class="level3">
 <h3 class="anchored" data-anchor-id="flights-per-airline">Flights per Airline</h3>
 <p>Here are flights per airline that arrive at each triturator.</p>
-<div id="4d47fc9b" class="cell" data-execution_count="4">
+<div id="56a449c0" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="4d47fc9b"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="4d47fc9b-1"><a href="#4d47fc9b-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
-<span id="4d47fc9b-2"><a href="#4d47fc9b-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
-<span id="4d47fc9b-3"><a href="#4d47fc9b-3" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
-<span id="4d47fc9b-4"><a href="#4d47fc9b-4" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Prime Airline"</span>, <span class="st">"Triturator Status"</span>])</span>
-<span id="4d47fc9b-5"><a href="#4d47fc9b-5" aria-hidden="true" tabindex="-1"></a>        .size()</span>
-<span id="4d47fc9b-6"><a href="#4d47fc9b-6" aria-hidden="true" tabindex="-1"></a>        .reset_index(name<span class="op">=</span><span class="st">"Flights"</span>)</span>
-<span id="4d47fc9b-7"><a href="#4d47fc9b-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="4d47fc9b-8"><a href="#4d47fc9b-8" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(index<span class="op">=</span><span class="st">"Prime Airline"</span>, columns<span class="op">=</span><span class="st">"Triturator Status"</span>, values<span class="op">=</span><span class="st">"Flights"</span>)</span>
-<span id="4d47fc9b-9"><a href="#4d47fc9b-9" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="4d47fc9b-10"><a href="#4d47fc9b-10" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="4d47fc9b-11"><a href="#4d47fc9b-11" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="4d47fc9b-12"><a href="#4d47fc9b-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
-<span id="4d47fc9b-13"><a href="#4d47fc9b-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="4d47fc9b-14"><a href="#4d47fc9b-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="4d47fc9b-15"><a href="#4d47fc9b-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
-<span id="4d47fc9b-16"><a href="#4d47fc9b-16" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
-<span id="4d47fc9b-17"><a href="#4d47fc9b-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="4d47fc9b-18"><a href="#4d47fc9b-18" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
-<span id="4d47fc9b-19"><a href="#4d47fc9b-19" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
-<span id="4d47fc9b-20"><a href="#4d47fc9b-20" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>)</span>
-<span id="4d47fc9b-21"><a href="#4d47fc9b-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="4d47fc9b-22"><a href="#4d47fc9b-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># drop title of legend box</span></span>
-<span id="4d47fc9b-23"><a href="#4d47fc9b-23" aria-hidden="true" tabindex="-1"></a>    ax.legend().set_title(<span class="st">""</span>)</span>
-<span id="4d47fc9b-24"><a href="#4d47fc9b-24" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="4d47fc9b-25"><a href="#4d47fc9b-25" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="4d47fc9b-26"><a href="#4d47fc9b-26" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
-<span id="4d47fc9b-27"><a href="#4d47fc9b-27" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
-<span id="4d47fc9b-28"><a href="#4d47fc9b-28" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flights"</span>)</span>
-<span id="4d47fc9b-29"><a href="#4d47fc9b-29" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
-<span id="4d47fc9b-30"><a href="#4d47fc9b-30" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
-<span id="4d47fc9b-31"><a href="#4d47fc9b-31" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Total Flights per Airline and Triturator (Top 50)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
-<span id="4d47fc9b-32"><a href="#4d47fc9b-32" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="4d47fc9b-33"><a href="#4d47fc9b-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="4d47fc9b-34"><a href="#4d47fc9b-34" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
-<span id="4d47fc9b-35"><a href="#4d47fc9b-35" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="4d47fc9b-36"><a href="#4d47fc9b-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="4d47fc9b-37"><a href="#4d47fc9b-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="4d47fc9b-38"><a href="#4d47fc9b-38" aria-hidden="true" tabindex="-1"></a>return_destination_trit_plot()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="56a449c0"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="56a449c0-1"><a href="#56a449c0-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
+<span id="56a449c0-2"><a href="#56a449c0-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
+<span id="56a449c0-3"><a href="#56a449c0-3" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
+<span id="56a449c0-4"><a href="#56a449c0-4" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Prime Airline"</span>, <span class="st">"Triturator Status"</span>])</span>
+<span id="56a449c0-5"><a href="#56a449c0-5" aria-hidden="true" tabindex="-1"></a>        .size()</span>
+<span id="56a449c0-6"><a href="#56a449c0-6" aria-hidden="true" tabindex="-1"></a>        .reset_index(name<span class="op">=</span><span class="st">"Flights"</span>)</span>
+<span id="56a449c0-7"><a href="#56a449c0-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="56a449c0-8"><a href="#56a449c0-8" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(index<span class="op">=</span><span class="st">"Prime Airline"</span>, columns<span class="op">=</span><span class="st">"Triturator Status"</span>, values<span class="op">=</span><span class="st">"Flights"</span>)</span>
+<span id="56a449c0-9"><a href="#56a449c0-9" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="56a449c0-10"><a href="#56a449c0-10" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="56a449c0-11"><a href="#56a449c0-11" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="56a449c0-12"><a href="#56a449c0-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="56a449c0-13"><a href="#56a449c0-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="56a449c0-14"><a href="#56a449c0-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="56a449c0-15"><a href="#56a449c0-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
+<span id="56a449c0-16"><a href="#56a449c0-16" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
+<span id="56a449c0-17"><a href="#56a449c0-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="56a449c0-18"><a href="#56a449c0-18" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
+<span id="56a449c0-19"><a href="#56a449c0-19" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
+<span id="56a449c0-20"><a href="#56a449c0-20" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="56a449c0-21"><a href="#56a449c0-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="56a449c0-22"><a href="#56a449c0-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># drop title of legend box</span></span>
+<span id="56a449c0-23"><a href="#56a449c0-23" aria-hidden="true" tabindex="-1"></a>    ax.legend().set_title(<span class="st">""</span>)</span>
+<span id="56a449c0-24"><a href="#56a449c0-24" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="56a449c0-25"><a href="#56a449c0-25" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="56a449c0-26"><a href="#56a449c0-26" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
+<span id="56a449c0-27"><a href="#56a449c0-27" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
+<span id="56a449c0-28"><a href="#56a449c0-28" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flights"</span>)</span>
+<span id="56a449c0-29"><a href="#56a449c0-29" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
+<span id="56a449c0-30"><a href="#56a449c0-30" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
+<span id="56a449c0-31"><a href="#56a449c0-31" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Total Flights per Airline and Triturator (Top 50)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
+<span id="56a449c0-32"><a href="#56a449c0-32" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="56a449c0-33"><a href="#56a449c0-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="56a449c0-34"><a href="#56a449c0-34" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="56a449c0-35"><a href="#56a449c0-35" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="56a449c0-36"><a href="#56a449c0-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="56a449c0-37"><a href="#56a449c0-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="56a449c0-38"><a href="#56a449c0-38" aria-hidden="true" tabindex="-1"></a>return_destination_trit_plot()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -684,60 +684,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="flight-hours-per-airline" class="level3">
 <h3 class="anchored" data-anchor-id="flight-hours-per-airline">Flight Hours per Airline</h3>
 <p>Here are flight hours per airline that arrive at each triturator.</p>
-<div id="b236bf07" class="cell" data-execution_count="5">
+<div id="c0da9eab" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="b236bf07"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="b236bf07-1"><a href="#b236bf07-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
-<span id="b236bf07-2"><a href="#b236bf07-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
-<span id="b236bf07-3"><a href="#b236bf07-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-4"><a href="#b236bf07-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Flight Hours"</span>] <span class="op">=</span> df[<span class="st">"Flight Time"</span>].<span class="bu">apply</span>(time_to_float)</span>
-<span id="b236bf07-5"><a href="#b236bf07-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-6"><a href="#b236bf07-6" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
-<span id="b236bf07-7"><a href="#b236bf07-7" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Prime Airline"</span>, <span class="st">"Triturator Status"</span>])</span>
-<span id="b236bf07-8"><a href="#b236bf07-8" aria-hidden="true" tabindex="-1"></a>        .agg({<span class="st">"Flight Hours"</span>: <span class="st">"sum"</span>})</span>
-<span id="b236bf07-9"><a href="#b236bf07-9" aria-hidden="true" tabindex="-1"></a>        .reset_index()</span>
-<span id="b236bf07-10"><a href="#b236bf07-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="b236bf07-11"><a href="#b236bf07-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-12"><a href="#b236bf07-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(</span>
-<span id="b236bf07-13"><a href="#b236bf07-13" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span><span class="st">"Prime Airline"</span>, columns<span class="op">=</span><span class="st">"Triturator Status"</span>, values<span class="op">=</span><span class="st">"Flight Hours"</span></span>
-<span id="b236bf07-14"><a href="#b236bf07-14" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="b236bf07-15"><a href="#b236bf07-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-16"><a href="#b236bf07-16" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="b236bf07-17"><a href="#b236bf07-17" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="b236bf07-18"><a href="#b236bf07-18" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="b236bf07-19"><a href="#b236bf07-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-20"><a href="#b236bf07-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
-<span id="b236bf07-21"><a href="#b236bf07-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-22"><a href="#b236bf07-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-23"><a href="#b236bf07-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
-<span id="b236bf07-24"><a href="#b236bf07-24" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
-<span id="b236bf07-25"><a href="#b236bf07-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-26"><a href="#b236bf07-26" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
-<span id="b236bf07-27"><a href="#b236bf07-27" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
-<span id="b236bf07-28"><a href="#b236bf07-28" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>)</span>
-<span id="b236bf07-29"><a href="#b236bf07-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-30"><a href="#b236bf07-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># drop title of legend box</span></span>
-<span id="b236bf07-31"><a href="#b236bf07-31" aria-hidden="true" tabindex="-1"></a>    ax.legend().set_title(<span class="st">""</span>)</span>
-<span id="b236bf07-32"><a href="#b236bf07-32" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="b236bf07-33"><a href="#b236bf07-33" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="b236bf07-34"><a href="#b236bf07-34" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
-<span id="b236bf07-35"><a href="#b236bf07-35" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
-<span id="b236bf07-36"><a href="#b236bf07-36" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flight Hours"</span>)</span>
-<span id="b236bf07-37"><a href="#b236bf07-37" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
-<span id="b236bf07-38"><a href="#b236bf07-38" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
-<span id="b236bf07-39"><a href="#b236bf07-39" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Total Flight Hours per Airline and Triturator (Top 50)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
-<span id="b236bf07-40"><a href="#b236bf07-40" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="b236bf07-41"><a href="#b236bf07-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-42"><a href="#b236bf07-42" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
-<span id="b236bf07-43"><a href="#b236bf07-43" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="b236bf07-44"><a href="#b236bf07-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-45"><a href="#b236bf07-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-46"><a href="#b236bf07-46" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> start():</span>
-<span id="b236bf07-47"><a href="#b236bf07-47" aria-hidden="true" tabindex="-1"></a>    return_destination_trit_plot()</span>
-<span id="b236bf07-48"><a href="#b236bf07-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-49"><a href="#b236bf07-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="b236bf07-50"><a href="#b236bf07-50" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
-<span id="b236bf07-51"><a href="#b236bf07-51" aria-hidden="true" tabindex="-1"></a>    start()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="c0da9eab"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="c0da9eab-1"><a href="#c0da9eab-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
+<span id="c0da9eab-2"><a href="#c0da9eab-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
+<span id="c0da9eab-3"><a href="#c0da9eab-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-4"><a href="#c0da9eab-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Flight Hours"</span>] <span class="op">=</span> df[<span class="st">"Flight Time"</span>].<span class="bu">apply</span>(time_to_float)</span>
+<span id="c0da9eab-5"><a href="#c0da9eab-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-6"><a href="#c0da9eab-6" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
+<span id="c0da9eab-7"><a href="#c0da9eab-7" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Prime Airline"</span>, <span class="st">"Triturator Status"</span>])</span>
+<span id="c0da9eab-8"><a href="#c0da9eab-8" aria-hidden="true" tabindex="-1"></a>        .agg({<span class="st">"Flight Hours"</span>: <span class="st">"sum"</span>})</span>
+<span id="c0da9eab-9"><a href="#c0da9eab-9" aria-hidden="true" tabindex="-1"></a>        .reset_index()</span>
+<span id="c0da9eab-10"><a href="#c0da9eab-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="c0da9eab-11"><a href="#c0da9eab-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-12"><a href="#c0da9eab-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(</span>
+<span id="c0da9eab-13"><a href="#c0da9eab-13" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span><span class="st">"Prime Airline"</span>, columns<span class="op">=</span><span class="st">"Triturator Status"</span>, values<span class="op">=</span><span class="st">"Flight Hours"</span></span>
+<span id="c0da9eab-14"><a href="#c0da9eab-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="c0da9eab-15"><a href="#c0da9eab-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-16"><a href="#c0da9eab-16" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="c0da9eab-17"><a href="#c0da9eab-17" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="c0da9eab-18"><a href="#c0da9eab-18" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="c0da9eab-19"><a href="#c0da9eab-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-20"><a href="#c0da9eab-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="c0da9eab-21"><a href="#c0da9eab-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-22"><a href="#c0da9eab-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-23"><a href="#c0da9eab-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
+<span id="c0da9eab-24"><a href="#c0da9eab-24" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
+<span id="c0da9eab-25"><a href="#c0da9eab-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-26"><a href="#c0da9eab-26" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
+<span id="c0da9eab-27"><a href="#c0da9eab-27" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
+<span id="c0da9eab-28"><a href="#c0da9eab-28" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="c0da9eab-29"><a href="#c0da9eab-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-30"><a href="#c0da9eab-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># drop title of legend box</span></span>
+<span id="c0da9eab-31"><a href="#c0da9eab-31" aria-hidden="true" tabindex="-1"></a>    ax.legend().set_title(<span class="st">""</span>)</span>
+<span id="c0da9eab-32"><a href="#c0da9eab-32" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="c0da9eab-33"><a href="#c0da9eab-33" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="c0da9eab-34"><a href="#c0da9eab-34" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
+<span id="c0da9eab-35"><a href="#c0da9eab-35" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
+<span id="c0da9eab-36"><a href="#c0da9eab-36" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flight Hours"</span>)</span>
+<span id="c0da9eab-37"><a href="#c0da9eab-37" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
+<span id="c0da9eab-38"><a href="#c0da9eab-38" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
+<span id="c0da9eab-39"><a href="#c0da9eab-39" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Total Flight Hours per Airline and Triturator (Top 50)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
+<span id="c0da9eab-40"><a href="#c0da9eab-40" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="c0da9eab-41"><a href="#c0da9eab-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-42"><a href="#c0da9eab-42" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="c0da9eab-43"><a href="#c0da9eab-43" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="c0da9eab-44"><a href="#c0da9eab-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-45"><a href="#c0da9eab-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-46"><a href="#c0da9eab-46" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> start():</span>
+<span id="c0da9eab-47"><a href="#c0da9eab-47" aria-hidden="true" tabindex="-1"></a>    return_destination_trit_plot()</span>
+<span id="c0da9eab-48"><a href="#c0da9eab-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-49"><a href="#c0da9eab-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="c0da9eab-50"><a href="#c0da9eab-50" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="c0da9eab-51"><a href="#c0da9eab-51" aria-hidden="true" tabindex="-1"></a>    start()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -753,65 +753,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="airlines-1">Airlines</h2>
 <section id="flights-per-origin-location" class="level3">
 <h3 class="anchored" data-anchor-id="flights-per-origin-location">Flights per Origin Location</h3>
-<div id="695f5103" class="cell" data-execution_count="6">
+<div id="954503cf" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="695f5103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="695f5103-1"><a href="#695f5103-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
-<span id="695f5103-2"><a href="#695f5103-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
-<span id="695f5103-3"><a href="#695f5103-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-4"><a href="#695f5103-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Flight Hours"</span>] <span class="op">=</span> df[<span class="st">"Flight Time"</span>].<span class="bu">apply</span>(time_to_float)</span>
-<span id="695f5103-5"><a href="#695f5103-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-6"><a href="#695f5103-6" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Plotting Origin"</span>] <span class="op">=</span> np.where(</span>
-<span id="695f5103-7"><a href="#695f5103-7" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>] <span class="op">==</span> <span class="st">"United States"</span>,</span>
-<span id="695f5103-8"><a href="#695f5103-8" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"State"</span>],</span>
-<span id="695f5103-9"><a href="#695f5103-9" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>],</span>
-<span id="695f5103-10"><a href="#695f5103-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="695f5103-11"><a href="#695f5103-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># group by origin and trit status and sum flight hours</span></span>
-<span id="695f5103-12"><a href="#695f5103-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
-<span id="695f5103-13"><a href="#695f5103-13" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Plotting Origin"</span>, <span class="st">"Triturator Status"</span>])</span>
-<span id="695f5103-14"><a href="#695f5103-14" aria-hidden="true" tabindex="-1"></a>        .size()</span>
-<span id="695f5103-15"><a href="#695f5103-15" aria-hidden="true" tabindex="-1"></a>        .reset_index(name<span class="op">=</span><span class="st">"Flights"</span>)</span>
-<span id="695f5103-16"><a href="#695f5103-16" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="695f5103-17"><a href="#695f5103-17" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(</span>
-<span id="695f5103-18"><a href="#695f5103-18" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span><span class="st">"Plotting Origin"</span>, columns<span class="op">=</span><span class="st">"Triturator Status"</span>, values<span class="op">=</span><span class="st">"Flights"</span></span>
-<span id="695f5103-19"><a href="#695f5103-19" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="695f5103-20"><a href="#695f5103-20" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="695f5103-21"><a href="#695f5103-21" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="695f5103-22"><a href="#695f5103-22" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="695f5103-23"><a href="#695f5103-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-24"><a href="#695f5103-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
-<span id="695f5103-25"><a href="#695f5103-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-26"><a href="#695f5103-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-27"><a href="#695f5103-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
-<span id="695f5103-28"><a href="#695f5103-28" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
-<span id="695f5103-29"><a href="#695f5103-29" aria-hidden="true" tabindex="-1"></a>    nation_dict <span class="op">=</span> origin_to_nation_dict()</span>
-<span id="695f5103-30"><a href="#695f5103-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-31"><a href="#695f5103-31" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
-<span id="695f5103-32"><a href="#695f5103-32" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
-<span id="695f5103-33"><a href="#695f5103-33" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>)</span>
-<span id="695f5103-34"><a href="#695f5103-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-35"><a href="#695f5103-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, label <span class="kw">in</span> <span class="bu">enumerate</span>(ax.get_yticklabels()):</span>
-<span id="695f5103-36"><a href="#695f5103-36" aria-hidden="true" tabindex="-1"></a>        label.set_size(<span class="dv">9</span>)</span>
-<span id="695f5103-37"><a href="#695f5103-37" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> label.get_text()</span>
-<span id="695f5103-38"><a href="#695f5103-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> nation_dict[origin] <span class="op">!=</span> <span class="st">"United States"</span>:</span>
-<span id="695f5103-39"><a href="#695f5103-39" aria-hidden="true" tabindex="-1"></a>            label.set_size(<span class="dv">9</span>)</span>
-<span id="695f5103-40"><a href="#695f5103-40" aria-hidden="true" tabindex="-1"></a>            label.set_weight(<span class="st">"bold"</span>)</span>
-<span id="695f5103-41"><a href="#695f5103-41" aria-hidden="true" tabindex="-1"></a>    ax.get_legend().set_title(<span class="st">""</span>)</span>
-<span id="695f5103-42"><a href="#695f5103-42" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="695f5103-43"><a href="#695f5103-43" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="695f5103-44"><a href="#695f5103-44" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
-<span id="695f5103-45"><a href="#695f5103-45" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
-<span id="695f5103-46"><a href="#695f5103-46" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flights"</span>)</span>
-<span id="695f5103-47"><a href="#695f5103-47" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
-<span id="695f5103-48"><a href="#695f5103-48" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
-<span id="695f5103-49"><a href="#695f5103-49" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Total Flights per Country/State and Triturator (Top 50)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
-<span id="695f5103-50"><a href="#695f5103-50" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="695f5103-51"><a href="#695f5103-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-52"><a href="#695f5103-52" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
-<span id="695f5103-53"><a href="#695f5103-53" aria-hidden="true" tabindex="-1"></a>    plt.savefig(<span class="st">"triturator_destination_flighs.png"</span>, dpi<span class="op">=</span><span class="dv">600</span>)</span>
-<span id="695f5103-54"><a href="#695f5103-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-55"><a href="#695f5103-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="695f5103-56"><a href="#695f5103-56" aria-hidden="true" tabindex="-1"></a>return_destination_trit_plot()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="954503cf"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="954503cf-1"><a href="#954503cf-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
+<span id="954503cf-2"><a href="#954503cf-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
+<span id="954503cf-3"><a href="#954503cf-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-4"><a href="#954503cf-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Flight Hours"</span>] <span class="op">=</span> df[<span class="st">"Flight Time"</span>].<span class="bu">apply</span>(time_to_float)</span>
+<span id="954503cf-5"><a href="#954503cf-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-6"><a href="#954503cf-6" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Plotting Origin"</span>] <span class="op">=</span> np.where(</span>
+<span id="954503cf-7"><a href="#954503cf-7" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>] <span class="op">==</span> <span class="st">"United States"</span>,</span>
+<span id="954503cf-8"><a href="#954503cf-8" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"State"</span>],</span>
+<span id="954503cf-9"><a href="#954503cf-9" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>],</span>
+<span id="954503cf-10"><a href="#954503cf-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="954503cf-11"><a href="#954503cf-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># group by origin and trit status and sum flight hours</span></span>
+<span id="954503cf-12"><a href="#954503cf-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
+<span id="954503cf-13"><a href="#954503cf-13" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Plotting Origin"</span>, <span class="st">"Triturator Status"</span>])</span>
+<span id="954503cf-14"><a href="#954503cf-14" aria-hidden="true" tabindex="-1"></a>        .size()</span>
+<span id="954503cf-15"><a href="#954503cf-15" aria-hidden="true" tabindex="-1"></a>        .reset_index(name<span class="op">=</span><span class="st">"Flights"</span>)</span>
+<span id="954503cf-16"><a href="#954503cf-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="954503cf-17"><a href="#954503cf-17" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(</span>
+<span id="954503cf-18"><a href="#954503cf-18" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span><span class="st">"Plotting Origin"</span>, columns<span class="op">=</span><span class="st">"Triturator Status"</span>, values<span class="op">=</span><span class="st">"Flights"</span></span>
+<span id="954503cf-19"><a href="#954503cf-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="954503cf-20"><a href="#954503cf-20" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="954503cf-21"><a href="#954503cf-21" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="954503cf-22"><a href="#954503cf-22" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="954503cf-23"><a href="#954503cf-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-24"><a href="#954503cf-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="954503cf-25"><a href="#954503cf-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-26"><a href="#954503cf-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-27"><a href="#954503cf-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
+<span id="954503cf-28"><a href="#954503cf-28" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
+<span id="954503cf-29"><a href="#954503cf-29" aria-hidden="true" tabindex="-1"></a>    nation_dict <span class="op">=</span> origin_to_nation_dict()</span>
+<span id="954503cf-30"><a href="#954503cf-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-31"><a href="#954503cf-31" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
+<span id="954503cf-32"><a href="#954503cf-32" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
+<span id="954503cf-33"><a href="#954503cf-33" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="954503cf-34"><a href="#954503cf-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-35"><a href="#954503cf-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, label <span class="kw">in</span> <span class="bu">enumerate</span>(ax.get_yticklabels()):</span>
+<span id="954503cf-36"><a href="#954503cf-36" aria-hidden="true" tabindex="-1"></a>        label.set_size(<span class="dv">9</span>)</span>
+<span id="954503cf-37"><a href="#954503cf-37" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> label.get_text()</span>
+<span id="954503cf-38"><a href="#954503cf-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> nation_dict[origin] <span class="op">!=</span> <span class="st">"United States"</span>:</span>
+<span id="954503cf-39"><a href="#954503cf-39" aria-hidden="true" tabindex="-1"></a>            label.set_size(<span class="dv">9</span>)</span>
+<span id="954503cf-40"><a href="#954503cf-40" aria-hidden="true" tabindex="-1"></a>            label.set_weight(<span class="st">"bold"</span>)</span>
+<span id="954503cf-41"><a href="#954503cf-41" aria-hidden="true" tabindex="-1"></a>    ax.get_legend().set_title(<span class="st">""</span>)</span>
+<span id="954503cf-42"><a href="#954503cf-42" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="954503cf-43"><a href="#954503cf-43" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="954503cf-44"><a href="#954503cf-44" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
+<span id="954503cf-45"><a href="#954503cf-45" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
+<span id="954503cf-46"><a href="#954503cf-46" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flights"</span>)</span>
+<span id="954503cf-47"><a href="#954503cf-47" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
+<span id="954503cf-48"><a href="#954503cf-48" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
+<span id="954503cf-49"><a href="#954503cf-49" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Total Flights per Country/State and Triturator (Top 50)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
+<span id="954503cf-50"><a href="#954503cf-50" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="954503cf-51"><a href="#954503cf-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-52"><a href="#954503cf-52" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="954503cf-53"><a href="#954503cf-53" aria-hidden="true" tabindex="-1"></a>    plt.savefig(<span class="st">"triturator_destination_flighs.png"</span>, dpi<span class="op">=</span><span class="dv">600</span>)</span>
+<span id="954503cf-54"><a href="#954503cf-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-55"><a href="#954503cf-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="954503cf-56"><a href="#954503cf-56" aria-hidden="true" tabindex="-1"></a>return_destination_trit_plot()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -824,69 +824,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="flight-hours-per-origin-location" class="level3">
 <h3 class="anchored" data-anchor-id="flight-hours-per-origin-location">Flight Hours per Origin Location</h3>
-<div id="f3c3cb70" class="cell" data-execution_count="7">
+<div id="4513c478" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="f3c3cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="f3c3cb70-1"><a href="#f3c3cb70-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
-<span id="f3c3cb70-2"><a href="#f3c3cb70-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
-<span id="f3c3cb70-3"><a href="#f3c3cb70-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-4"><a href="#f3c3cb70-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Flight Hours"</span>] <span class="op">=</span> df[<span class="st">"Flight Time"</span>].<span class="bu">apply</span>(time_to_float)</span>
-<span id="f3c3cb70-5"><a href="#f3c3cb70-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-6"><a href="#f3c3cb70-6" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Plotting Origin"</span>] <span class="op">=</span> np.where(</span>
-<span id="f3c3cb70-7"><a href="#f3c3cb70-7" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>] <span class="op">==</span> <span class="st">"United States"</span>,</span>
-<span id="f3c3cb70-8"><a href="#f3c3cb70-8" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"State"</span>],</span>
-<span id="f3c3cb70-9"><a href="#f3c3cb70-9" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>],</span>
-<span id="f3c3cb70-10"><a href="#f3c3cb70-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="f3c3cb70-11"><a href="#f3c3cb70-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-12"><a href="#f3c3cb70-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
-<span id="f3c3cb70-13"><a href="#f3c3cb70-13" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Plotting Origin"</span>, <span class="st">"Triturator Status"</span>])</span>
-<span id="f3c3cb70-14"><a href="#f3c3cb70-14" aria-hidden="true" tabindex="-1"></a>        .agg({<span class="st">"Flight Hours"</span>: <span class="st">"sum"</span>})</span>
-<span id="f3c3cb70-15"><a href="#f3c3cb70-15" aria-hidden="true" tabindex="-1"></a>        .reset_index()</span>
-<span id="f3c3cb70-16"><a href="#f3c3cb70-16" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="f3c3cb70-17"><a href="#f3c3cb70-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-18"><a href="#f3c3cb70-18" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(</span>
-<span id="f3c3cb70-19"><a href="#f3c3cb70-19" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span><span class="st">"Plotting Origin"</span>,</span>
-<span id="f3c3cb70-20"><a href="#f3c3cb70-20" aria-hidden="true" tabindex="-1"></a>        columns<span class="op">=</span><span class="st">"Triturator Status"</span>,</span>
-<span id="f3c3cb70-21"><a href="#f3c3cb70-21" aria-hidden="true" tabindex="-1"></a>        values<span class="op">=</span><span class="st">"Flight Hours"</span>,</span>
-<span id="f3c3cb70-22"><a href="#f3c3cb70-22" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="f3c3cb70-23"><a href="#f3c3cb70-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-24"><a href="#f3c3cb70-24" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="f3c3cb70-25"><a href="#f3c3cb70-25" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="f3c3cb70-26"><a href="#f3c3cb70-26" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="f3c3cb70-27"><a href="#f3c3cb70-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-28"><a href="#f3c3cb70-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
-<span id="f3c3cb70-29"><a href="#f3c3cb70-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-30"><a href="#f3c3cb70-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-31"><a href="#f3c3cb70-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
-<span id="f3c3cb70-32"><a href="#f3c3cb70-32" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
-<span id="f3c3cb70-33"><a href="#f3c3cb70-33" aria-hidden="true" tabindex="-1"></a>    nation_dict <span class="op">=</span> origin_to_nation_dict()</span>
-<span id="f3c3cb70-34"><a href="#f3c3cb70-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-35"><a href="#f3c3cb70-35" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
-<span id="f3c3cb70-36"><a href="#f3c3cb70-36" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
-<span id="f3c3cb70-37"><a href="#f3c3cb70-37" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>, color<span class="op">=</span>sns.color_palette(<span class="st">"tab10"</span>))</span>
-<span id="f3c3cb70-38"><a href="#f3c3cb70-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-39"><a href="#f3c3cb70-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, label <span class="kw">in</span> <span class="bu">enumerate</span>(ax.get_yticklabels()):</span>
-<span id="f3c3cb70-40"><a href="#f3c3cb70-40" aria-hidden="true" tabindex="-1"></a>        label.set_size(<span class="dv">9</span>)</span>
-<span id="f3c3cb70-41"><a href="#f3c3cb70-41" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> label.get_text()</span>
-<span id="f3c3cb70-42"><a href="#f3c3cb70-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> nation_dict[origin] <span class="op">!=</span> <span class="st">"United States"</span>:</span>
-<span id="f3c3cb70-43"><a href="#f3c3cb70-43" aria-hidden="true" tabindex="-1"></a>            label.set_weight(<span class="st">"bold"</span>)</span>
-<span id="f3c3cb70-44"><a href="#f3c3cb70-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-45"><a href="#f3c3cb70-45" aria-hidden="true" tabindex="-1"></a>    ax.get_legend().set_title(<span class="st">""</span>)</span>
-<span id="f3c3cb70-46"><a href="#f3c3cb70-46" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="f3c3cb70-47"><a href="#f3c3cb70-47" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="f3c3cb70-48"><a href="#f3c3cb70-48" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
-<span id="f3c3cb70-49"><a href="#f3c3cb70-49" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
-<span id="f3c3cb70-50"><a href="#f3c3cb70-50" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flight Hours"</span>)</span>
-<span id="f3c3cb70-51"><a href="#f3c3cb70-51" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
-<span id="f3c3cb70-52"><a href="#f3c3cb70-52" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
-<span id="f3c3cb70-53"><a href="#f3c3cb70-53" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Total Flight Hours per Country/State and Triturator (Top 50)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
-<span id="f3c3cb70-54"><a href="#f3c3cb70-54" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="f3c3cb70-55"><a href="#f3c3cb70-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-56"><a href="#f3c3cb70-56" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
-<span id="f3c3cb70-57"><a href="#f3c3cb70-57" aria-hidden="true" tabindex="-1"></a>    plt.savefig(<span class="st">"triturator_destination_flight_hours.png"</span>, dpi<span class="op">=</span><span class="dv">600</span>)</span>
-<span id="f3c3cb70-58"><a href="#f3c3cb70-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-59"><a href="#f3c3cb70-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="f3c3cb70-60"><a href="#f3c3cb70-60" aria-hidden="true" tabindex="-1"></a>return_destination_trit_plot()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="4513c478"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="4513c478-1"><a href="#4513c478-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
+<span id="4513c478-2"><a href="#4513c478-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
+<span id="4513c478-3"><a href="#4513c478-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-4"><a href="#4513c478-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Flight Hours"</span>] <span class="op">=</span> df[<span class="st">"Flight Time"</span>].<span class="bu">apply</span>(time_to_float)</span>
+<span id="4513c478-5"><a href="#4513c478-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-6"><a href="#4513c478-6" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Plotting Origin"</span>] <span class="op">=</span> np.where(</span>
+<span id="4513c478-7"><a href="#4513c478-7" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>] <span class="op">==</span> <span class="st">"United States"</span>,</span>
+<span id="4513c478-8"><a href="#4513c478-8" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"State"</span>],</span>
+<span id="4513c478-9"><a href="#4513c478-9" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"Nation"</span>],</span>
+<span id="4513c478-10"><a href="#4513c478-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="4513c478-11"><a href="#4513c478-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-12"><a href="#4513c478-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
+<span id="4513c478-13"><a href="#4513c478-13" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Plotting Origin"</span>, <span class="st">"Triturator Status"</span>])</span>
+<span id="4513c478-14"><a href="#4513c478-14" aria-hidden="true" tabindex="-1"></a>        .agg({<span class="st">"Flight Hours"</span>: <span class="st">"sum"</span>})</span>
+<span id="4513c478-15"><a href="#4513c478-15" aria-hidden="true" tabindex="-1"></a>        .reset_index()</span>
+<span id="4513c478-16"><a href="#4513c478-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="4513c478-17"><a href="#4513c478-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-18"><a href="#4513c478-18" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(</span>
+<span id="4513c478-19"><a href="#4513c478-19" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span><span class="st">"Plotting Origin"</span>,</span>
+<span id="4513c478-20"><a href="#4513c478-20" aria-hidden="true" tabindex="-1"></a>        columns<span class="op">=</span><span class="st">"Triturator Status"</span>,</span>
+<span id="4513c478-21"><a href="#4513c478-21" aria-hidden="true" tabindex="-1"></a>        values<span class="op">=</span><span class="st">"Flight Hours"</span>,</span>
+<span id="4513c478-22"><a href="#4513c478-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="4513c478-23"><a href="#4513c478-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-24"><a href="#4513c478-24" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="4513c478-25"><a href="#4513c478-25" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="4513c478-26"><a href="#4513c478-26" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="4513c478-27"><a href="#4513c478-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-28"><a href="#4513c478-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="4513c478-29"><a href="#4513c478-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-30"><a href="#4513c478-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-31"><a href="#4513c478-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
+<span id="4513c478-32"><a href="#4513c478-32" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
+<span id="4513c478-33"><a href="#4513c478-33" aria-hidden="true" tabindex="-1"></a>    nation_dict <span class="op">=</span> origin_to_nation_dict()</span>
+<span id="4513c478-34"><a href="#4513c478-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-35"><a href="#4513c478-35" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
+<span id="4513c478-36"><a href="#4513c478-36" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
+<span id="4513c478-37"><a href="#4513c478-37" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>, color<span class="op">=</span>sns.color_palette(<span class="st">"tab10"</span>))</span>
+<span id="4513c478-38"><a href="#4513c478-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-39"><a href="#4513c478-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, label <span class="kw">in</span> <span class="bu">enumerate</span>(ax.get_yticklabels()):</span>
+<span id="4513c478-40"><a href="#4513c478-40" aria-hidden="true" tabindex="-1"></a>        label.set_size(<span class="dv">9</span>)</span>
+<span id="4513c478-41"><a href="#4513c478-41" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> label.get_text()</span>
+<span id="4513c478-42"><a href="#4513c478-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> nation_dict[origin] <span class="op">!=</span> <span class="st">"United States"</span>:</span>
+<span id="4513c478-43"><a href="#4513c478-43" aria-hidden="true" tabindex="-1"></a>            label.set_weight(<span class="st">"bold"</span>)</span>
+<span id="4513c478-44"><a href="#4513c478-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-45"><a href="#4513c478-45" aria-hidden="true" tabindex="-1"></a>    ax.get_legend().set_title(<span class="st">""</span>)</span>
+<span id="4513c478-46"><a href="#4513c478-46" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="4513c478-47"><a href="#4513c478-47" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="4513c478-48"><a href="#4513c478-48" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
+<span id="4513c478-49"><a href="#4513c478-49" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
+<span id="4513c478-50"><a href="#4513c478-50" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flight Hours"</span>)</span>
+<span id="4513c478-51"><a href="#4513c478-51" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
+<span id="4513c478-52"><a href="#4513c478-52" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
+<span id="4513c478-53"><a href="#4513c478-53" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Total Flight Hours per Country/State and Triturator (Top 50)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
+<span id="4513c478-54"><a href="#4513c478-54" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="4513c478-55"><a href="#4513c478-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-56"><a href="#4513c478-56" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="4513c478-57"><a href="#4513c478-57" aria-hidden="true" tabindex="-1"></a>    plt.savefig(<span class="st">"triturator_destination_flight_hours.png"</span>, dpi<span class="op">=</span><span class="dv">600</span>)</span>
+<span id="4513c478-58"><a href="#4513c478-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-59"><a href="#4513c478-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="4513c478-60"><a href="#4513c478-60" aria-hidden="true" tabindex="-1"></a>return_destination_trit_plot()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -901,61 +901,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="remaining-airlines-we-are-unsure-about" class="level1">
 <h1>Remaining airlines we are unsure about</h1>
-<div id="44048154" class="cell" data-execution_count="8">
+<div id="7481fcf4" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="44048154"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="44048154-1"><a href="#44048154-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
-<span id="44048154-2"><a href="#44048154-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
-<span id="44048154-3"><a href="#44048154-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-4"><a href="#44048154-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Flight Hours"</span>] <span class="op">=</span> df[<span class="st">"Flight Time"</span>].<span class="bu">apply</span>(time_to_float)</span>
-<span id="44048154-5"><a href="#44048154-5" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df[df[<span class="st">"Triturator Status"</span>] <span class="op">==</span> <span class="st">"Unknown"</span>]</span>
-<span id="44048154-6"><a href="#44048154-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-7"><a href="#44048154-7" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
-<span id="44048154-8"><a href="#44048154-8" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Prime Airline"</span>, <span class="st">"Triturator Status"</span>])</span>
-<span id="44048154-9"><a href="#44048154-9" aria-hidden="true" tabindex="-1"></a>        .agg({<span class="st">"Flight Hours"</span>: <span class="st">"sum"</span>})</span>
-<span id="44048154-10"><a href="#44048154-10" aria-hidden="true" tabindex="-1"></a>        .reset_index()</span>
-<span id="44048154-11"><a href="#44048154-11" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="44048154-12"><a href="#44048154-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df[df[<span class="st">"Flight Hours"</span>] <span class="op">&gt;</span> <span class="dv">1000</span>]</span>
-<span id="44048154-13"><a href="#44048154-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-14"><a href="#44048154-14" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(</span>
-<span id="44048154-15"><a href="#44048154-15" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span><span class="st">"Prime Airline"</span>, columns<span class="op">=</span><span class="st">"Triturator Status"</span>, values<span class="op">=</span><span class="st">"Flight Hours"</span></span>
-<span id="44048154-16"><a href="#44048154-16" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="44048154-17"><a href="#44048154-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-18"><a href="#44048154-18" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="44048154-19"><a href="#44048154-19" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="44048154-20"><a href="#44048154-20" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="44048154-21"><a href="#44048154-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-22"><a href="#44048154-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
-<span id="44048154-23"><a href="#44048154-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-24"><a href="#44048154-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-25"><a href="#44048154-25" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
-<span id="44048154-26"><a href="#44048154-26" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
-<span id="44048154-27"><a href="#44048154-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-28"><a href="#44048154-28" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
-<span id="44048154-29"><a href="#44048154-29" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
-<span id="44048154-30"><a href="#44048154-30" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>)</span>
-<span id="44048154-31"><a href="#44048154-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-32"><a href="#44048154-32" aria-hidden="true" tabindex="-1"></a>    ax.legend().set_visible(<span class="va">False</span>)</span>
-<span id="44048154-33"><a href="#44048154-33" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="44048154-34"><a href="#44048154-34" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
-<span id="44048154-35"><a href="#44048154-35" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
-<span id="44048154-36"><a href="#44048154-36" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
-<span id="44048154-37"><a href="#44048154-37" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flight Hours"</span>)</span>
-<span id="44048154-38"><a href="#44048154-38" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
-<span id="44048154-39"><a href="#44048154-39" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
-<span id="44048154-40"><a href="#44048154-40" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Airlines where we do not have a confident triturator assignment (&gt;1000 flight hours)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
-<span id="44048154-41"><a href="#44048154-41" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="44048154-42"><a href="#44048154-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-43"><a href="#44048154-43" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
-<span id="44048154-44"><a href="#44048154-44" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="44048154-45"><a href="#44048154-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-46"><a href="#44048154-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-47"><a href="#44048154-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> start():</span>
-<span id="44048154-48"><a href="#44048154-48" aria-hidden="true" tabindex="-1"></a>    return_destination_trit_plot()</span>
-<span id="44048154-49"><a href="#44048154-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-50"><a href="#44048154-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="44048154-51"><a href="#44048154-51" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
-<span id="44048154-52"><a href="#44048154-52" aria-hidden="true" tabindex="-1"></a>    start()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="7481fcf4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="7481fcf4-1"><a href="#7481fcf4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_plotting_df():</span>
+<span id="7481fcf4-2"><a href="#7481fcf4-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_flights()</span>
+<span id="7481fcf4-3"><a href="#7481fcf4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-4"><a href="#7481fcf4-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Flight Hours"</span>] <span class="op">=</span> df[<span class="st">"Flight Time"</span>].<span class="bu">apply</span>(time_to_float)</span>
+<span id="7481fcf4-5"><a href="#7481fcf4-5" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df[df[<span class="st">"Triturator Status"</span>] <span class="op">==</span> <span class="st">"Unknown"</span>]</span>
+<span id="7481fcf4-6"><a href="#7481fcf4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-7"><a href="#7481fcf4-7" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (</span>
+<span id="7481fcf4-8"><a href="#7481fcf4-8" aria-hidden="true" tabindex="-1"></a>        df.groupby([<span class="st">"Prime Airline"</span>, <span class="st">"Triturator Status"</span>])</span>
+<span id="7481fcf4-9"><a href="#7481fcf4-9" aria-hidden="true" tabindex="-1"></a>        .agg({<span class="st">"Flight Hours"</span>: <span class="st">"sum"</span>})</span>
+<span id="7481fcf4-10"><a href="#7481fcf4-10" aria-hidden="true" tabindex="-1"></a>        .reset_index()</span>
+<span id="7481fcf4-11"><a href="#7481fcf4-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="7481fcf4-12"><a href="#7481fcf4-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df[df[<span class="st">"Flight Hours"</span>] <span class="op">&gt;</span> <span class="dv">1000</span>]</span>
+<span id="7481fcf4-13"><a href="#7481fcf4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-14"><a href="#7481fcf4-14" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.pivot(</span>
+<span id="7481fcf4-15"><a href="#7481fcf4-15" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span><span class="st">"Prime Airline"</span>, columns<span class="op">=</span><span class="st">"Triturator Status"</span>, values<span class="op">=</span><span class="st">"Flight Hours"</span></span>
+<span id="7481fcf4-16"><a href="#7481fcf4-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="7481fcf4-17"><a href="#7481fcf4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-18"><a href="#7481fcf4-18" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"Total"</span>] <span class="op">=</span> df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="7481fcf4-19"><a href="#7481fcf4-19" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">"Total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="7481fcf4-20"><a href="#7481fcf4-20" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.drop(<span class="st">"Total"</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="7481fcf4-21"><a href="#7481fcf4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-22"><a href="#7481fcf4-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="7481fcf4-23"><a href="#7481fcf4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-24"><a href="#7481fcf4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-25"><a href="#7481fcf4-25" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_destination_trit_plot():</span>
+<span id="7481fcf4-26"><a href="#7481fcf4-26" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> return_plotting_df()</span>
+<span id="7481fcf4-27"><a href="#7481fcf4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-28"><a href="#7481fcf4-28" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.head(<span class="dv">50</span>)</span>
+<span id="7481fcf4-29"><a href="#7481fcf4-29" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
+<span id="7481fcf4-30"><a href="#7481fcf4-30" aria-hidden="true" tabindex="-1"></a>    df.plot.barh(stacked<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, width<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="7481fcf4-31"><a href="#7481fcf4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-32"><a href="#7481fcf4-32" aria-hidden="true" tabindex="-1"></a>    ax.legend().set_visible(<span class="va">False</span>)</span>
+<span id="7481fcf4-33"><a href="#7481fcf4-33" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="7481fcf4-34"><a href="#7481fcf4-34" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="7481fcf4-35"><a href="#7481fcf4-35" aria-hidden="true" tabindex="-1"></a>    plt.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, right<span class="op">=</span><span class="va">False</span>)</span>
+<span id="7481fcf4-36"><a href="#7481fcf4-36" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">""</span>)</span>
+<span id="7481fcf4-37"><a href="#7481fcf4-37" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Total Flight Hours"</span>)</span>
+<span id="7481fcf4-38"><a href="#7481fcf4-38" aria-hidden="true" tabindex="-1"></a>    first_date, last_date <span class="op">=</span> get_first_date_and_last_date()</span>
+<span id="7481fcf4-39"><a href="#7481fcf4-39" aria-hidden="true" tabindex="-1"></a>    plt.title(</span>
+<span id="7481fcf4-40"><a href="#7481fcf4-40" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Airlines where we do not have a confident triturator assignment (&gt;1000 flight hours)</span><span class="ch">\n</span><span class="sc">{</span>first_date<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>last_date<span class="sc">}</span><span class="ss">"</span></span>
+<span id="7481fcf4-41"><a href="#7481fcf4-41" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="7481fcf4-42"><a href="#7481fcf4-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-43"><a href="#7481fcf4-43" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="7481fcf4-44"><a href="#7481fcf4-44" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="7481fcf4-45"><a href="#7481fcf4-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-46"><a href="#7481fcf4-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-47"><a href="#7481fcf4-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> start():</span>
+<span id="7481fcf4-48"><a href="#7481fcf4-48" aria-hidden="true" tabindex="-1"></a>    return_destination_trit_plot()</span>
+<span id="7481fcf4-49"><a href="#7481fcf4-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-50"><a href="#7481fcf4-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="7481fcf4-51"><a href="#7481fcf4-51" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="7481fcf4-52"><a href="#7481fcf4-52" aria-hidden="true" tabindex="-1"></a>    start()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
