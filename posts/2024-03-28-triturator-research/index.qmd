@@ -222,7 +222,7 @@ def return_destination_trit_plot():
     plt.tick_params(axis="y", which="both", left=False, right=False)
     plt.ylabel("")
     plt.xlabel("Total Flights")
-    plt.title("Total Flighs per Triturator")
+    plt.title("Total Flights per Triturator")
 
     plt.tight_layout()
     plt.savefig("triturator_flights.png", dpi=600)
