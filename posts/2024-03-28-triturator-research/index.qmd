@@ -22,28 +22,29 @@ import matplotlib.pyplot as plt
 import numpy as np
 import datetime as dt
 import ast
+import random
+import math
 from collections import defaultdict
 from IPython.display import Markdown
-import random
+import csv
 from tabulate import tabulate
-import math
+
+
+
 def return_airline_trit_dict():
     airline_trit_dict = defaultdict(str)
-    with open("data/2024-03-27_airlines_triturators.tsv") as infile:
-        lines = infile.readlines()
-        lines = lines[1:]
-        for line in lines:
-
-            airline, triturator, ground_handling, source = line.split("\t")
+    with open("data/2024-03-28_airlines_triturators.tsv") as infile:
+        reader = csv.DictReader(infile, delimiter='\t')
+        for row in reader:
+            airline = row['Airline'].strip()
+            triturator = row['Triturator'].strip()
             prettier_triturator = {
                 "Swissport": "Swissport\nTriturator",
                 "American Airlines": "American Airlines\nTriturator",
                 "Unknown": "Unknown",
-                "None": "No Triturator used"
+                "No Triturator Used": "No Triturator used"
             }
-            airline = airline.strip()
-            triturator = triturator.strip()
-            triturator = prettier_triturator[triturator]
+            triturator = prettier_triturator.get(triturator, triturator)
             airline_trit_dict[airline] = triturator
     return airline_trit_dict
 
@@ -155,6 +156,8 @@ def get_first_date_and_last_date():
     last_date = last_date.strftime("%Y-%m-%d")
     return first_date, last_date
 
+us_flights_df = return_flights()
+
 ```
 
 
@@ -171,31 +174,23 @@ We need to know where the waste on these flights ends up. We thus spent some tim
 
 
 ```{python}
-#| label: airline_triturators
-#| tbl-cap: Airline Triturator Assignments
-
 from IPython.display import Markdown
 from tabulate import tabulate
-table = pd.read_csv("data/2024-03-27_airlines_triturators.tsv", sep="\t")[["Airline", "Triturator", "Ground handling", "Source"]]
+table = pd.read_csv("data/2024-03-28_airlines_triturators.tsv", sep="\t")[["Airline", "Triturator","Ground handling", "Source",]]
 Markdown(tabulate(
   table.values,
   headers=["Airline","Triturator","Ground Handling","Source"],
   showindex=False,
-
 ))
+
+
 ```
 
 ```{python}
 
 def return_plotting_df():
-    df = return_flights()
+    df = us_flights_df
 
-    nicer_trit_labels = {
-        "aa_triturator": "American Airlines \nTriturator",
-        "pr_triturator": "Swissport\nTriturator",
-        "unknown": "Unknown",
-    }
-    df = df.replace({"Triturator Status": nicer_trit_labels})
 
     # create a df with number of flights per triturator
     df = df.groupby("Triturator Status").size().reset_index(name="Flights")
@@ -240,13 +235,11 @@ return_destination_trit()
 
 ### Flights per Airline
 
-Here are flights per airline that arrive at each triturator.
-
 ```{python}
 
 
 def return_plotting_df():
-    df = return_flights()
+    df = us_flights_df
     df = df.groupby(["Prime Airline", "Triturator Status"]).size().reset_index(name="Flights")
     df = df.pivot(
         index="Prime Airline", columns="Triturator Status", values="Flights"
@@ -284,12 +277,10 @@ return_destination_trit_plot()
 
 ### Flight Hours per Airline
 
-Here are flight hours per airline that arrive at each triturator.
-
 ```{python}
 
 def return_plotting_df():
-    df = return_flights()
+    df = us_flights_df
 
     df["Flight Hours"] = df["Flight Time"].apply(time_to_float)
 
@@ -356,7 +347,7 @@ if __name__ == "__main__":
 ```{python}
 
 def return_plotting_df():
-    df = return_flights()
+    df = us_flights_df
 
     df["Flight Hours"] = df["Flight Time"].apply(time_to_float)
 
@@ -419,7 +410,7 @@ return_destination_trit_plot()
 
 
 def return_plotting_df():
-    df = return_flights()
+    df = us_flights_df
 
     df["Flight Hours"] = df["Flight Time"].apply(time_to_float)
 
@@ -487,7 +478,7 @@ return_destination_trit_plot()
 
 ```{python}
 def return_plotting_df():
-    df = return_flights()
+    df = us_flights_df
 
     df["Flight Hours"] = df["Flight Time"].apply(time_to_float)
     df = df[df["Triturator Status"] == "Unknown"]
