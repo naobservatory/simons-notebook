@@ -11,11 +11,6 @@ filters:
 cap-location: bottom
 ---
 
-# Introduction
-
-In Q1 we collected several pieces of information to better understand the composition of Project Runway triturator samples. One important piece was information on inbound flights to Boston, which included flight duration, airline, plane type, etc. This data was collated by a scraper created by Lenni, found [here](https://github.com/naobservatory/BOSTraffic/tree/master). A script that downloads the data from AWS can be found [here](https://github.com/naobservatory/simons-notebook/blob/main/posts/2024-03-28-triturator-research/get-all-flights.py).
-
-We need to know where the waste on these flights ends up. We thus spent some time reaching out to a lot of different airlines and ground handling companies (see [here](https://docs.google.com/document/d/1U5U3M76xe2eWN7batlIJoXhh8_kDKVhfANBOs8bmkwk/edit) for call notes). We’ve got information on the triturator usage for most airlines (though we have more trust in some pieces of information than in others).
 
 # Setup
 
@@ -178,6 +173,14 @@ Markdown(tabulate(
 ```
 
 
+
+# Introduction
+
+In Q1 we collected several pieces of information to better understand the composition of Project Runway triturator samples. One important piece was information on inbound flights to Boston, which included flight duration, airline, plane type, etc. This data was collated by a scraper created by Lenni, found [here](https://github.com/naobservatory/BOSTraffic/tree/master). A script that downloads the data from AWS can be found [here](https://github.com/naobservatory/simons-notebook/blob/main/posts/2024-03-28-triturator-research/get-all-flights.py).
+
+We need to know where the waste on these flights ends up. We thus spent some time reaching out to a lot of different airlines and ground handling companies (see [here](https://docs.google.com/document/d/1U5U3M76xe2eWN7batlIJoXhh8_kDKVhfANBOs8bmkwk/edit) for call notes). We’ve got information on the triturator usage for most airlines (though we have more trust in some pieces of information than in others). Our current high level overview looks the following way:
+
+
 ## Flights across Triturators
 
 ```{python}
@@ -199,7 +202,7 @@ def return_plotting_df():
     return df
 
 
-def return_destination_trit_plot():
+def return_destination_trit():
     df = return_plotting_df()
 
     fig, ax = plt.subplots(figsize=(8, 3))
@@ -222,13 +225,14 @@ def return_destination_trit_plot():
     plt.tick_params(axis="y", which="both", left=False, right=False)
     plt.ylabel("")
     plt.xlabel("Total Flights")
-    plt.title("Total Flights per Triturator")
+    plt.title("Total Flights per Triturator and Airline")
 
     plt.tight_layout()
     plt.show()
 
-return_destination_trit_plot()
+return_destination_trit()
 ```
+
 
 ## Airlines
 
