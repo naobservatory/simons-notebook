@@ -308,7 +308,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>MA Counties</figcaption>
 </figure>
 </div>
-<div id="384b1587" class="cell" data-execution_count="1">
+<div id="d0346656" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -326,7 +326,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="covid-19" class="level2">
 <h2 class="anchored" data-anchor-id="covid-19">COVID-19</h2>
 <p>The plot below shows data both for the entire state and the counties covered by Deer Island (Suffolk, Norfolk, Middlesex). COVID-19 cases see a decrease until the beginning of November and a sharp increase and peak over the rest of the Project Runway coverage period.</p>
-<div id="1af038e3" class="cell" data-execution_count="2">
+<div id="75d89777" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -398,7 +398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="influenza" class="level2">
 <h2 class="anchored" data-anchor-id="influenza">Influenza</h2>
 <p>We do not have Percentage Positivity data for Influenza. Still, based on the number of positive tests the Influenza season likely started during the PR coverage period.</p>
-<div id="b863224d" class="cell" data-execution_count="3">
+<div id="02f6a31c" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_flu[<span class="st">'date'</span>] <span class="op">=</span> pd.to_datetime(df_flu[<span class="st">'Week Start Date'</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
@@ -439,7 +439,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Due to the lower number of tests, the data from NREVSS is a lot less useful. Nevertheless, it might still be interesting to check if Rhinovirus relative abundance drops from October to end of December, as we see a decline in Rhinovirus tests and positive percentage rates during that time.</p>
 <section id="respiratory-adenovirus" class="level2">
 <h2 class="anchored" data-anchor-id="respiratory-adenovirus">Respiratory Adenovirus</h2>
-<div id="ad87b0c2" class="cell" data-execution_count="4">
+<div id="8861f4c7" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_adeno[df_adeno[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
@@ -483,7 +483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="parainfluenza" class="level2">
 <h2 class="anchored" data-anchor-id="parainfluenza">Parainfluenza</h2>
-<div id="c99936e9" class="cell" data-execution_count="5">
+<div id="cb8ecb08" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_parainfluenza[df_parainfluenza[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
@@ -530,7 +530,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="rhinovirus" class="level2">
 <h2 class="anchored" data-anchor-id="rhinovirus">Rhinovirus</h2>
-<div id="b4887b1e" class="cell" data-execution_count="6">
+<div id="24618b59" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_rhino[<span class="st">'percent_positive'</span>] <span class="op">=</span> df_rhino[<span class="st">'Rhinopos'</span>] <span class="op">/</span> df_rhino[<span class="st">'Rhinotest'</span>] <span class="op">*</span> <span class="dv">100</span></span>
@@ -582,53 +582,59 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="positive-percentage" class="level3">
 <h3 class="anchored" data-anchor-id="positive-percentage">Positive Percentage</h3>
 <p>Positive Percentage rates coincide with more frequent spikes in the wastewater qPCR data.</p>
-<div id="28c9773d" class="cell" data-execution_count="7">
+<div id="0bdd5ddd" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_wastewater <span class="op">=</span> pd.read_csv(<span class="st">'data/WWSCAN_selected_plants_all_targets_20240327.csv'</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df_wastewater[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(df_wastewater[<span class="st">"collection_date"</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st">'</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df_wastewater <span class="op">=</span> df_wastewater[(df_wastewater[<span class="st">'date'</span>] <span class="op">&gt;=</span> <span class="st">'2023-06-01'</span>) <span class="op">&amp;</span> (df_wastewater[<span class="st">'date'</span>] <span class="op">&lt;=</span> <span class="st">'2024-03-31'</span>)]</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>df_wastewater[<span class="st">"adjusted_covid"</span>] <span class="op">=</span> df_wastewater[<span class="st">"N_Gene_gc_g_dry_weight"</span>] <span class="op">/</span> df_wastewater[<span class="st">"PMMoV_gc_g_dry_weight"</span>] <span class="op">*</span> <span class="fl">1e6</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>df_wastewater.set_index(<span class="st">'date'</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>df_wastewater[<span class="st">"adjusted_covid"</span>] <span class="op">=</span> (df_wastewater[<span class="st">"N_Gene_gc_g_dry_weight"</span>] <span class="op">/</span> df_wastewater[<span class="st">"PMMoV_gc_g_dry_weight"</span>] <span class="op">*</span> <span class="fl">1e6</span>).rolling(window<span class="op">=</span><span class="st">'21D'</span>, min_periods<span class="op">=</span><span class="dv">1</span>, center<span class="op">=</span><span class="va">True</span>).mean()</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>df_wastewater.reset_index(inplace<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>df_wastewater.dropna(subset<span class="op">=</span>[<span class="st">'adjusted_covid'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>df_covid <span class="op">=</span> pd.read_csv(<span class="st">'data/covid-19-dashboard-03-07-24/County data-Table 1.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>df_counties <span class="op">=</span> df_covid[df_covid[<span class="st">'County'</span>].isin([<span class="st">'Suffolk'</span>, <span class="st">'Norfolk'</span>, <span class="st">'Middlesex'</span>])]</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>df_counties[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(df_counties[<span class="st">"Week Start Date"</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>df_wastewater.dropna(subset<span class="op">=</span>[<span class="st">'adjusted_covid'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>df_counties[<span class="st">"pos_agg"</span>] <span class="op">=</span> df_counties[<span class="st">"Positive tests the week"</span>].groupby(df_counties[<span class="st">"date"</span>]).transform(<span class="st">'sum'</span>)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>df_counties[<span class="st">"percent_positive_agg"</span>] <span class="op">=</span> df_counties[<span class="st">"pos_agg"</span>] <span class="op">/</span> df_counties.groupby(<span class="st">"date"</span>)[<span class="st">"Tests during the week"</span>].transform(<span class="st">'sum'</span>) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>fig, ax_cov <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>ax_cov.set_xlabel(<span class="st">'Months (2023-2024)'</span>)</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>ax_cov.set_ylabel(<span class="st">'Positive Percentage'</span>, color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>ax_cov.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>ax_cov.plot(df_counties[<span class="st">"date"</span>], df_counties[<span class="st">"percent_positive_agg"</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Counties (% Positive)'</span>)</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>ax_cov.xaxis.set_major_locator(mdates.MonthLocator())</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>ax_cov.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>ax_ww <span class="op">=</span> ax_cov.twinx()</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>ax_ww.set_ylabel(<span class="st">'Wastewater Levels'</span>, color<span class="op">=</span><span class="st">'tab:purple'</span>)</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>ax_ww.plot(df_wastewater[<span class="st">'date'</span>], df_wastewater[<span class="st">'adjusted_covid'</span>], color<span class="op">=</span><span class="st">'tab:purple'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Wastewater Levels'</span>)</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co"># color ticks</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>ax_ww.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:purple'</span>)</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>ax_cov_yminlim, ax_cov_ymaxlim <span class="op">=</span> ax_cov.get_ylim()</span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>ax_cov.set_ylim(<span class="dv">0</span>, ax_cov_ymaxlim)</span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">int</span>(ax_cov_ymaxlim) <span class="op">+</span> <span class="dv">1</span>, <span class="dv">1000</span>):</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    ax_cov.axhline(y, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, lw<span class="op">=</span><span class="fl">0.2</span>)</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>ax_cov.axvspan(pd.to_datetime(<span class="st">'2023-10-01'</span>), pd.to_datetime(<span class="st">'2023-12-31'</span>), color<span class="op">=</span><span class="st">'lightgrey'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>ax_cov.text(pd.to_datetime(<span class="st">'2023-11-15'</span>), ax_cov_ymaxlim <span class="op">*</span> <span class="fl">1.02</span>, <span class="st">'Project Runway Sampling'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>)</span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>fig.clf()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>df_covid <span class="op">=</span> pd.read_csv(<span class="st">'data/covid-19-dashboard-03-07-24/County data-Table 1.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>df_counties <span class="op">=</span> df_covid[df_covid[<span class="st">'County'</span>].isin([<span class="st">'Suffolk'</span>, <span class="st">'Norfolk'</span>, <span class="st">'Middlesex'</span>])]</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>df_counties[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(df_counties[<span class="st">"Week Start Date"</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>df_counties[<span class="st">"pos_agg"</span>] <span class="op">=</span> df_counties[<span class="st">"Positive tests the week"</span>].groupby(df_counties[<span class="st">"date"</span>]).transform(<span class="st">'sum'</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>df_counties[<span class="st">"percent_positive_agg"</span>] <span class="op">=</span> df_counties[<span class="st">"pos_agg"</span>] <span class="op">/</span> df_counties.groupby(<span class="st">"date"</span>)[<span class="st">"Tests during the week"</span>].transform(<span class="st">'sum'</span>) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>fig, ax_cov <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>ax_cov.set_xlabel(<span class="st">'Months (2023-2024)'</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>ax_cov.set_ylabel(<span class="st">'Positive Percentage'</span>, color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>ax_cov.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>ax_cov.plot(df_counties[<span class="st">"date"</span>], df_counties[<span class="st">"percent_positive_agg"</span>], color<span class="op">=</span><span class="st">'tab:blue'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Counties (% Positive)'</span>)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>ax_cov.xaxis.set_major_locator(mdates.MonthLocator())</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>ax_cov.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b'</span>))</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>ax_ww <span class="op">=</span> ax_cov.twinx()</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>ax_ww.set_ylabel(<span class="st">'Wastewater Levels'</span>, color<span class="op">=</span><span class="st">'tab:purple'</span>)</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>ax_ww.plot(df_wastewater[<span class="st">'date'</span>], df_wastewater[<span class="st">'adjusted_covid'</span>], color<span class="op">=</span><span class="st">'tab:purple'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Wastewater Levels'</span>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co"># color ticks</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>ax_ww.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:purple'</span>)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>ax_cov_yminlim, ax_cov_ymaxlim <span class="op">=</span> ax_cov.get_ylim()</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>ax_cov.set_ylim(<span class="dv">0</span>, ax_cov_ymaxlim)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">int</span>(ax_cov_ymaxlim) <span class="op">+</span> <span class="dv">1</span>, <span class="dv">1000</span>):</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    ax_cov.axhline(y, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, lw<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>ax_cov.axvspan(pd.to_datetime(<span class="st">'2023-10-01'</span>), pd.to_datetime(<span class="st">'2023-12-31'</span>), color<span class="op">=</span><span class="st">'lightgrey'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>ax_cov.text(pd.to_datetime(<span class="st">'2023-11-15'</span>), ax_cov_ymaxlim <span class="op">*</span> <span class="fl">1.02</span>, <span class="st">'Project Runway Sampling'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>min_ylim <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>ax_cov.set_ylim(bottom<span class="op">=</span>min_ylim)</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>ax_ww.set_ylim(bottom<span class="op">=</span>min_ylim)</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>fig.clf()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -642,7 +648,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="positive-tests" class="level3">
 <h3 class="anchored" data-anchor-id="positive-tests">Positive Tests</h3>
 <p>Positive Testing rates also match the wastewater qPCR data. They track the lower levels of the wastewater qPCR data in the September COVID-19 surge more closely than the positive percentage rates.</p>
-<div id="fe856f56" class="cell" data-execution_count="8">
+<div id="b3c4b78c" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig, ax_cov <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -669,10 +675,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>ax_cov.axvspan(pd.to_datetime(<span class="st">'2023-10-01'</span>), pd.to_datetime(<span class="st">'2023-12-31'</span>), color<span class="op">=</span><span class="st">'lightgrey'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>ax_cov.text(pd.to_datetime(<span class="st">'2023-11-15'</span>), ax_cov_ymaxlim <span class="op">*</span> <span class="fl">1.02</span>, <span class="st">'Project Runway Sampling'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>)</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>fig.clf()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>min_ylim <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>ax_cov.set_ylim(bottom<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>ax_ww.set_ylim(bottom<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>fig.clf()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -687,23 +695,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="influenza-1" class="level2">
 <h2 class="anchored" data-anchor-id="influenza-1">Influenza</h2>
 <p>We use the same method to normalize influenza rates. As with COVID-19, an increase in influenza testing rates coincides with an increase in the wastewater qPCR data. The increase in the Influenza wastewater levels is a bit more stable than what we see for COVID-19.</p>
-<div id="202e137c" class="cell" data-execution_count="9">
+<div id="bc28e7de" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df_wastewater <span class="op">=</span> pd.read_csv(<span class="st">'data/WWSCAN_selected_plants_all_targets_20240327.csv'</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df_wastewater[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(df_wastewater[<span class="st">"collection_date"</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st">'</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>df_wastewater[<span class="st">"adjusted_flu"</span>] <span class="op">=</span> df_wastewater[<span class="st">"Influenza_A_gc_g_dry_weight"</span>] <span class="op">/</span> df_wastewater[<span class="st">"PMMoV_gc_g_dry_weight"</span>] <span class="op">*</span> <span class="fl">1e6</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>df_wastewater <span class="op">=</span> df_wastewater[(df_wastewater[<span class="st">'date'</span>] <span class="op">&gt;=</span> <span class="st">'2023-06-01'</span>) <span class="op">&amp;</span> (df_wastewater[<span class="st">'date'</span>] <span class="op">&lt;=</span> <span class="st">'2024-03-31'</span>)]</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df_wastewater.dropna(subset<span class="op">=</span>[<span class="st">'adjusted_flu'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>october_start <span class="op">=</span> pd.to_datetime(<span class="st">'2023-10-01'</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>january_end <span class="op">=</span> pd.to_datetime(<span class="st">'2024-01-31'</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>affected_range <span class="op">=</span> df_wastewater[(df_wastewater[<span class="st">'date'</span>] <span class="op">&gt;=</span> october_start) <span class="op">&amp;</span> (df_wastewater[<span class="st">'date'</span>] <span class="op">&lt;=</span> january_end)]</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>df_flu <span class="op">=</span> df_flu[(df_flu[<span class="st">'date'</span>] <span class="op">&gt;=</span> <span class="st">'2023-06-01'</span>) <span class="op">&amp;</span> (df_flu[<span class="st">'date'</span>] <span class="op">&lt;=</span> <span class="st">'2024-03-31'</span>)]</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>df_flu <span class="op">=</span> pd.read_csv(<span class="st">'data/flu-dashboard-data-03-07-24/Influenza Lab Tests Reported-Table 1.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>df_flu[<span class="st">'date'</span>] <span class="op">=</span> pd.to_datetime(df_flu[<span class="st">'Week Start Date'</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>df_wastewater.set_index(<span class="st">'date'</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>df_wastewater[<span class="st">"adjusted_flu"</span>] <span class="op">=</span> (df_wastewater[<span class="st">"Influenza_A_gc_g_dry_weight"</span>] <span class="op">/</span> df_wastewater[<span class="st">"PMMoV_gc_g_dry_weight"</span>] <span class="op">*</span> <span class="fl">1e6</span>).rolling(window<span class="op">=</span><span class="st">'21D'</span>, min_periods<span class="op">=</span><span class="dv">1</span>, center<span class="op">=</span><span class="va">True</span>).mean()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>df_wastewater.reset_index(inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>df_wastewater.dropna(subset<span class="op">=</span>[<span class="st">"adjusted_flu"</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>df_wastewater <span class="op">=</span> df_wastewater[(df_wastewater[<span class="st">'date'</span>] <span class="op">&gt;=</span> <span class="st">'2023-06-01'</span>) <span class="op">&amp;</span> (df_wastewater[<span class="st">'date'</span>] <span class="op">&lt;=</span> <span class="st">'2024-03-31'</span>)]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>df_flu <span class="op">=</span> pd.read_csv(<span class="st">'data/flu-dashboard-data-03-07-24/Influenza Lab Tests Reported-Table 1.tsv'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>df_flu[<span class="st">'date'</span>] <span class="op">=</span> pd.to_datetime(df_flu[<span class="st">'Week Start Date'</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>df_flu <span class="op">=</span> df_flu[(df_flu[<span class="st">'date'</span>] <span class="op">&gt;=</span> <span class="st">'2023-06-01'</span>) <span class="op">&amp;</span> (df_flu[<span class="st">'date'</span>] <span class="op">&lt;=</span> <span class="st">'2024-03-31'</span>)]</span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>df_flu[<span class="st">'pos_tests_across_flu_types'</span>] <span class="op">=</span> df_flu.groupby(<span class="st">'date'</span>)[<span class="st">'Positive lab tests'</span>].transform(<span class="st">'sum'</span>)</span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
@@ -720,7 +728,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>ax_ww <span class="op">=</span> ax_flu.twinx()</span>
 <span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>ax_ww.set_ylabel(<span class="st">'Wastewater Levels'</span>, color<span class="op">=</span><span class="st">'tab:purple'</span>)</span>
 <span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>ax_ww.plot(df_wastewater[<span class="st">'date'</span>], df_wastewater[<span class="st">'adjusted_flu'</span>], color<span class="op">=</span><span class="st">'tab:purple'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, label<span class="op">=</span><span class="st">'Wastewater Levels'</span>)</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co"># color ticks</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>ax_ww.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'tab:purple'</span>)</span>
 <span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
@@ -732,10 +740,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>ax_flu.axvspan(pd.to_datetime(<span class="st">'2023-10-01'</span>), pd.to_datetime(<span class="st">'2023-12-31'</span>), color<span class="op">=</span><span class="st">'lightgrey'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>ax_flu.text(pd.to_datetime(<span class="st">'2023-11-15'</span>), ax_ymaxlim <span class="op">*</span> <span class="fl">1.02</span>, <span class="st">'Project Runway Sampling'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>)</span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>fig.clf()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>min_ylim <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>ax_flu.set_ylim(bottom<span class="op">=</span>min_ylim)</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>ax_ww.set_ylim(bottom<span class="op">=</span>min_ylim)</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>fig.clf()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>

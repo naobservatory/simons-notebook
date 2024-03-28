@@ -286,8 +286,12 @@ df_wastewater = pd.read_csv('data/WWSCAN_selected_plants_all_targets_20240327.cs
 df_wastewater["date"] = pd.to_datetime(df_wastewater["collection_date"], format='%Y-%m-%d')
 df_wastewater = df_wastewater[(df_wastewater['date'] >= '2023-06-01') & (df_wastewater['date'] <= '2024-03-31')]
 
+df_wastewater.set_index('date', inplace=True)
+df_wastewater["adjusted_covid"] = (df_wastewater["N_Gene_gc_g_dry_weight"] / df_wastewater["PMMoV_gc_g_dry_weight"] * 1e6).rolling(window='21D', min_periods=1, center=True).mean()
+df_wastewater.reset_index(inplace=True)
+df_wastewater.dropna(subset=['adjusted_covid'], inplace=True)
 
-df_wastewater["adjusted_covid"] = df_wastewater["N_Gene_gc_g_dry_weight"] / df_wastewater["PMMoV_gc_g_dry_weight"] * 1e6
+
 
 df_wastewater.dropna(subset=['adjusted_covid'], inplace=True)
 
@@ -322,7 +326,9 @@ for y in range(0, int(ax_cov_ymaxlim) + 1, 1000):
 
 ax_cov.axvspan(pd.to_datetime('2023-10-01'), pd.to_datetime('2023-12-31'), color='lightgrey', alpha=0.5)
 ax_cov.text(pd.to_datetime('2023-11-15'), ax_cov_ymaxlim * 1.02, 'Project Runway Sampling', fontsize=12, ha='center')
-
+min_ylim = 0
+ax_cov.set_ylim(bottom=min_ylim)
+ax_ww.set_ylim(bottom=min_ylim)
 fig.tight_layout()
 plt.show()
 fig.clf()
@@ -356,7 +362,9 @@ for y in range(0, int(ax_cov_ymaxlim) + 1, 1000):
 
 ax_cov.axvspan(pd.to_datetime('2023-10-01'), pd.to_datetime('2023-12-31'), color='lightgrey', alpha=0.5)
 ax_cov.text(pd.to_datetime('2023-11-15'), ax_cov_ymaxlim * 1.02, 'Project Runway Sampling', fontsize=12, ha='center')
-
+min_ylim = 0
+ax_cov.set_ylim(bottom=0)
+ax_ww.set_ylim(bottom=0)
 fig.tight_layout()
 plt.show()
 fig.clf()
@@ -373,18 +381,18 @@ We use the same method to normalize influenza rates. As with COVID-19, an increa
 #| warning: false
 df_wastewater = pd.read_csv('data/WWSCAN_selected_plants_all_targets_20240327.csv')
 df_wastewater["date"] = pd.to_datetime(df_wastewater["collection_date"], format='%Y-%m-%d')
-df_wastewater["adjusted_flu"] = df_wastewater["Influenza_A_gc_g_dry_weight"] / df_wastewater["PMMoV_gc_g_dry_weight"] * 1e6
+
+
+
+df_wastewater.set_index('date', inplace=True)
+df_wastewater["adjusted_flu"] = (df_wastewater["Influenza_A_gc_g_dry_weight"] / df_wastewater["PMMoV_gc_g_dry_weight"] * 1e6).rolling(window='21D', min_periods=1, center=True).mean()
+df_wastewater.reset_index(inplace=True)
+df_wastewater.dropna(subset=["adjusted_flu"], inplace=True)
 df_wastewater = df_wastewater[(df_wastewater['date'] >= '2023-06-01') & (df_wastewater['date'] <= '2024-03-31')]
-df_wastewater.dropna(subset=['adjusted_flu'], inplace=True)
-
-october_start = pd.to_datetime('2023-10-01')
-january_end = pd.to_datetime('2024-01-31')
-affected_range = df_wastewater[(df_wastewater['date'] >= october_start) & (df_wastewater['date'] <= january_end)]
-
-df_flu = df_flu[(df_flu['date'] >= '2023-06-01') & (df_flu['date'] <= '2024-03-31')]
 
 df_flu = pd.read_csv('data/flu-dashboard-data-03-07-24/Influenza Lab Tests Reported-Table 1.tsv', sep='\t')
 df_flu['date'] = pd.to_datetime(df_flu['Week Start Date'], format='%m/%d/%y')
+df_flu = df_flu[(df_flu['date'] >= '2023-06-01') & (df_flu['date'] <= '2024-03-31')]
 df_flu['pos_tests_across_flu_types'] = df_flu.groupby('date')['Positive lab tests'].transform('sum')
 
 
@@ -401,7 +409,7 @@ ax_flu.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 ax_ww = ax_flu.twinx()
 ax_ww.set_ylabel('Wastewater Levels', color='tab:purple')
 ax_ww.plot(df_wastewater['date'], df_wastewater['adjusted_flu'], color='tab:purple', linestyle='-', label='Wastewater Levels')
-# color ticks
+
 ax_ww.tick_params(axis='y', labelcolor='tab:purple')
 
 
@@ -413,7 +421,9 @@ for y in range(0, int(ax_ymaxlim) + 1, 1000):
 
 ax_flu.axvspan(pd.to_datetime('2023-10-01'), pd.to_datetime('2023-12-31'), color='lightgrey', alpha=0.5)
 ax_flu.text(pd.to_datetime('2023-11-15'), ax_ymaxlim * 1.02, 'Project Runway Sampling', fontsize=12, ha='center')
-
+min_ylim = 0
+ax_flu.set_ylim(bottom=min_ylim)
+ax_ww.set_ylim(bottom=min_ylim)
 fig.tight_layout()
 plt.show()
 fig.clf()
