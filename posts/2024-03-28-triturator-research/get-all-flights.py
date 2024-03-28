@@ -242,7 +242,10 @@ def create_all_flights_tsv():
                                         "Missing Airport Code"
                                     ] += 1
                                     continue
-
+                            #try:
+                            #    arr_date = datetime.strptime(arr_date, "%Y-%m-%d")
+                            #except:
+                            #    arr_date = datetime.strptime(arr_date, "%B %d, %Y")
                             if not arr_time:
                                 flight_exclusions[
                                     "No Arrival Time provided"

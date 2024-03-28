@@ -1,0 +1,535 @@
+---
+title: "Triturator Analysis"
+author: "Simon Grimm "
+date: 2024-03-28
+format:
+  html:
+    code-fold: true
+jupyter: venv
+filters:
+    - black-formatter
+cap-location: bottom
+---
+
+# Introduction
+
+In Q1 we collected several pieces of information to better understand the composition of Project Runway triturator samples. One important piece was information on inbound flights to Boston, which included flight duration, airline, plane type, etc. This data was collated by a scraper created by Lenni, found [here](https://github.com/naobservatory/BOSTraffic/tree/master). A script that downloads the data from AWS can be found [here](https://github.com/naobservatory/simons-notebook/blob/main/posts/2024-03-28-triturator-research/get-all-flights.py).
+
+We need to know where the waste on these flights ends up. We thus spent some time reaching out to a lot of different airlines and ground handling companies (see [here](https://docs.google.com/document/d/1U5U3M76xe2eWN7batlIJoXhh8_kDKVhfANBOs8bmkwk/edit) for call notes). We’ve got information on the triturator usage for most airlines (though we have more trust in some pieces of information than in others).
+
+# Setup
+
+```{python}
+# Importing packages
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import datetime as dt
+import ast
+from collections import defaultdict
+from IPython.display import Markdown
+import random
+from tabulate import tabulate
+import math
+def return_airline_trit_dict():
+    airline_trit_dict = defaultdict(str)
+    with open("data/2024-03-27_airlines_triturators.tsv") as infile:
+        lines = infile.readlines()
+        lines = lines[1:]
+        for line in lines:
+
+            airline, triturator, ground_handling, source = line.split("\t")
+            prettier_triturator = {
+                "Swissport": "Swissport\nTriturator",
+                "American Airlines": "American Airlines\nTriturator",
+                "Unknown": "Unknown",
+                "None": "No Triturator used"
+            }
+            airline = airline.strip()
+            triturator = triturator.strip()
+            triturator = prettier_triturator[triturator]
+            airline_trit_dict[airline] = triturator
+    return airline_trit_dict
+
+
+def return_flights():
+    airline_trit_dict = return_airline_trit_dict()
+    unmatched_airlines = defaultdict(int)
+    with open("all_flights.tsv") as infile:
+        lines = infile.readlines()
+        us_flights = []
+        lines = lines[1:]
+        for line in lines:
+            (
+                origin,
+                origin_code,
+                date,
+                terminal,
+                equipment,
+                flight,
+                airline,
+                nation,
+                state,
+                flight_time,
+            ) = line.split("\t")
+            airlines = ast.literal_eval(airline)
+            prime_airline = airlines[0]
+            prime_airline = prime_airline.strip()
+            if nation == "Canada":
+                triturator_status = "Unknown"
+            elif prime_airline in airline_trit_dict:
+                triturator_status = airline_trit_dict[prime_airline]
+            elif prime_airline == "JetBlue": # Sometimes it's JetBlue, sometimes it's JetBlue Airways
+                triturator_status = "Swissport\nTriturator"
+
+            elif nation != "United States":
+                triturator_status = "Swissport\nTriturator"
+                unmatched_airlines[prime_airline] += 1
+
+
+            else:
+                triturator_status = "Unknown"
+                unmatched_airlines[prime_airline] += 1
+            us_flights.append(
+                [
+                    origin,
+                    origin_code,
+                    date,
+                    terminal,
+                    equipment,
+                    flight,
+                    prime_airline,
+                    nation,
+                    state,
+                    flight_time,
+                    triturator_status,
+                ]
+            )
+
+        us_flights_df = pd.DataFrame(us_flights)
+
+        us_flights_df.columns = [
+            "Origin",
+            "Origin Code",
+            "Date",
+            "Terminal",
+            "Equipment",
+            "Flight",
+            "Prime Airline",
+            "Nation",
+            "State",
+            "Flight Time",
+            "Triturator Status",
+        ]
+        return us_flights_df
+
+def origin_to_nation_dict():
+    df = return_flights()
+    df["Plotting Origin"] = np.where(
+        df["Nation"] == "United States",
+        df["State"],
+        df["Nation"],
+    )
+    nation_dict = df.set_index("Plotting Origin")["Nation"].to_dict()
+    return nation_dict
+
+
+def time_to_float(time):
+    time = time.strip()
+    try:
+        time_object = dt.datetime.strptime(time, "%H:%M:%S")
+        hours = (
+            time_object.hour
+            + time_object.minute / 60
+            + time_object.second / 3600
+        )
+        return hours
+    except Exception as e:
+        print(f"conversion of time {time} failed: {e}")
+        return 0
+
+def get_first_date_and_last_date():
+    df = return_flights()
+
+    first_date = df["Date"].min()
+
+    last_date = df["Date"].max()
+    last_date = pd.to_datetime(last_date, format="%B %d, %Y")
+
+    last_date = last_date.strftime("%Y-%m-%d")
+    return first_date, last_date
+
+```
+
+```{python}
+#| label: airline_triturators
+#| tbl-cap: Airline Triturator Assignments
+
+from IPython.display import Markdown
+from tabulate import tabulate
+table = pd.read_csv("data/2024-03-27_airlines_triturators.tsv", sep="\t")[["Airline", "Triturator", "Ground handling", "Source"]]
+Markdown(tabulate(
+  table.values,
+  headers=["Airline","Triturator","Ground Handling","Source"],
+  showindex=False,
+
+))
+```
+
+
+## Flights across Triturators
+
+```{python}
+
+def return_plotting_df():
+    df = return_flights()
+
+    nicer_trit_labels = {
+        "aa_triturator": "American Airlines \nTriturator",
+        "pr_triturator": "Swissport\nTriturator",
+        "unknown": "Unknown",
+    }
+    df = df.replace({"Triturator Status": nicer_trit_labels})
+
+    # create a df with number of flights per triturator
+    df = df.groupby("Triturator Status").size().reset_index(name="Flights")
+    # sort the df by number of flights
+    df = df.sort_values(by="Flights", ascending=False)
+    return df
+
+
+def return_destination_trit_plot():
+    df = return_plotting_df()
+
+    fig, ax = plt.subplots(figsize=(8, 3))
+
+    # sns colors (tab). no trit = orange, unknown = red swissport = green, american airlines = blue
+    colors = {"No Triturator used": "tab:orange", "Unknown": "tab:red", "Swissport\nTriturator": "tab:green", "American Airlines\nTriturator": "tab:blue"}
+
+
+    df.plot(
+        kind="barh",
+        x="Triturator Status",
+        y="Flights",
+        ax=ax,
+        legend=False,
+        color = [colors[i] for i in df["Triturator Status"]]
+    )
+
+    ax.spines["right"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    plt.tick_params(axis="y", which="both", left=False, right=False)
+    plt.ylabel("")
+    plt.xlabel("Total Flights")
+    plt.title("Total Flighs per Triturator")
+
+    plt.tight_layout()
+    plt.savefig("triturator_flights.png", dpi=600)
+
+return_destination_trit_plot()
+```
+
+## Airlines
+
+### Flights per Airline
+
+Here are flights per airline that arrive at each triturator.
+
+```{python}
+
+
+def return_plotting_df():
+    df = return_flights()
+    df = df.groupby(["Prime Airline", "Triturator Status"]).size().reset_index(name="Flights")
+    df = df.pivot(
+        index="Prime Airline", columns="Triturator Status", values="Flights"
+    )
+    df["Total"] = df.sum(axis=1)
+    df = df.sort_values(by="Total", ascending=False)
+    df = df.drop("Total", axis=1)
+    return df
+
+def return_destination_trit_plot():
+    df = return_plotting_df()
+
+    df = df.head(50)
+    fig, ax = plt.subplots(figsize=(8, 7))
+    df.plot.barh(stacked=True, ax=ax, width=0.8)
+
+
+    # drop title of legend box
+    ax.legend().set_title("")
+    ax.spines["right"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    plt.tick_params(axis="y", which="both", left=False, right=False)
+    plt.ylabel("")
+    plt.xlabel("Total Flights")
+    first_date, last_date = get_first_date_and_last_date()
+    plt.title(f"Total Flights per Airline and Triturator (Top 50)\n{first_date} - {last_date}")
+
+    plt.tight_layout()
+    plt.show()
+
+return_destination_trit_plot()
+```
+
+
+
+### Flight Hours per Airline
+
+Here are flight hours per airline that arrive at each triturator.
+
+```{python}
+
+def return_plotting_df():
+    df = return_flights()
+
+    df["Flight Hours"] = df["Flight Time"].apply(time_to_float)
+
+
+    df = (
+        df.groupby(["Prime Airline", "Triturator Status"])
+        .agg({"Flight Hours": "sum"})
+        .reset_index()
+
+    )
+
+    df = df.pivot(
+        index="Prime Airline", columns="Triturator Status", values="Flight Hours"
+    )
+
+    df["Total"] = df.sum(axis=1)
+    df = df.sort_values(by="Total", ascending=False)
+    df = df.drop("Total", axis=1)
+
+    return df
+
+
+
+def return_destination_trit_plot():
+    df = return_plotting_df()
+
+    df = df.head(50)
+    fig, ax = plt.subplots(figsize=(8, 7))
+    df.plot.barh(stacked=True, ax=ax, width=0.8)
+
+
+    # drop title of legend box
+    ax.legend().set_title("")
+    ax.spines["right"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    plt.tick_params(axis="y", which="both", left=False, right=False)
+    plt.ylabel("")
+    plt.xlabel("Total Flight Hours")
+    first_date, last_date = get_first_date_and_last_date()
+    plt.title(f"Total Flight Hours per Airline and Triturator (Top 50)\n{first_date} - {last_date}")
+
+    plt.tight_layout()
+    plt.show()
+
+
+
+
+
+def start():
+    return_destination_trit_plot()
+
+
+
+
+if __name__ == "__main__":
+    start()
+
+```
+
+## Airlines
+
+### Flights per Origin Location
+
+```{python}
+
+def return_plotting_df():
+    df = return_flights()
+
+    df["Flight Hours"] = df["Flight Time"].apply(time_to_float)
+
+    df["Plotting Origin"] = np.where(
+        df["Nation"] == "United States",
+        df["State"],
+        df["Nation"],
+    )
+    # group by origin and trit status and sum flight hours
+    df = df.groupby(["Plotting Origin", "Triturator Status"]).size().reset_index(name="Flights")
+    df = df.pivot(
+        index="Plotting Origin", columns="Triturator Status", values="Flights"
+    )
+    df["Total"] = df.sum(axis=1)
+    df = df.sort_values(by="Total", ascending=False)
+    df = df.drop("Total", axis=1)
+
+    return df
+
+
+def return_destination_trit_plot():
+    df = return_plotting_df()
+    nation_dict = origin_to_nation_dict()
+
+    df = df.head(50)
+    fig, ax = plt.subplots(figsize=(8, 7))
+    df.plot.barh(stacked=True, ax=ax, width=0.8)
+
+
+    for i, label in enumerate(ax.get_yticklabels()):
+        label.set_size(9)
+        origin = label.get_text()
+        if nation_dict[origin] != "United States":
+            label.set_size(9)
+            label.set_weight("bold")
+    ax.get_legend().set_title("")
+    ax.spines["right"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    plt.tick_params(axis="y", which="both", left=False, right=False)
+    plt.ylabel("")
+    plt.xlabel("Total Flights")
+    first_date, last_date = get_first_date_and_last_date()
+    plt.title(f"Total Flights per Country/State and Triturator (Top 50)\n{first_date} - {last_date}")
+
+    plt.tight_layout()
+    plt.savefig("triturator_destination_flighs.png", dpi=600)
+
+
+
+
+
+return_destination_trit_plot()
+
+
+```
+
+### Flight Hours per Origin Location
+
+```{python}
+
+
+def return_plotting_df():
+    df = return_flights()
+
+    df["Flight Hours"] = df["Flight Time"].apply(time_to_float)
+
+    df["Plotting Origin"] = np.where(
+        df["Nation"] == "United States",
+        df["State"],
+        df["Nation"],
+    )
+
+    df = (
+        df.groupby(["Plotting Origin", "Triturator Status"])
+        .agg({"Flight Hours": "sum"})
+        .reset_index()
+    )
+
+    df = df.pivot(
+        index="Plotting Origin",
+        columns="Triturator Status",
+        values="Flight Hours",
+    )
+
+    df["Total"] = df.sum(axis=1)
+    df = df.sort_values(by="Total", ascending=False)
+    df = df.drop("Total", axis=1)
+
+    return df
+
+
+
+
+def return_destination_trit_plot():
+    df = return_plotting_df()
+    nation_dict = origin_to_nation_dict()
+
+    df = df.head(50)
+    fig, ax = plt.subplots(figsize=(8, 7))
+    df.plot.barh(stacked=True, ax=ax, width=0.8, color = sns.color_palette("tab10"))
+
+    for i, label in enumerate(ax.get_yticklabels()):
+        label.set_size(9)
+        origin = label.get_text()
+        if nation_dict[origin] != "United States":
+            label.set_weight("bold")
+
+
+
+    ax.get_legend().set_title("")
+    ax.spines["right"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    plt.tick_params(axis="y", which="both", left=False, right=False)
+    plt.ylabel("")
+    plt.xlabel("Total Flight Hours")
+    first_date, last_date = get_first_date_and_last_date()
+    plt.title(f"Total Flight Hours per Country/State and Triturator (Top 50)\n{first_date} - {last_date}")
+
+    plt.tight_layout()
+    plt.savefig("triturator_destination_flight_hours.png", dpi=600)
+
+
+return_destination_trit_plot()
+
+```
+
+# Remaining airlines we are unsure about
+
+```{python}
+def return_plotting_df():
+    df = return_flights()
+
+    df["Flight Hours"] = df["Flight Time"].apply(time_to_float)
+    df = df[df["Triturator Status"] == "Unknown"]
+
+    df = (
+        df.groupby(["Prime Airline", "Triturator Status"])
+        .agg({"Flight Hours": "sum"})
+        .reset_index()
+
+    )
+    df = df[df["Flight Hours"] > 1000]
+
+    df = df.pivot(
+        index="Prime Airline", columns="Triturator Status", values="Flight Hours"
+    )
+
+    df["Total"] = df.sum(axis=1)
+    df = df.sort_values(by="Total", ascending=False)
+    df = df.drop("Total", axis=1)
+
+    return df
+
+
+
+def return_destination_trit_plot():
+    df = return_plotting_df()
+
+
+    df = df.head(50)
+    fig, ax = plt.subplots(figsize=(8, 3))
+    df.plot.barh(stacked=True, ax=ax, width=0.8)
+
+    ax.legend().set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    plt.tick_params(axis="y", which="both", left=False, right=False)
+    plt.ylabel("")
+    plt.xlabel("Total Flight Hours")
+    first_date, last_date = get_first_date_and_last_date()
+    plt.title(f"Airlines where we do not have a confident triturator assignment (>1000 flight hours)\n{first_date} - {last_date}")
+
+    plt.tight_layout()
+    plt.show()
+
+def start():
+    return_destination_trit_plot()
+
+if __name__ == "__main__":
+    start()
+```
+

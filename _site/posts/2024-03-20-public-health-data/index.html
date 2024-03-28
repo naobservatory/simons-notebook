@@ -308,7 +308,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>MA Counties</figcaption>
 </figure>
 </div>
-<div id="97e57eaa" class="cell" data-execution_count="1">
+<div id="384b1587" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -326,7 +326,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="covid-19" class="level2">
 <h2 class="anchored" data-anchor-id="covid-19">COVID-19</h2>
 <p>The plot below shows data both for the entire state and the counties covered by Deer Island (Suffolk, Norfolk, Middlesex). COVID-19 cases see a decrease until the beginning of November and a sharp increase and peak over the rest of the Project Runway coverage period.</p>
-<div id="8e0305d5" class="cell" data-execution_count="2">
+<div id="1af038e3" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -398,7 +398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="influenza" class="level2">
 <h2 class="anchored" data-anchor-id="influenza">Influenza</h2>
 <p>We do not have Percentage Positivity data for Influenza. Still, based on the number of positive tests the Influenza season likely started during the PR coverage period.</p>
-<div id="a8ee0410" class="cell" data-execution_count="3">
+<div id="b863224d" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_flu[<span class="st">'date'</span>] <span class="op">=</span> pd.to_datetime(df_flu[<span class="st">'Week Start Date'</span>], <span class="bu">format</span><span class="op">=</span><span class="st">'%m/</span><span class="sc">%d</span><span class="st">/%y'</span>)</span>
@@ -439,7 +439,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Due to the lower number of tests, the data from NREVSS is a lot less useful. Nevertheless, it might still be interesting to check if Rhinovirus relative abundance drops from October to end of December, as we see a decline in Rhinovirus tests and positive percentage rates during that time.</p>
 <section id="respiratory-adenovirus" class="level2">
 <h2 class="anchored" data-anchor-id="respiratory-adenovirus">Respiratory Adenovirus</h2>
-<div id="289a3ac3" class="cell" data-execution_count="4">
+<div id="ad87b0c2" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_adeno[df_adeno[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
@@ -483,7 +483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="parainfluenza" class="level2">
 <h2 class="anchored" data-anchor-id="parainfluenza">Parainfluenza</h2>
-<div id="f2188790" class="cell" data-execution_count="5">
+<div id="c99936e9" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_parainfluenza[df_parainfluenza[<span class="st">'TestType'</span>] <span class="op">==</span> <span class="dv">4</span>]</span>
@@ -530,7 +530,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="rhinovirus" class="level2">
 <h2 class="anchored" data-anchor-id="rhinovirus">Rhinovirus</h2>
-<div id="6a448feb" class="cell" data-execution_count="6">
+<div id="b4887b1e" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_rhino[<span class="st">'percent_positive'</span>] <span class="op">=</span> df_rhino[<span class="st">'Rhinopos'</span>] <span class="op">/</span> df_rhino[<span class="st">'Rhinotest'</span>] <span class="op">*</span> <span class="dv">100</span></span>
@@ -582,7 +582,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="positive-percentage" class="level3">
 <h3 class="anchored" data-anchor-id="positive-percentage">Positive Percentage</h3>
 <p>Positive Percentage rates coincide with more frequent spikes in the wastewater qPCR data.</p>
-<div id="cb2c9778" class="cell" data-execution_count="7">
+<div id="28c9773d" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_wastewater <span class="op">=</span> pd.read_csv(<span class="st">'data/WWSCAN_selected_plants_all_targets_20240327.csv'</span>)</span>
@@ -642,7 +642,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="positive-tests" class="level3">
 <h3 class="anchored" data-anchor-id="positive-tests">Positive Tests</h3>
 <p>Positive Testing rates also match the wastewater qPCR data. They track the lower levels of the wastewater qPCR data in the September COVID-19 surge more closely than the positive percentage rates.</p>
-<div id="f5e5f277" class="cell" data-execution_count="8">
+<div id="fe856f56" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig, ax_cov <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -686,8 +686,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="influenza-1" class="level2">
 <h2 class="anchored" data-anchor-id="influenza-1">Influenza</h2>
-<p>We use the same method to normalize As with COVID-19, an increase in influenza testing rates coincides with an increase in the wastewater qPCR data. The increase in the Influenza wastewater levels is a bit more stable than what we see for COVID-19.</p>
-<div id="6480dfff" class="cell" data-execution_count="9">
+<p>We use the same method to normalize influenza rates. As with COVID-19, an increase in influenza testing rates coincides with an increase in the wastewater qPCR data. The increase in the Influenza wastewater levels is a bit more stable than what we see for COVID-19.</p>
+<div id="202e137c" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df_wastewater <span class="op">=</span> pd.read_csv(<span class="st">'data/WWSCAN_selected_plants_all_targets_20240327.csv'</span>)</span>

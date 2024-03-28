@@ -31,7 +31,7 @@ From NREVSS, we have data on Parainfluenza, Rhinovirus, Enteric Adenovirus, Resp
 | Enteric Adenovirus| [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | No |  |
 | Respiratory Adenovirus  | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | Yes |
 | Human Metapneumovirus| [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | No  |
-| Seasonal Coronavirus | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | No | 
+| Seasonal Coronavirus | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | No |
 | Rhinovirus  | [GSheets](https://docs.google.com/spreadsheets/d/164pRmoySKWY9pkto-jhJo7w9sN51OPJq_gtkG3DuyaU/edit?usp=sharing) | 03-06-2023 | 30-12-2023  | PosTest + PosPerc | State | Yes |
 | COVID-19 | [Mass.gov](https://www.mass.gov/info-details/covid-19-reporting)| 02-07-2023 | 02-03-2024| PosTest + PosPerc | County | Yes  |
 | Influenza| [Mass.gov](https://www.mass.gov/info-details/influenza-reporting)  | 02-07-2023 | 02-03-2024| PosTest | State | Yes |
@@ -67,21 +67,21 @@ The plot below shows data both for the entire state and the counties covered by 
 
 fig, ax1 = plt.subplots(figsize=(8, 6))
 
-df = df_covid[df_covid['County'].isin(['Suffolk', 'Norfolk', 'Middlesex'])]
-df["date"] = pd.to_datetime(df["Week Start Date"], format='%m/%d/%y')
+df_counties = df_covid[df_covid['County'].isin(['Suffolk', 'Norfolk', 'Middlesex'])]
+df_counties["date"] = pd.to_datetime(df_counties["Week Start Date"], format='%m/%d/%y')
 
 
-df["pos_agg"] = df["Positive tests the week"].groupby(df["date"]).transform('sum')
-df["percent_positive_agg"] = df["pos_agg"] / df.groupby("date")["Tests during the week"].transform('sum') * 100
+df_counties["pos_agg"] = df_counties["Positive tests the week"].groupby(df_counties["date"]).transform('sum')
+df_counties["percent_positive_agg"] = df_counties["pos_agg"] / df_counties.groupby("date")["Tests during the week"].transform('sum') * 100
 
 ax1.set_xlabel('Months (2023-2024)')
 ax1.set_ylabel('Positive Percentage')
-ax1.plot(df["date"], df["percent_positive_agg"], color='tab:blue', linestyle='--', label='Counties (% Positive)')
+ax1.plot(df_counties["date"], df_counties["percent_positive_agg"], color='tab:blue', linestyle='--', label='Counties (% Positive)')
 ax1.tick_params(axis='y')
 
 ax2 = ax1.twinx()
 ax2.set_ylabel('Positive Tests per Week')
-ax2.plot(df["date"], df["pos_agg"], color='tab:blue', linestyle='-', label='Counties (# Positive)')
+ax2.plot(df_counties["date"], df_counties["pos_agg"], color='tab:blue', linestyle='-', label='Counties (# Positive)')
 ax2.tick_params(axis='y')
 
 df_ma = df_covid[df_covid['County'] == 'Statewide (all of MA)']
@@ -113,8 +113,8 @@ ax2.tick_params(axis='y', right=False, left=False)
 legend_elements = [Line2D([0], [0], color= 'black',  linestyle='-', label='Positive Tests'),
                    Line2D([0], [0], color= 'black', linestyle='--', label='Percentage Positivity'),
                    Line2D([0], [0], color= 'tab:red', linestyle='-', label='Massachusetts'),
-                   Line2D([0], [0], color= 'tab:blue', linestyle='-', label='Suffolk, Norfolk, Middlesex')] 
-                  
+                   Line2D([0], [0], color= 'tab:blue', linestyle='-', label='Suffolk, Norfolk, Middlesex')]
+
 
 ax1.legend(handles=legend_elements, loc='upper left')
 
@@ -128,12 +128,12 @@ We do not have Percentage Positivity data for Influenza. Still, based on the num
 ```{python}
 #| warning: false
 df_flu['date'] = pd.to_datetime(df_flu['Week Start Date'], format='%m/%d/%y')
-df_flu['pos_tests_across_fly_types'] = df_flu.groupby('date')['Positive lab tests'].transform('sum') 
+df_flu['pos_tests_across_flu_types'] = df_flu.groupby('date')['Positive lab tests'].transform('sum')
 df = df_flu
 fig, ax = plt.subplots(figsize=(8,6))
 ax.set_xlabel('Months (2023-2024)')
 ax.set_ylabel('Positive Tests per Week')
-ax.plot(df['date'], df['pos_tests_across_fly_types'], color='tab:blue', linestyle='-', label='Positive Tests')
+ax.plot(df['date'], df['pos_tests_across_flu_types'], color='tab:blue', linestyle='-', label='Positive Tests')
 ax.xaxis.set_major_locator(mdates.MonthLocator())
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 
@@ -168,7 +168,7 @@ ax1.set_ylabel('Positive Percentage', color='tab:blue')
 ax1.plot(df['RepWeekDate'], df['percent_positive'], color='tab:blue')
 ax1.tick_params(axis='y', labelcolor='tab:blue')
 
-ax2 = ax1.twinx() 
+ax2 = ax1.twinx()
 color = 'tab:red'
 ax2.set_ylabel('Positive Tests per Week', color=color)
 ax2.plot(df['RepWeekDate'], df['RAdenopos'], color=color)
@@ -205,7 +205,7 @@ ax1.set_ylabel('Positive Percentage', color='tab:blue')
 ax1.plot(df['RepWeekDate'], df['percent_positive'], color='tab:blue')
 ax1.tick_params(axis='y', labelcolor='tab:blue')
 
-ax2 = ax1.twinx() 
+ax2 = ax1.twinx()
 color = 'tab:red'
 ax2.set_ylabel('Positive Tests per Week', color=color)
 ax2.plot(df['RepWeekDate'], df['PIVpos'], color=color)
@@ -245,7 +245,7 @@ ax1.set_ylabel('Positive Percentage', color='tab:blue')
 ax1.plot(df_rhino['RepWeekDate'], df_rhino['percent_positive'], color='tab:blue')
 ax1.tick_params(axis='y', labelcolor='tab:blue')
 
-ax2 = ax1.twinx() 
+ax2 = ax1.twinx()
 color = 'tab:red'
 ax2.set_ylabel('Positive Tests per Week', color=color)
 ax2.plot(df_rhino['RepWeekDate'], df_rhino['Rhinopos'], color=color)
@@ -265,4 +265,156 @@ ax1.text(pd.to_datetime('2023-11-15'), ax1_ymaxlim * 1.05, 'Project Runway Sampl
 
 fig.tight_layout()
 plt.show()
+```
+
+# Public health data vs qPCR data
+
+We can link public health data to publicly available Boston wastewater data, available at data.wastewaterscan.org ([COVID](https://data.wastewaterscan.org/tracker/?charts=CiIQACABSABSBmI1MGM2NFoGTiBHZW5leNcDigEGNDc2ZWVl&selectedChartId=476eee), [Influenza](https://data.wastewaterscan.org/tracker/?charts=CicQACABSABSBmI1MGM2NFoLSW5mbHVlbnphIEF41wOKAQY0NzZlZWU%3D&selectedChartId=476eee)).
+
+
+## COVID-19
+
+Let's first at COVID-19. Following what Mike did in his [notebook on this data](https://naobservatory.github.io/mikes-notebook/posts/2023-09-11-wastewaterscan-ditp/), we can calculate the normalized COVID-19 levels in the wastewater by dividing the SARS-CoV-2 N gene copy number by the PMMoV gene copy number and multiplying by 1e6.
+
+### Positive Percentage
+
+Positive Percentage rates coincide with more frequent spikes in the wastewater qPCR data.
+
+```{python}
+#| warning: false
+df_wastewater = pd.read_csv('data/WWSCAN_selected_plants_all_targets_20240327.csv')
+df_wastewater["date"] = pd.to_datetime(df_wastewater["collection_date"], format='%Y-%m-%d')
+df_wastewater = df_wastewater[(df_wastewater['date'] >= '2023-06-01') & (df_wastewater['date'] <= '2024-03-31')]
+
+
+df_wastewater["adjusted_covid"] = df_wastewater["N_Gene_gc_g_dry_weight"] / df_wastewater["PMMoV_gc_g_dry_weight"] * 1e6
+
+df_wastewater.dropna(subset=['adjusted_covid'], inplace=True)
+
+df_covid = pd.read_csv('data/covid-19-dashboard-03-07-24/County data-Table 1.tsv', sep='\t')
+df_counties = df_covid[df_covid['County'].isin(['Suffolk', 'Norfolk', 'Middlesex'])]
+df_counties["date"] = pd.to_datetime(df_counties["Week Start Date"], format='%m/%d/%y')
+
+
+df_counties["pos_agg"] = df_counties["Positive tests the week"].groupby(df_counties["date"]).transform('sum')
+df_counties["percent_positive_agg"] = df_counties["pos_agg"] / df_counties.groupby("date")["Tests during the week"].transform('sum') * 100
+fig, ax_cov = plt.subplots(figsize=(8, 6))
+ax_cov.set_xlabel('Months (2023-2024)')
+ax_cov.set_ylabel('Positive Percentage', color='tab:blue')
+ax_cov.tick_params(axis='y', labelcolor='tab:blue')
+ax_cov.plot(df_counties["date"], df_counties["percent_positive_agg"], color='tab:blue', linestyle='-', label='Counties (% Positive)')
+ax_cov.xaxis.set_major_locator(mdates.MonthLocator())
+ax_cov.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+
+
+
+ax_ww = ax_cov.twinx()
+ax_ww.set_ylabel('Wastewater Levels', color='tab:purple')
+ax_ww.plot(df_wastewater['date'], df_wastewater['adjusted_covid'], color='tab:purple', linestyle='-', label='Wastewater Levels')
+# color ticks
+ax_ww.tick_params(axis='y', labelcolor='tab:purple')
+
+ax_cov_yminlim, ax_cov_ymaxlim = ax_cov.get_ylim()
+ax_cov.set_ylim(0, ax_cov_ymaxlim)
+
+for y in range(0, int(ax_cov_ymaxlim) + 1, 1000):
+    ax_cov.axhline(y, color='black', linestyle='-', lw=0.2)
+
+ax_cov.axvspan(pd.to_datetime('2023-10-01'), pd.to_datetime('2023-12-31'), color='lightgrey', alpha=0.5)
+ax_cov.text(pd.to_datetime('2023-11-15'), ax_cov_ymaxlim * 1.02, 'Project Runway Sampling', fontsize=12, ha='center')
+
+fig.tight_layout()
+plt.show()
+fig.clf()
+```
+
+### Positive Tests
+Positive Testing rates also match the wastewater qPCR data. They track the lower levels of the wastewater qPCR data in the September COVID-19 surge more closely than the positive percentage rates.
+```{python}
+#| warning: false
+fig, ax_cov = plt.subplots(figsize=(8, 6))
+ax_cov.set_xlabel('Months (2023-2024)')
+ax_cov.set_ylabel('Positive Tests per Week', color='tab:blue')
+ax_cov.tick_params(axis='y', labelcolor='tab:blue')
+ax_cov.plot(df_counties["date"], df_counties["pos_agg"], color='tab:blue', linestyle='-', label='Counties (% Positive)')
+ax_cov.xaxis.set_major_locator(mdates.MonthLocator())
+ax_cov.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+
+
+
+ax_ww = ax_cov.twinx()
+ax_ww.set_ylabel('Wastewater Levels', color='tab:purple')
+ax_ww.plot(df_wastewater['date'], df_wastewater['adjusted_covid'], color='tab:purple', linestyle='-', label='Wastewater Levels')
+# color ticks
+ax_ww.tick_params(axis='y', labelcolor='tab:purple')
+
+ax_cov_yminlim, ax_cov_ymaxlim = ax_cov.get_ylim()
+ax_cov.set_ylim(0, ax_cov_ymaxlim)
+
+for y in range(0, int(ax_cov_ymaxlim) + 1, 1000):
+    ax_cov.axhline(y, color='black', linestyle='-', lw=0.2)
+
+ax_cov.axvspan(pd.to_datetime('2023-10-01'), pd.to_datetime('2023-12-31'), color='lightgrey', alpha=0.5)
+ax_cov.text(pd.to_datetime('2023-11-15'), ax_cov_ymaxlim * 1.02, 'Project Runway Sampling', fontsize=12, ha='center')
+
+fig.tight_layout()
+plt.show()
+fig.clf()
+
+```
+
+
+
+## Influenza
+
+We use the same method to normalize influenza rates. As with COVID-19, an increase in influenza testing rates coincides with an increase in the wastewater qPCR data. The increase in the Influenza wastewater levels is a bit more stable than what we see for COVID-19.
+
+```{python}
+#| warning: false
+df_wastewater = pd.read_csv('data/WWSCAN_selected_plants_all_targets_20240327.csv')
+df_wastewater["date"] = pd.to_datetime(df_wastewater["collection_date"], format='%Y-%m-%d')
+df_wastewater["adjusted_flu"] = df_wastewater["Influenza_A_gc_g_dry_weight"] / df_wastewater["PMMoV_gc_g_dry_weight"] * 1e6
+df_wastewater = df_wastewater[(df_wastewater['date'] >= '2023-06-01') & (df_wastewater['date'] <= '2024-03-31')]
+df_wastewater.dropna(subset=['adjusted_flu'], inplace=True)
+
+october_start = pd.to_datetime('2023-10-01')
+january_end = pd.to_datetime('2024-01-31')
+affected_range = df_wastewater[(df_wastewater['date'] >= october_start) & (df_wastewater['date'] <= january_end)]
+
+df_flu = df_flu[(df_flu['date'] >= '2023-06-01') & (df_flu['date'] <= '2024-03-31')]
+
+df_flu = pd.read_csv('data/flu-dashboard-data-03-07-24/Influenza Lab Tests Reported-Table 1.tsv', sep='\t')
+df_flu['date'] = pd.to_datetime(df_flu['Week Start Date'], format='%m/%d/%y')
+df_flu['pos_tests_across_flu_types'] = df_flu.groupby('date')['Positive lab tests'].transform('sum')
+
+
+fig, ax_flu = plt.subplots(figsize=(8,6))
+ax_flu.set_xlabel('Months (2023-2024)')
+ax_flu.set_ylabel('Positive Tests per Week', color='tab:blue')
+ax_flu.tick_params(axis='y', labelcolor='tab:blue')
+ax_flu.plot(df_flu['date'], df_flu['pos_tests_across_flu_types'], color='tab:blue', linestyle='-', label='Positive Tests')
+
+ax_flu.xaxis.set_major_locator(mdates.MonthLocator())
+ax_flu.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+
+
+ax_ww = ax_flu.twinx()
+ax_ww.set_ylabel('Wastewater Levels', color='tab:purple')
+ax_ww.plot(df_wastewater['date'], df_wastewater['adjusted_flu'], color='tab:purple', linestyle='-', label='Wastewater Levels')
+# color ticks
+ax_ww.tick_params(axis='y', labelcolor='tab:purple')
+
+
+ax_yminlim, ax_ymaxlim = ax_flu.get_ylim()
+ax_flu.set_ylim(0, ax_ymaxlim)
+
+for y in range(0, int(ax_ymaxlim) + 1, 1000):
+    ax_flu.axhline(y, color='black', linestyle='-', lw=0.2)
+
+ax_flu.axvspan(pd.to_datetime('2023-10-01'), pd.to_datetime('2023-12-31'), color='lightgrey', alpha=0.5)
+ax_flu.text(pd.to_datetime('2023-11-15'), ax_ymaxlim * 1.02, 'Project Runway Sampling', fontsize=12, ha='center')
+
+fig.tight_layout()
+plt.show()
+fig.clf()
 ```

@@ -1,0 +1,399 @@
+Origin,Origin Code,Arrival Time (default),Arrival Date (default),Flight,Airline,Terminal,Status,Scheduled Departure Time,Scheduled Departure Date,Departure Time,Departure Date,Departure Status,Scheduled Arrival Time,Scheduled Arrival Date,Arrival Time,Arrival Date,Arrival Status,Equipment
+Austin,AUS,00:09,2024-02-03,['B61238'],['JetBlue Airways'],C,Landed - On-time [+],19:15,2024-02-02,19:11,2024-02-02,actual,00:09,2024-02-03,00:01,2024-02-03,actual,Airbus A220-300 Passenger
+Dallas,DFW,00:15,2024-02-03,['DL315'],['Delta Air Lines'],A,Landed - Delayed [+],19:41,2024-02-02,19:36,2024-02-02,actual,00:15,2024-02-03,00:40,2024-02-03,actual,Airbus A220-100 Passenger
+Miami,MIA,00:20,2024-02-03,['AA1054'],['American Airlines'],B,Landed - On-time [+],21:00,2024-02-02,20:53,2024-02-02,actual,00:20,2024-02-03,00:11,2024-02-03,actual,Boeing 737-800 Passenger
+Fort Lauderdale,FLL,00:35,2024-02-03,['B6170'],['JetBlue Airways'],C,Landed - On-time [+],21:26,2024-02-02,21:12,2024-02-02,actual,00:35,2024-02-03,00:22,2024-02-03,actual,Airbus A321
+Charlotte,CLT,00:52,2024-02-03,['AA1937'],['American Airlines'],B,Landed - On-time [+],22:45,2024-02-02,22:40,2024-02-02,actual,00:52,2024-02-03,00:48,2024-02-03,actual,Boeing 737-800 Passenger
+Atlanta,ATL,00:58,2024-02-03,['DL865'],['Delta Air Lines'],A,Landed - On-time [+],22:25,2024-02-02,22:22,2024-02-02,actual,00:58,2024-02-03,01:02,2024-02-03,actual,Airbus A321neo
+Tampa,TPA,01:12,2024-02-03,['NK3583'],['Spirit Airlines'],B,Landed - On-time [+],22:17,2024-02-02,22:21,2024-02-02,actual,01:12,2024-02-03,01:15,2024-02-03,actual,Airbus A320
+Los Angeles,LAX,05:00,2024-02-03,['B6988'],['JetBlue Airways'],C,Landed - On-time [+],20:30,2024-02-02,20:17,2024-02-02,actual,05:00,2024-02-03,04:52,2024-02-03,actual,Airbus A321
+Phoenix,PHX,05:00,2024-02-03,['B61302'],['JetBlue Airways'],C,Landed - On-time [+],22:25,2024-02-02,22:13,2024-02-02,actual,05:00,2024-02-03,05:10,2024-02-03,actual,Airbus A320
+Salt Lake City,SLC,05:02,2024-02-03,['B6648'],['JetBlue Airways'],C,Landed - On-time [+],22:40,2024-02-02,22:25,2024-02-02,actual,05:02,2024-02-03,05:08,2024-02-03,actual,Airbus A320
+Phoenix,PHX,05:48,2024-02-03,['AA2701'],['American Airlines'],B,Landed - On-time [+],23:01,2024-02-02,22:55,2024-02-02,actual,05:48,2024-02-03,05:59,2024-02-03,actual,Airbus A321neo
+Las Vegas,LAS,05:51,2024-02-03,['DL484'],['Delta Air Lines'],A,Landed - Delayed [+],21:45,2024-02-02,21:48,2024-02-02,actual,05:51,2024-02-03,06:15,2024-02-03,actual,Airbus A321neo
+Honolulu,HNL,06:00,2024-02-03,['HA90'],['Hawaiian Airlines'],E,Landed - On-time [+],15:20,2024-02-02,15:13,2024-02-02,actual,06:00,2024-02-03,05:22,2024-02-03,actual,Airbus A330-200
+Phoenix,PHX,06:05,2024-02-03,['DL979'],['Delta Air Lines'],A,Landed - On-time [+],23:20,2024-02-02,23:05,2024-02-02,actual,06:05,2024-02-03,06:05,2024-02-03,actual,Airbus A321neo
+Louisville,SDF,06:05,2024-02-03,['5X1014'],['UPS'],,Landed - Delayed [+],04:20,2024-02-03,04:57,2024-02-03,actual,06:05,2024-02-03,06:48,2024-02-03,actual,Boeing 767-300 Passenger
+Seattle,SEA,06:10,2024-02-03,['B6498'],['JetBlue Airways'],C,Landed - Delayed [+],21:58,2024-02-02,21:52,2024-02-02,actual,06:10,2024-02-03,06:31,2024-02-03,actual,Airbus A321
+Los Angeles,LAX,06:20,2024-02-03,['DL568'],['Delta Air Lines'],A,Landed - On-time [+],21:45,2024-02-02,21:40,2024-02-02,actual,06:20,2024-02-03,06:21,2024-02-03,actual,Boeing 757-200 Passenger
+Seattle,SEA,06:24,2024-02-03,['DL2733'],['Delta Air Lines'],A,Landed - Delayed [+],21:55,2024-02-02,21:47,2024-02-02,actual,06:24,2024-02-03,06:40,2024-02-03,actual,Airbus A321neo
+Los Angeles,LAX,06:25,2024-02-03,['AA2453'],['American Airlines'],B,Landed - Delayed [+],22:00,2024-02-02,22:36,2024-02-02,actual,06:25,2024-02-03,07:14,2024-02-03,actual,Airbus A321
+San Diego,SAN,06:39,2024-02-03,['DL486'],['Delta Air Lines'],A,Landed - On-time [+],22:10,2024-02-02,22:01,2024-02-02,actual,06:39,2024-02-03,06:41,2024-02-03,actual,Airbus A321neo
+Memphis,MEM,06:40,2024-02-03,['FX1406'],['FedEx'],,Landed - Delayed [+],03:18,2024-02-03,03:35,2024-02-03,actual,06:40,2024-02-03,07:03,2024-02-03,actual,Boeing 767-300 Passenger
+New York,JFK,06:42,2024-02-03,['B62718'],['JetBlue Airways'],C,Landed - On-time [+],05:30,2024-02-03,05:25,2024-02-03,actual,06:42,2024-02-03,06:19,2024-02-03,actual,Airbus A320
+San Francisco,SFO,06:59,2024-02-03,['DL475'],['Delta Air Lines'],A,Landed - On-time [+],22:15,2024-02-02,22:13,2024-02-02,actual,06:59,2024-02-03,07:06,2024-02-03,actual,Airbus A321neo
+Syracuse,SYR,07:00,2024-02-03,['B6374'],['JetBlue Airways'],C,Landed - On-time [+],05:45,2024-02-03,05:33,2024-02-03,actual,07:00,2024-02-03,06:32,2024-02-03,actual,Embraer 190
+Los Angeles,LAX,07:15,2024-02-03,['UA2106'],['United Airlines'],B,Landed - On-time [+],22:45,2024-02-02,22:38,2024-02-02,actual,07:15,2024-02-03,07:16,2024-02-03,actual,Boeing 757-200 Passenger
+New York,JFK,07:16,2024-02-03,['DL5653'],['Delta Air Lines'],A,Landed - On-time [+],06:00,2024-02-03,05:52,2024-02-03,actual,07:16,2024-02-03,07:14,2024-02-03,actual,Embraer 175
+Philadelphia,PHL,07:20,2024-02-03,['B6560'],['JetBlue Airways'],C,Landed - On-time [+],06:00,2024-02-03,05:48,2024-02-03,actual,07:20,2024-02-03,06:56,2024-02-03,actual,Embraer 190
+Bar Harbor,BHB,07:25,2024-02-03,['9K1830'],['Cape Air'],C,Landed - On-time [+],06:00,2024-02-03,05:55,2024-02-03,actual,07:25,2024-02-03,07:25,2024-02-03,actual,Cessna (Light aircraft)
+New York,LGA,07:31,2024-02-03,['B62832'],['JetBlue Airways'],C,Landed - On-time [+],06:15,2024-02-03,06:13,2024-02-03,actual,07:31,2024-02-03,07:08,2024-02-03,actual,Embraer 190
+Santo Domingo,SDQ,07:34,2024-02-03,['B61830'],['JetBlue Airways'],E,Landed - Delayed [+],04:19,2024-02-03,05:30,2024-02-03,actual,07:34,2024-02-03,08:36,2024-02-03,actual,Airbus A321
+Nantucket,ACK,07:48,2024-02-03,['9K5001'],['Cape Air'],C,Landed - On-time [+],07:00,2024-02-03,07:05,2024-02-03,actual,07:48,2024-02-03,07:51,2024-02-03,actual,Cessna (Light aircraft)
+Las Vegas,LAS,07:53,2024-02-03,['B6178'],['JetBlue Airways'],C,Landed - On-time [+],23:55,2024-02-02,23:35,2024-02-02,actual,07:53,2024-02-03,07:38,2024-02-03,actual,Airbus A321
+Buffalo,BUF,07:55,2024-02-03,['B6716'],['JetBlue Airways'],C,Landed - On-time [+],06:29,2024-02-03,06:19,2024-02-03,actual,07:55,2024-02-03,07:36,2024-02-03,actual,Embraer 190
+Pittsburgh,PIT,07:55,2024-02-03,['B61486'],['JetBlue Airways'],C,Landed - Delayed [+],06:00,2024-02-03,06:35,2024-02-03,actual,07:55,2024-02-03,08:17,2024-02-03,actual,Embraer 190
+New York,JFK,07:58,2024-02-03,['B6518'],['JetBlue Airways'],C,Landed - On-time [+],06:46,2024-02-03,06:39,2024-02-03,actual,07:58,2024-02-03,07:38,2024-02-03,actual,Embraer 190
+Provincetown,PVC,08:05,2024-02-03,['9K4201'],['Cape Air'],C,Landed - On-time [+],07:35,2024-02-03,07:25,2024-02-03,actual,08:05,2024-02-03,08:00,2024-02-03,actual,Cessna (Light aircraft)
+San Francisco,SFO,08:05,2024-02-03,['UA1665'],['United Airlines'],B,Landed - On-time [+],23:25,2024-02-02,23:18,2024-02-02,actual,08:05,2024-02-03,08:08,2024-02-03,actual,Boeing 757-200 Passenger
+Washington,DCA,08:09,2024-02-03,['DL5751'],['Delta Air Lines'],A,Landed - On-time [+],06:30,2024-02-03,06:28,2024-02-03,actual,08:09,2024-02-03,07:59,2024-02-03,actual,Embraer 175
+Charlotte,CLT,08:15,2024-02-03,['AA9790'],['American Airlines'],B,Canceled [+],06:00,2024-02-03,06:00,2024-02-03,scheduled,08:15,2024-02-03,08:15,2024-02-03,scheduled,Airbus A319
+Lebanon,LEB,08:15,2024-02-03,['9K1870'],['Cape Air'],C,Landed - On-time [+],07:20,2024-02-03,07:10,2024-02-03,actual,08:15,2024-02-03,08:10,2024-02-03,actual,Tecnam P2012 Traveler
+San Francisco,SFO,08:20,2024-02-03,['B634'],['JetBlue Airways'],C,Landed - On-time [+],23:41,2024-02-02,23:29,2024-02-02,actual,08:20,2024-02-03,08:18,2024-02-03,actual,Airbus A321
+Augusta,AUG,08:27,2024-02-03,['9K1000'],['Cape Air'],C,Landed - On-time [+],07:10,2024-02-03,07:10,2024-02-03,actual,08:27,2024-02-03,08:20,2024-02-03,actual,Tecnam P2012 Traveler
+Atlanta,ATL,08:33,2024-02-03,['B6896'],['JetBlue Airways'],C,Landed - On-time [+],06:00,2024-02-03,05:52,2024-02-03,actual,08:33,2024-02-03,08:24,2024-02-03,actual,Embraer 190
+Wilkes-Barre,AVP,08:34,2024-02-03,['LXJ341'],['Flexjet'],,Landed - On-time [+],07:33,2024-02-03,07:54,2024-02-03,actual,08:34,2024-02-03,08:43,2024-02-03,actual,Embraer EMB-505 Phenom 300
+Rutland,RUT,08:38,2024-02-03,['9K52'],['Cape Air'],C,Landed - Delayed [+],07:20,2024-02-03,08:11,2024-02-03,actual,08:38,2024-02-03,09:28,2024-02-03,actual,Tecnam P2012 Traveler
+Martha's Vineyard,MVY,08:45,2024-02-03,['9K3201'],['Cape Air'],C,Landed - Delayed [+],08:05,2024-02-03,10:03,2024-02-03,actual,08:45,2024-02-03,10:48,2024-02-03,actual,Cessna (Light aircraft)
+Newark,EWR,08:52,2024-02-03,['UA3497'],['United Airlines'],B,Landed - On-time [+],07:35,2024-02-03,07:30,2024-02-03,actual,08:52,2024-02-03,08:36,2024-02-03,actual,Embraer 175 (Enhanced Winglets)
+Rockland,RKD,08:55,2024-02-03,['9K1850'],['Cape Air'],C,Landed - On-time [+],07:35,2024-02-03,07:20,2024-02-03,actual,08:55,2024-02-03,08:35,2024-02-03,actual,Tecnam P2012 Traveler
+Washington,DCA,08:58,2024-02-03,['B61554'],['JetBlue Airways'],C,Landed - On-time [+],07:30,2024-02-03,07:28,2024-02-03,actual,08:58,2024-02-03,08:55,2024-02-03,actual,Embraer 190
+Saranac Lake,SLK,08:59,2024-02-03,['9K1026'],['Cape Air'],C,Landed - On-time [+],07:25,2024-02-03,07:28,2024-02-03,actual,08:59,2024-02-03,08:52,2024-02-03,actual,Tecnam P2012 Traveler
+Seoul,ICN,09:00,2024-02-03,['KE91'],['Korean Air'],E,Landed - Delayed [+],09:30,2024-02-03,09:47,2024-02-03,actual,09:00,2024-02-03,09:17,2024-02-03,actual,Boeing 787-9
+Hartford,BDL,09:02,2024-02-03,['CNS9'],['PlaneSense'],,Landed - On-time [+],08:30,2024-02-03,08:21,2024-02-03,actual,09:02,2024-02-03,08:50,2024-02-03,actual,Pilatus PC-12
+Newark,EWR,09:03,2024-02-03,['DL5832'],['Delta Air Lines'],A,Landed - On-time [+],07:45,2024-02-03,07:40,2024-02-03,actual,09:03,2024-02-03,08:46,2024-02-03,actual,Embraer 175
+Baltimore,BWI,09:10,2024-02-03,['WN936'],['Southwest Airlines'],B,Landed - On-time [+],07:40,2024-02-03,07:43,2024-02-03,actual,09:10,2024-02-03,09:01,2024-02-03,actual,Boeing 737-800 Passenger
+Fort Myers,RSW,09:13,2024-02-03,['B6566'],['JetBlue Airways'],C,Landed - On-time [+],06:00,2024-02-03,06:07,2024-02-03,actual,09:13,2024-02-03,09:09,2024-02-03,actual,Airbus A320
+New York,LGA,09:16,2024-02-03,['DL5781'],['Delta Air Lines'],A,Landed - On-time [+],08:00,2024-02-03,07:51,2024-02-03,actual,09:16,2024-02-03,08:58,2024-02-03,actual,Embraer 175
+Bermuda,BDA,09:20,2024-02-03,['2T301'],['BermudAir'],E,Landed - On-time [+],08:00,2024-02-03,08:15,2024-02-03,actual,09:20,2024-02-03,09:05,2024-02-03,actual,Embraer 175 (Enhanced Winglets)
+Saint Louis,STL,09:20,2024-02-03,['1I694'],['NetJets Aviation'],,Landed - Delayed [+],06:00,2024-02-03,09:50,2024-02-03,actual,09:20,2024-02-03,13:08,2024-02-03,actual,CESSNA 680A Citation Latitude
+Charlotte,CLT,09:27,2024-02-03,['AA1449'],['American Airlines'],B,Landed - On-time [+],07:22,2024-02-03,07:34,2024-02-03,actual,09:27,2024-02-03,09:36,2024-02-03,actual,Boeing 737-800 Passenger
+Richmond,RIC,09:36,2024-02-03,['DL5758'],['Delta Air Lines'],A,Landed - On-time [+],08:00,2024-02-03,07:54,2024-02-03,actual,09:36,2024-02-03,09:45,2024-02-03,actual,Embraer 175
+San Juan,SJU,09:40,2024-02-03,['NK2325'],['Spirit Airlines'],B,Landed - On-time [+],06:20,2024-02-03,06:17,2024-02-03,actual,09:40,2024-02-03,09:26,2024-02-03,actual,Airbus A320
+Jacksonville,JAX,09:42,2024-02-03,['DL2359'],['Delta Air Lines'],A,Landed - On-time [+],07:00,2024-02-03,06:51,2024-02-03,actual,09:42,2024-02-03,09:27,2024-02-03,actual,Airbus A220-100 Passenger
+Montreal,YUL,09:43,2024-02-03,['AC8604'],['Air Canada'],B,Landed - On-time [+],08:15,2024-02-03,08:33,2024-02-03,actual,09:43,2024-02-03,09:40,2024-02-03,actual,
+Fort Lauderdale,FLL,09:44,2024-02-03,['NK1897'],['Spirit Airlines'],B,Landed - On-time [+],06:30,2024-02-03,06:26,2024-02-03,actual,09:44,2024-02-03,09:38,2024-02-03,actual,Airbus A320neo
+Massena,MSS,09:50,2024-02-03,['4B861'],['Boutique Air'],B,Landed - On-time [+],08:30,2024-02-03,08:38,2024-02-03,actual,09:50,2024-02-03,09:45,2024-02-03,actual,Pilatus PC-12
+Lebanon,LEB,09:55,2024-02-03,['9K1874'],['Cape Air'],C,Landed - On-time [+],09:00,2024-02-03,08:55,2024-02-03,actual,09:55,2024-02-03,09:55,2024-02-03,actual,Tecnam P2012 Traveler
+Westchester County,HPN,09:59,2024-02-03,['TJ95'],['Tradewind Aviation'],,Landed - Delayed [+],09:10,2024-02-03,09:42,2024-02-03,actual,09:59,2024-02-03,10:27,2024-02-03,actual,Pilatus PC-12
+New York,JFK,09:59,2024-02-03,['VJA549'],['Vista Jet'],,Landed - Delayed [+],09:15,2024-02-03,10:06,2024-02-03,actual,09:59,2024-02-03,10:45,2024-02-03,actual,BOMBARDIER BD-100 Challenger 300
+Columbus,CMH,10:02,2024-02-03,['DL5691'],['Delta Air Lines'],A,Landed - Delayed [+],08:00,2024-02-03,07:50,2024-02-03,actual,10:02,2024-02-03,10:22,2024-02-03,actual,Embraer 175
+Saint Louis,STL,10:02,2024-02-03,['1I550'],['NetJets Aviation'],,En Route [+],06:00,2024-02-03,06:00,2024-02-03,scheduled,10:02,2024-02-03,10:02,2024-02-03,scheduled,CESSNA 680A Citation Latitude
+Orlando,MCO,10:04,2024-02-03,['DL2308'],['Delta Air Lines'],A,Landed - On-time [+],07:05,2024-02-03,07:00,2024-02-03,actual,10:04,2024-02-03,10:04,2024-02-03,actual,Airbus A321
+Cincinnati,CVG,10:06,2024-02-03,['DL5671'],['Delta Air Lines'],A,Landed - Delayed [+],08:00,2024-02-03,07:52,2024-02-03,actual,10:06,2024-02-03,10:23,2024-02-03,actual,Embraer 175
+Fort Lauderdale,FLL,10:13,2024-02-03,['DL2313'],['Delta Air Lines'],A,Landed - Delayed [+],07:00,2024-02-03,10:18,2024-02-03,actual,10:13,2024-02-03,13:48,2024-02-03,actual,Boeing 737-800 Passenger
+Tampa,TPA,10:16,2024-02-03,['B6392'],['JetBlue Airways'],C,Landed - On-time [+],07:15,2024-02-03,07:08,2024-02-03,actual,10:16,2024-02-03,10:15,2024-02-03,actual,Airbus A220-300 Passenger
+Washington,DCA,10:17,2024-02-03,['AA4256'],['American Airlines'],B,Landed - On-time [+],08:25,2024-02-03,08:16,2024-02-03,actual,10:17,2024-02-03,09:50,2024-02-03,actual,Embraer 175
+Orlando,MCO,10:18,2024-02-03,['B652'],['JetBlue Airways'],C,Landed - On-time [+],07:10,2024-02-03,07:08,2024-02-03,actual,10:18,2024-02-03,10:09,2024-02-03,actual,Airbus A220-300 Passenger
+Hyannis,HYA,10:22,2024-02-03,['9K7161'],['Cape Air'],C,Landed - On-time [+],09:45,2024-02-03,09:37,2024-02-03,actual,10:22,2024-02-03,10:15,2024-02-03,actual,Cessna (Light aircraft)
+Dulles,IAD,10:25,2024-02-03,['UA641'],['United Airlines'],B,Landed - On-time [+],08:50,2024-02-03,08:46,2024-02-03,actual,10:25,2024-02-03,10:18,2024-02-03,actual,Boeing 737MAX 9 Passenger
+Indianapolis,IND,10:30,2024-02-03,['DL5662'],['Delta Air Lines'],A,Landed - On-time [+],08:15,2024-02-03,08:07,2024-02-03,actual,10:30,2024-02-03,10:31,2024-02-03,actual,Embraer 175
+Cleveland,CLE,10:32,2024-02-03,['B62040'],['JetBlue Airways'],C,Landed - On-time [+],08:48,2024-02-03,08:32,2024-02-03,actual,10:32,2024-02-03,10:20,2024-02-03,actual,Embraer 190
+Toronto,YYZ,10:36,2024-02-03,['AC8692'],['Air Canada'],B,Landed - On-time [+],08:55,2024-02-03,08:48,2024-02-03,actual,10:36,2024-02-03,10:31,2024-02-03,actual,
+Chicago,ORD,10:38,2024-02-03,['AA3733'],['American Airlines'],B,Landed - On-time [+],07:15,2024-02-03,07:14,2024-02-03,actual,10:38,2024-02-03,10:34,2024-02-03,actual,
+Chicago,ORD,10:40,2024-02-03,['UA1803'],['United Airlines'],B,Landed - On-time [+],07:20,2024-02-03,07:11,2024-02-03,actual,10:40,2024-02-03,10:28,2024-02-03,actual,Airbus A319
+Miami,MIA,10:43,2024-02-03,['B61220'],['JetBlue Airways'],C,Landed - On-time [+],07:30,2024-02-03,07:11,2024-02-03,actual,10:43,2024-02-03,10:39,2024-02-03,actual,Airbus A320
+Raleigh/Durham,RDU,10:44,2024-02-03,['DL2388'],['Delta Air Lines'],A,Landed - On-time [+],08:45,2024-02-03,08:50,2024-02-03,actual,10:44,2024-02-03,10:43,2024-02-03,actual,Airbus A320
+Atlanta,ATL,10:48,2024-02-03,['DL849'],['Delta Air Lines'],A,Landed - On-time [+],08:15,2024-02-03,08:13,2024-02-03,actual,10:48,2024-02-03,10:41,2024-02-03,actual,Airbus A321neo
+Dallas,DFW,10:48,2024-02-03,['DL2915'],['Delta Air Lines'],A,Landed - On-time [+],06:15,2024-02-03,06:06,2024-02-03,actual,10:48,2024-02-03,10:50,2024-02-03,actual,Airbus A220-100 Passenger
+Austin,AUS,10:49,2024-02-03,['AA1194'],['American Airlines'],B,Landed - On-time [+],06:00,2024-02-03,05:48,2024-02-03,actual,10:49,2024-02-03,10:41,2024-02-03,actual,Boeing 737-800 Passenger
+Nantucket,ACK,10:53,2024-02-03,['9K5081'],['Cape Air'],C,Landed - Delayed [+],10:05,2024-02-03,10:17,2024-02-03,actual,10:53,2024-02-03,11:10,2024-02-03,actual,Cessna (Light aircraft)
+Detroit,DTW,10:55,2024-02-03,['DL5697'],['Delta Air Lines'],A,Landed - On-time [+],08:55,2024-02-03,08:49,2024-02-03,actual,10:55,2024-02-03,10:44,2024-02-03,actual,Embraer 175
+Washington,DCA,11:04,2024-02-03,['B61954'],['JetBlue Airways'],C,Landed - On-time [+],09:30,2024-02-03,09:23,2024-02-03,actual,11:04,2024-02-03,10:48,2024-02-03,actual,Embraer 190
+Philadelphia,PHL,11:04,2024-02-03,['AA1467'],['American Airlines'],B,Landed - On-time [+],09:45,2024-02-03,09:37,2024-02-03,actual,11:04,2024-02-03,10:54,2024-02-03,actual,Airbus A321neo
+West Palm Beach,PBI,11:08,2024-02-03,['B6522'],['JetBlue Airways'],C,Landed - On-time [+],08:00,2024-02-03,07:48,2024-02-03,actual,11:08,2024-02-03,10:52,2024-02-03,actual,Airbus A320
+Orlando,MCO,11:10,2024-02-03,['NK103'],['Spirit Airlines'],B,Landed - On-time [+],08:08,2024-02-03,08:04,2024-02-03,actual,11:10,2024-02-03,11:04,2024-02-03,actual,Airbus A320
+Myrtle Beach,MYR,11:13,2024-02-03,['NK1160'],['Spirit Airlines'],B,Landed - On-time [+],09:16,2024-02-03,09:08,2024-02-03,actual,11:13,2024-02-03,11:06,2024-02-03,actual,Airbus A320neo
+Fort Lauderdale,FLL,11:15,2024-02-03,['B62570'],['JetBlue Airways'],C,Landed - On-time [+],08:00,2024-02-03,07:57,2024-02-03,actual,11:15,2024-02-03,11:12,2024-02-03,actual,Airbus A220-300 Passenger
+New York,JFK,11:17,2024-02-03,['DL5637'],['Delta Air Lines'],A,Landed - On-time [+],10:10,2024-02-03,10:09,2024-02-03,actual,11:17,2024-02-03,11:10,2024-02-03,actual,Embraer 175
+Newark,EWR,11:20,2024-02-03,['UA3607'],['United Airlines'],B,Landed - On-time [+],10:00,2024-02-03,09:50,2024-02-03,actual,11:20,2024-02-03,10:57,2024-02-03,actual,Embraer 170
+Orlando,MCO,11:24,2024-02-03,['F93348'],['Frontier Airlines'],E,Landed - On-time [+],08:00,2024-02-03,08:12,2024-02-03,actual,11:24,2024-02-03,11:13,2024-02-03,actual,Airbus A320neo
+Martha's Vineyard,MVY,11:25,2024-02-03,['9K3001'],['Cape Air'],C,En Route [+],10:45,2024-02-03,10:45,2024-02-03,scheduled,11:25,2024-02-03,11:25,2024-02-03,scheduled,Cessna (Light aircraft)
+Toronto,YTZ,11:25,2024-02-03,['PD2939'],['Porter Airlines Canada'],E,Landed - Delayed [+],09:50,2024-02-03,10:08,2024-02-03,actual,11:25,2024-02-03,11:42,2024-02-03,actual,De Havilland (Bombardier) DHC-8-400 Dash 8Q
+Bar Harbor,BHB,11:30,2024-02-03,['9K1834'],['Cape Air'],C,Landed - On-time [+],10:05,2024-02-03,10:00,2024-02-03,actual,11:30,2024-02-03,11:25,2024-02-03,actual,Cessna (Light aircraft)
+Miami,MIA,11:30,2024-02-03,['AA1235'],['American Airlines'],B,Landed - On-time [+],08:16,2024-02-03,08:28,2024-02-03,actual,11:30,2024-02-03,11:38,2024-02-03,actual,Airbus A321neo
+New York,LGA,11:33,2024-02-03,['B6632'],['JetBlue Airways'],C,Landed - On-time [+],10:15,2024-02-03,10:10,2024-02-03,actual,11:33,2024-02-03,11:13,2024-02-03,actual,Embraer 190
+London,LHR,11:38,2024-02-03,['B61621'],['JetBlue Airways'],E,Landed - On-time [+],08:25,2024-02-03,08:24,2024-02-03,actual,11:38,2024-02-03,11:10,2024-02-03,actual,Airbus A321neo
+Washington,DCA,11:46,2024-02-03,['AA2134'],['American Airlines'],B,Landed - On-time [+],10:00,2024-02-03,09:53,2024-02-03,actual,11:46,2024-02-03,11:21,2024-02-03,actual,Airbus A319
+Chicago,ORD,11:49,2024-02-03,['AA4801'],['American Airlines'],B,Landed - On-time [+],08:15,2024-02-03,08:08,2024-02-03,actual,11:49,2024-02-03,11:32,2024-02-03,actual,Embraer 175
+Charlotte,CLT,11:50,2024-02-03,['AA1445'],['American Airlines'],B,Landed - On-time [+],09:41,2024-02-03,09:34,2024-02-03,actual,11:50,2024-02-03,11:40,2024-02-03,actual,Boeing 737-800 Passenger
+Indianapolis,IND,11:54,2024-02-03,['AA4716'],['American Airlines'],B,Landed - Delayed [+],09:41,2024-02-03,09:29,2024-02-03,actual,11:54,2024-02-03,12:12,2024-02-03,actual,Embraer 175
+Chicago,ORD,11:54,2024-02-03,['DL5677'],['Delta Air Lines'],A,Landed - On-time [+],08:30,2024-02-03,08:22,2024-02-03,actual,11:54,2024-02-03,11:56,2024-02-03,actual,Embraer 175
+Detroit,DTW,11:59,2024-02-03,['DL1331'],['Delta Air Lines'],A,Landed - On-time [+],10:03,2024-02-03,09:55,2024-02-03,actual,11:59,2024-02-03,11:42,2024-02-03,actual,Airbus A320
+Charlotte,CLT,12:00,2024-02-03,['B61246'],['JetBlue Airways'],C,Landed - On-time [+],09:43,2024-02-03,09:39,2024-02-03,actual,12:00,2024-02-03,12:07,2024-02-03,actual,Embraer 190
+Detroit,DTW,12:00,2024-02-03,['B62036'],['JetBlue Airways'],C,Landed - On-time [+],10:05,2024-02-03,09:54,2024-02-03,actual,12:00,2024-02-03,11:44,2024-02-03,actual,Embraer 190
+Chicago,MDW,12:00,2024-02-03,['WN2560'],['Southwest Airlines'],B,Landed - On-time [+],08:50,2024-02-03,08:44,2024-02-03,actual,12:00,2024-02-03,11:53,2024-02-03,actual,Boeing 737-800 Passenger
+Washington,DCA,12:08,2024-02-03,['B6654'],['JetBlue Airways'],C,Landed - On-time [+],10:30,2024-02-03,10:21,2024-02-03,actual,12:08,2024-02-03,11:49,2024-02-03,actual,Embraer 190
+Boston,BOS,12:10,2024-02-03,['B6771'],['JetBlue Airways'],4,En Route - DIVERTED [+],07:19,2024-02-03,07:13,2024-02-03,actual,12:10,2024-02-03,09:10,2024-02-03,estimated,Airbus A220-300 Passenger
+Houston,IAH,12:12,2024-02-03,['UA2394'],['United Airlines'],B,Landed - On-time [+],07:30,2024-02-03,07:28,2024-02-03,actual,12:12,2024-02-03,12:12,2024-02-03,actual,Airbus A319
+Newark,EWR,12:14,2024-02-03,['UA721'],['United Airlines'],B,Landed - Delayed [+],10:59,2024-02-03,13:07,2024-02-03,actual,12:14,2024-02-03,14:09,2024-02-03,actual,Boeing 757-200 Passenger
+London,LHR,12:15,2024-02-03,['DL59'],['Delta Air Lines'],E,Landed - On-time [+],09:10,2024-02-03,09:03,2024-02-03,actual,12:15,2024-02-03,11:52,2024-02-03,actual,Airbus A330-200
+Halifax,YHZ,12:15,2024-02-03,['AC8663'],['Air Canada'],B,Canceled [+],11:15,2024-02-03,11:15,2024-02-03,scheduled,12:15,2024-02-03,12:15,2024-02-03,scheduled,
+Cleveland,CLE,12:19,2024-02-03,['DL5753'],['Delta Air Lines'],A,Landed - On-time [+],10:30,2024-02-03,10:23,2024-02-03,actual,12:19,2024-02-03,12:11,2024-02-03,actual,Embraer 175
+Ottawa,YOW,12:20,2024-02-03,['PD2341'],['Porter Airlines Canada'],E,Landed - On-time [+],11:05,2024-02-03,11:07,2024-02-03,actual,12:20,2024-02-03,12:34,2024-02-03,actual,De Havilland (Bombardier) DHC-8-400 Dash 8Q
+Nantucket,ACK,12:28,2024-02-03,['9K5281'],['Cape Air'],C,Landed - On-time [+],11:40,2024-02-03,11:15,2024-02-03,actual,12:28,2024-02-03,12:18,2024-02-03,actual,Cessna (Light aircraft)
+Philadelphia,PHL,12:28,2024-02-03,['DL5745'],['Delta Air Lines'],A,Landed - On-time [+],11:05,2024-02-03,11:03,2024-02-03,actual,12:28,2024-02-03,12:19,2024-02-03,actual,Embraer 175
+Miami,MIA,12:31,2024-02-03,['AA2731'],['American Airlines'],B,Landed - On-time [+],09:15,2024-02-03,09:30,2024-02-03,actual,12:31,2024-02-03,12:37,2024-02-03,actual,Boeing 737MAX 8 Passenger
+Charlotte,CLT,12:34,2024-02-03,['DL5656'],['Delta Air Lines'],A,Landed - On-time [+],10:15,2024-02-03,10:06,2024-02-03,actual,12:34,2024-02-03,12:23,2024-02-03,actual,Embraer 175
+Augusta,AUG,12:35,2024-02-03,['9K1002'],['Cape Air'],C,Landed - On-time [+],11:18,2024-02-03,11:18,2024-02-03,actual,12:35,2024-02-03,12:25,2024-02-03,actual,Tecnam P2012 Traveler
+Chicago,ORD,12:35,2024-02-03,['UA1675'],['United Airlines'],B,Landed - On-time [+],09:15,2024-02-03,09:15,2024-02-03,actual,12:35,2024-02-03,12:37,2024-02-03,actual,Boeing 737-800 Passenger
+Baltimore,BWI,12:45,2024-02-03,['B6526'],['JetBlue Airways'],C,Landed - On-time [+],11:23,2024-02-03,11:09,2024-02-03,actual,12:45,2024-02-03,12:37,2024-02-03,actual,Embraer 190
+Minneapolis,MSP,12:46,2024-02-03,['DL794'],['Delta Air Lines'],A,Landed - On-time [+],08:50,2024-02-03,08:46,2024-02-03,actual,12:46,2024-02-03,12:35,2024-02-03,actual,Airbus A319
+Pittsburgh,PIT,12:52,2024-02-03,['B62286'],['JetBlue Airways'],C,Landed - On-time [+],11:20,2024-02-03,11:10,2024-02-03,actual,12:52,2024-02-03,12:52,2024-02-03,actual,Embraer 190
+Raleigh/Durham,RDU,12:54,2024-02-03,['DL2374'],['Delta Air Lines'],A,Landed - On-time [+],10:55,2024-02-03,10:45,2024-02-03,actual,12:54,2024-02-03,12:31,2024-02-03,actual,Airbus A220-100 Passenger
+London,LHR,12:55,2024-02-03,['AA109'],['American Airlines'],E,Landed - On-time [+],10:05,2024-02-03,09:50,2024-02-03,actual,12:55,2024-02-03,12:27,2024-02-03,actual,Boeing 777-200 / 200ER
+Orlando,MCO,12:58,2024-02-03,['DL2301'],['Delta Air Lines'],A,Landed - On-time [+],10:00,2024-02-03,10:03,2024-02-03,actual,12:58,2024-02-03,12:57,2024-02-03,actual,Airbus A321
+Memphis,MEM,13:01,2024-02-03,['AA4522'],['American Airlines'],B,Landed - On-time [+],09:15,2024-02-03,09:03,2024-02-03,actual,13:01,2024-02-03,13:00,2024-02-03,actual,Embraer 175
+Rockland,RKD,13:05,2024-02-03,['9K1854'],['Cape Air'],C,Landed - On-time [+],11:45,2024-02-03,11:25,2024-02-03,actual,13:05,2024-02-03,12:45,2024-02-03,actual,Tecnam P2012 Traveler
+Boca Raton,BCT,13:08,2024-02-03,['1I184'],['NetJets Aviation'],,Landed - Delayed [+],10:30,2024-02-03,11:04,2024-02-03,actual,13:08,2024-02-03,13:36,2024-02-03,actual,BOMBARDIER BD-700 Global 7000
+Lebanon,LEB,13:08,2024-02-03,['9K1876'],['Cape Air'],C,Landed - On-time [+],12:13,2024-02-03,11:55,2024-02-03,actual,13:08,2024-02-03,12:50,2024-02-03,actual,Tecnam P2012 Traveler
+Rutland,RUT,13:12,2024-02-03,['9K60'],['Cape Air'],C,Landed - Delayed [+],12:00,2024-02-03,12:40,2024-02-03,actual,13:12,2024-02-03,13:50,2024-02-03,actual,Tecnam P2012 Traveler
+New York,LGA,13:19,2024-02-03,['DL5769'],['Delta Air Lines'],A,Landed - On-time [+],12:00,2024-02-03,11:57,2024-02-03,actual,13:19,2024-02-03,13:04,2024-02-03,actual,Embraer 175
+Cleveland,CLE,13:21,2024-02-03,['B68652'],['JetBlue Airways'],,Landed - Delayed [+],11:50,2024-02-03,12:10,2024-02-03,actual,13:21,2024-02-03,13:53,2024-02-03,actual,Embraer 190
+Dulles,IAD,13:21,2024-02-03,['LXJ866'],['Flexjet'],,Landed - Delayed [+],12:07,2024-02-03,13:05,2024-02-03,actual,13:21,2024-02-03,14:14,2024-02-03,actual,BOMBARDIER BD-100 Challenger 300
+Raleigh/Durham,RDU,13:21,2024-02-03,['B6484'],['JetBlue Airways'],C,Landed - On-time [+],11:25,2024-02-03,11:22,2024-02-03,actual,13:21,2024-02-03,13:08,2024-02-03,actual,Embraer 190
+Baltimore,BWI,13:23,2024-02-03,['DL5788'],['Delta Air Lines'],A,Landed - On-time [+],12:00,2024-02-03,11:56,2024-02-03,actual,13:23,2024-02-03,13:20,2024-02-03,actual,Embraer 175
+Doha,DOH,13:23,2024-02-03,['QR64C'],['Qatar Airways'],,Landed - Delayed [+],08:48,2024-02-03,08:56,2024-02-03,actual,13:23,2024-02-03,13:51,2024-02-03,actual,Airbus A350-900
+Frankfurt,FRA,13:25,2024-02-03,['LH422'],['Lufthansa'],E,Landed - On-time [+],10:55,2024-02-03,11:10,2024-02-03,actual,13:25,2024-02-03,13:36,2024-02-03,actual,Airbus A340-300
+Orlando,MCO,13:26,2024-02-03,['NK2806'],['Spirit Airlines'],B,Landed - On-time [+],10:23,2024-02-03,10:39,2024-02-03,actual,13:26,2024-02-03,13:38,2024-02-03,actual,Airbus A321
+Cincinnati,CVG,13:28,2024-02-03,['AA4517'],['American Airlines'],B,Landed - Delayed [+],11:25,2024-02-03,11:25,2024-02-03,actual,13:28,2024-02-03,13:53,2024-02-03,actual,Embraer 175
+Dallas,DFW,13:29,2024-02-03,['AA1442'],['American Airlines'],B,Landed - On-time [+],08:52,2024-02-03,08:51,2024-02-03,actual,13:29,2024-02-03,13:41,2024-02-03,actual,Boeing 737-800 Passenger
+Washington,DCA,13:32,2024-02-03,['DL5701'],['Delta Air Lines'],A,Landed - On-time [+],11:59,2024-02-03,11:54,2024-02-03,actual,13:32,2024-02-03,13:30,2024-02-03,actual,Embraer 175
+Amsterdam,AMS,13:33,2024-02-03,['B632'],['JetBlue Airways'],E,Landed - Delayed [+],11:20,2024-02-03,12:27,2024-02-03,actual,13:33,2024-02-03,14:42,2024-02-03,actual,Airbus A321neo
+Martha's Vineyard,MVY,13:35,2024-02-03,['9K3081'],['Cape Air'],C,Landed - On-time [+],12:55,2024-02-03,12:47,2024-02-03,actual,13:35,2024-02-03,13:30,2024-02-03,actual,Cessna (Light aircraft)
+Saint Louis,STL,13:35,2024-02-03,['WN1659'],['Southwest Airlines'],B,Landed - On-time [+],10:05,2024-02-03,10:00,2024-02-03,actual,13:35,2024-02-03,13:39,2024-02-03,actual,Boeing 737-800 Passenger
+Tampa,TPA,13:35,2024-02-03,['B6892'],['JetBlue Airways'],C,Landed - On-time [+],10:35,2024-02-03,10:25,2024-02-03,actual,13:35,2024-02-03,13:22,2024-02-03,actual,Embraer 190
+Chicago,ORD,13:39,2024-02-03,['DL5595'],['Delta Air Lines'],A,Landed - On-time [+],10:15,2024-02-03,10:08,2024-02-03,actual,13:39,2024-02-03,13:31,2024-02-03,actual,Embraer 175
+Fort Myers,RSW,13:42,2024-02-03,['B62066'],['JetBlue Airways'],C,Landed - On-time [+],10:39,2024-02-03,10:34,2024-02-03,actual,13:42,2024-02-03,13:40,2024-02-03,actual,Airbus A321
+Newark,EWR,13:48,2024-02-03,['UA3452'],['United Airlines'],B,Landed - On-time [+],12:30,2024-02-03,12:22,2024-02-03,actual,13:48,2024-02-03,13:26,2024-02-03,actual,Embraer 175 (Enhanced Winglets)
+Nashville,BNA,13:49,2024-02-03,['DL1094'],['Delta Air Lines'],A,Landed - On-time [+],10:15,2024-02-03,09:57,2024-02-03,actual,13:49,2024-02-03,13:34,2024-02-03,actual,Airbus A220-100 Passenger
+Dubai,DXB,13:50,2024-02-03,['EK62Y'],['Emirates'],,Landed - On-time [+],09:18,2024-02-03,09:14,2024-02-03,actual,13:50,2024-02-03,13:37,2024-02-03,actual,Boeing 777-300ER
+Massena,MSS,13:50,2024-02-03,['4B863'],['Boutique Air'],B,Landed - On-time [+],12:20,2024-02-03,12:42,2024-02-03,actual,13:50,2024-02-03,13:50,2024-02-03,actual,Pilatus PC-12
+Denver,DEN,13:51,2024-02-03,['UA361'],['United Airlines'],B,Landed - Delayed [+],08:00,2024-02-03,07:55,2024-02-03,actual,13:51,2024-02-03,14:08,2024-02-03,actual,Boeing 737-800 Passenger
+Amsterdam,AMS,13:55,2024-02-03,['DL243'],['Delta Air Lines'],E,Landed - On-time [+],11:30,2024-02-03,11:52,2024-02-03,actual,13:55,2024-02-03,14:04,2024-02-03,actual,Airbus A330-900neo
+Nashville,BNA,13:55,2024-02-03,['WN952'],['Southwest Airlines'],B,Landed - Delayed [+],10:30,2024-02-03,10:30,2024-02-03,actual,13:55,2024-02-03,14:12,2024-02-03,actual,Boeing 737-800 Passenger
+Dubai,DXB,13:55,2024-02-03,['EK237'],['Emirates'],E,Landed - On-time [+],08:40,2024-02-03,08:51,2024-02-03,actual,13:55,2024-02-03,13:47,2024-02-03,actual,Boeing 777-300ER
+New Orleans,MSY,13:58,2024-02-03,['B6400'],['JetBlue Airways'],C,Landed - Delayed [+],09:47,2024-02-03,09:42,2024-02-03,actual,13:58,2024-02-03,14:17,2024-02-03,actual,Embraer 190
+Sarasota,SRQ,14:00,2024-02-03,['B61940'],['JetBlue Airways'],C,Landed - Delayed [+],10:53,2024-02-03,17:16,2024-02-03,actual,14:00,2024-02-03,20:26,2024-02-03,actual,Embraer 190
+London,LHR,14:05,2024-02-03,['BA213'],['British Airways'],E,Landed - Delayed [+],11:25,2024-02-03,12:50,2024-02-03,actual,14:05,2024-02-03,15:27,2024-02-03,actual,Boeing 777
+Atlanta,ATL,14:07,2024-02-03,['DL862'],['Delta Air Lines'],A,Landed - On-time [+],11:35,2024-02-03,11:36,2024-02-03,actual,14:07,2024-02-03,14:07,2024-02-03,actual,Airbus A321
+Paris,CDG,14:10,2024-02-03,['DL225'],['Delta Air Lines'],E,Landed - On-time [+],11:45,2024-02-03,11:45,2024-02-03,actual,14:10,2024-02-03,14:05,2024-02-03,actual,Airbus A330-900neo
+Lisbon,LIS,14:10,2024-02-03,['TP217'],['TAP Air Portugal'],E,Landed - On-time [+],11:25,2024-02-03,12:08,2024-02-03,actual,14:10,2024-02-03,11:37,2024-02-03,actual,Airbus A321neo
+Chicago,ORD,14:10,2024-02-03,['UA1731'],['United Airlines'],B,Landed - On-time [+],10:50,2024-02-03,10:45,2024-02-03,actual,14:10,2024-02-03,14:06,2024-02-03,actual,Airbus A320
+New York,JFK,14:11,2024-02-03,['B6818'],['JetBlue Airways'],C,Landed - On-time [+],13:00,2024-02-03,12:50,2024-02-03,actual,14:11,2024-02-03,13:47,2024-02-03,actual,Embraer 190
+Farmingdale,FRG,14:20,2024-02-03,['1I646'],['NetJets Aviation'],,Landed - Delayed [+],13:30,2024-02-03,14:36,2024-02-03,actual,14:20,2024-02-03,15:11,2024-02-03,actual,CESSNA 680A Citation Latitude
+Lisbon,LIS,14:20,2024-02-03,['DL125'],['Delta Air Lines'],E,Landed - On-time [+],11:15,2024-02-03,11:14,2024-02-03,actual,14:20,2024-02-03,12:57,2024-02-03,actual,Airbus A330-200
+Dulles,IAD,14:22,2024-02-03,['UA2060'],['United Airlines'],B,Landed - On-time [+],12:47,2024-02-03,12:37,2024-02-03,actual,14:22,2024-02-03,14:06,2024-02-03,actual,Boeing 737-800 Passenger
+Doha,DOH,14:30,2024-02-03,['QR743'],['Qatar Airways'],E,Landed - On-time [+],08:15,2024-02-03,08:15,2024-02-03,actual,14:30,2024-02-03,13:58,2024-02-03,actual,Airbus A350-900
+Fort Lauderdale,FLL,14:30,2024-02-03,['B6690'],['JetBlue Airways'],C,Landed - On-time [+],11:15,2024-02-03,11:26,2024-02-03,actual,14:30,2024-02-03,14:28,2024-02-03,actual,Airbus A321
+Orlando,MCO,14:31,2024-02-03,['B6552'],['JetBlue Airways'],C,Landed - On-time [+],11:20,2024-02-03,11:11,2024-02-03,actual,14:31,2024-02-03,14:11,2024-02-03,actual,Airbus A320
+Jacksonville,JAX,14:38,2024-02-03,['B61410'],['JetBlue Airways'],C,Canceled [+],12:05,2024-02-03,12:05,2024-02-03,scheduled,14:38,2024-02-03,14:38,2024-02-03,scheduled,Embraer 190
+Montreal,YUL,14:38,2024-02-03,['AC8606'],['Air Canada'],B,Landed - On-time [+],13:10,2024-02-03,13:04,2024-02-03,actual,14:38,2024-02-03,14:19,2024-02-03,actual,
+Nantucket,ACK,14:39,2024-02-03,['9K5061'],['Cape Air'],C,Landed - On-time [+],13:51,2024-02-03,13:50,2024-02-03,actual,14:39,2024-02-03,14:38,2024-02-03,actual,Cessna (Light aircraft)
+Martha's Vineyard,MVY,14:40,2024-02-03,['9K3061'],['Cape Air'],C,Landed - On-time [+],14:00,2024-02-03,13:45,2024-02-03,actual,14:40,2024-02-03,14:25,2024-02-03,actual,Cessna (Light aircraft)
+Memphis,MEM,14:41,2024-02-03,['DL5608'],['Delta Air Lines'],A,Landed - On-time [+],10:45,2024-02-03,10:43,2024-02-03,actual,14:41,2024-02-03,14:38,2024-02-03,actual,Embraer 175
+Miami,MIA,14:45,2024-02-03,['AA1410'],['American Airlines'],B,Landed - On-time [+],11:30,2024-02-03,11:29,2024-02-03,actual,14:45,2024-02-03,14:45,2024-02-03,actual,Airbus A321neo
+Fort Myers,RSW,14:46,2024-02-03,['NK1173'],['Spirit Airlines'],B,Landed - On-time [+],11:38,2024-02-03,11:28,2024-02-03,actual,14:46,2024-02-03,14:31,2024-02-03,actual,Airbus A320
+Chicago,ORD,14:47,2024-02-03,['B6312'],['JetBlue Airways'],C,Landed - On-time [+],11:25,2024-02-03,11:14,2024-02-03,actual,14:47,2024-02-03,14:27,2024-02-03,actual,Embraer 190
+Baltimore,BWI,14:50,2024-02-03,['WN1888'],['Southwest Airlines'],B,Landed - On-time [+],13:25,2024-02-03,13:40,2024-02-03,actual,14:50,2024-02-03,15:00,2024-02-03,actual,Boeing 737 Passenger
+New York,JFK,14:59,2024-02-03,['AA4266'],['American Airlines'],B,Landed - On-time [+],13:44,2024-02-03,13:35,2024-02-03,actual,14:59,2024-02-03,14:50,2024-02-03,actual,Embraer 175
+Tampa,TPA,15:03,2024-02-03,['DL2706'],['Delta Air Lines'],A,Landed - On-time [+],11:57,2024-02-03,11:53,2024-02-03,actual,15:03,2024-02-03,14:53,2024-02-03,actual,Airbus A320
+Atlanta,ATL,15:05,2024-02-03,['DL350'],['Delta Air Lines'],A,Landed - On-time [+],12:35,2024-02-03,12:50,2024-02-03,actual,15:05,2024-02-03,15:12,2024-02-03,actual,Airbus A321
+Richmond,RIC,15:07,2024-02-03,['B61182'],['JetBlue Airways'],C,Landed - On-time [+],13:30,2024-02-03,13:18,2024-02-03,actual,15:07,2024-02-03,14:49,2024-02-03,actual,Embraer 190
+Pittsburgh,PIT,15:08,2024-02-03,['DL5784'],['Delta Air Lines'],A,Landed - On-time [+],13:30,2024-02-03,13:21,2024-02-03,actual,15:08,2024-02-03,14:57,2024-02-03,actual,Embraer 175
+London,LHR,15:15,2024-02-03,['BA5BM'],['British Airways'],,Landed - On-time [+],13:15,2024-02-03,13:21,2024-02-03,actual,15:15,2024-02-03,15:18,2024-02-03,actual,Boeing 777-200 / 200ER
+New York,JFK,15:17,2024-02-03,['DL5685'],['Delta Air Lines'],A,Landed - On-time [+],13:57,2024-02-03,13:52,2024-02-03,actual,15:17,2024-02-03,14:56,2024-02-03,actual,Embraer 175
+Miami,MIA,15:18,2024-02-03,['DL1399'],['Delta Air Lines'],A,Landed - On-time [+],11:55,2024-02-03,11:54,2024-02-03,actual,15:18,2024-02-03,15:09,2024-02-03,actual,Airbus A321
+West Palm Beach,PBI,15:19,2024-02-03,['B6322'],['JetBlue Airways'],C,Landed - On-time [+],12:11,2024-02-03,12:00,2024-02-03,actual,15:19,2024-02-03,14:59,2024-02-03,actual,Airbus A321
+Philadelphia,PHL,15:20,2024-02-03,['AA1776'],['American Airlines'],B,Landed - Delayed [+],14:00,2024-02-03,14:33,2024-02-03,actual,15:20,2024-02-03,15:47,2024-02-03,actual,Airbus A319
+Copenhagen,CPH,15:25,2024-02-03,['SK927'],['SAS Scandinavian Airlines'],E,Landed - On-time [+],12:50,2024-02-03,12:52,2024-02-03,actual,15:25,2024-02-03,15:27,2024-02-03,actual,Airbus A321neo
+Orlando,MCO,15:26,2024-02-03,['B62052'],['JetBlue Airways'],C,Landed - On-time [+],12:20,2024-02-03,12:13,2024-02-03,actual,15:26,2024-02-03,15:01,2024-02-03,actual,Embraer 190
+Madrid,MAD,15:30,2024-02-03,['IB6165'],['Iberia'],E,Landed - On-time [+],13:20,2024-02-03,13:11,2024-02-03,actual,15:30,2024-02-03,14:33,2024-02-03,actual,Airbus A330-300
+West Palm Beach,PBI,15:33,2024-02-03,['DL1245'],['Delta Air Lines'],A,Landed - On-time [+],12:20,2024-02-03,12:13,2024-02-03,actual,15:33,2024-02-03,15:24,2024-02-03,actual,Boeing 737-800 Passenger
+Bar Harbor,BHB,15:35,2024-02-03,['9K1838'],['Cape Air'],C,Landed - On-time [+],14:10,2024-02-03,13:50,2024-02-03,actual,15:35,2024-02-03,15:10,2024-02-03,actual,Cessna (Light aircraft)
+Savannah,SAV,15:35,2024-02-03,['B6249'],['JetBlue Airways'],C,Landed - On-time [+],13:09,2024-02-03,12:51,2024-02-03,actual,15:35,2024-02-03,15:07,2024-02-03,actual,Embraer 190
+Provincetown,PVC,15:45,2024-02-03,['9K4221'],['Cape Air'],C,Landed - Delayed [+],15:15,2024-02-03,15:30,2024-02-03,actual,15:45,2024-02-03,16:05,2024-02-03,actual,Cessna (Light aircraft)
+Seattle,SEA,15:45,2024-02-03,['DL744'],['Delta Air Lines'],A,Landed - Delayed [+],07:15,2024-02-03,07:09,2024-02-03,actual,15:45,2024-02-03,16:02,2024-02-03,actual,Airbus A321neo
+Denver,DEN,15:55,2024-02-03,['WN1745'],['Southwest Airlines'],B,Landed - Delayed [+],10:10,2024-02-03,12:07,2024-02-03,actual,15:55,2024-02-03,19:31,2024-02-03,actual,Boeing 737-800 Passenger
+Philadelphia,PHL,16:01,2024-02-03,['B62160'],['JetBlue Airways'],C,Landed - On-time [+],14:45,2024-02-03,14:42,2024-02-03,actual,16:01,2024-02-03,16:00,2024-02-03,actual,Embraer 190
+Newark,EWR,16:03,2024-02-03,['UA3420'],['United Airlines'],B,Landed - On-time [+],14:47,2024-02-03,14:42,2024-02-03,actual,16:03,2024-02-03,16:00,2024-02-03,actual,Embraer 175 (Enhanced Winglets)
+Providenciales,PLS,16:03,2024-02-03,['B6754'],['JetBlue Airways'],E,Landed - On-time [+],11:53,2024-02-03,11:46,2024-02-03,actual,16:03,2024-02-03,15:36,2024-02-03,actual,Airbus A320
+Dublin,DUB,16:04,2024-02-03,['EI13J'],['Aer Lingus'],,Landed - On-time [+],14:11,2024-02-03,14:19,2024-02-03,actual,16:04,2024-02-03,16:01,2024-02-03,actual,Airbus A330-200
+Toronto,YYZ,16:04,2024-02-03,['AC768'],['Air Canada'],B,Landed - On-time [+],14:25,2024-02-03,14:16,2024-02-03,actual,16:04,2024-02-03,15:54,2024-02-03,actual,Airbus A220-300 Passenger
+Los Angeles,LAX,16:07,2024-02-03,['DL408'],['Delta Air Lines'],A,Landed - On-time [+],07:35,2024-02-03,07:33,2024-02-03,actual,16:07,2024-02-03,16:09,2024-02-03,actual,Boeing 757-200 Passenger
+Bermuda,BDA,16:08,2024-02-03,['B6204'],['JetBlue Airways'],C,Landed - On-time [+],14:32,2024-02-03,14:39,2024-02-03,actual,16:08,2024-02-03,15:51,2024-02-03,actual,Airbus A320
+Nassau,NAS,16:08,2024-02-03,['B6910'],['JetBlue Airways'],C,Landed - On-time [+],12:45,2024-02-03,12:43,2024-02-03,actual,16:08,2024-02-03,16:03,2024-02-03,actual,Airbus A220-300 Passenger
+Charlotte,CLT,16:10,2024-02-03,['AA1466'],['American Airlines'],B,Landed - Delayed [+],14:06,2024-02-03,14:57,2024-02-03,actual,16:10,2024-02-03,17:02,2024-02-03,actual,Airbus A321
+Los Angeles,LAX,16:15,2024-02-03,['AA1578'],['American Airlines'],B,Landed - Delayed [+],07:50,2024-02-03,07:44,2024-02-03,actual,16:15,2024-02-03,16:30,2024-02-03,actual,Airbus A321
+Fort Lauderdale,FLL,16:16,2024-02-03,['DL1401'],['Delta Air Lines'],A,Landed - On-time [+],13:00,2024-02-03,13:00,2024-02-03,actual,16:16,2024-02-03,16:17,2024-02-03,actual,Airbus A321
+Salt Lake City,SLC,16:16,2024-02-03,['DL400'],['Delta Air Lines'],A,Landed - Delayed [+],09:40,2024-02-03,09:34,2024-02-03,actual,16:16,2024-02-03,16:38,2024-02-03,actual,Airbus A321neo
+San Francisco,SFO,16:19,2024-02-03,['B61734'],['JetBlue Airways'],C,Landed - Delayed [+],07:47,2024-02-03,07:44,2024-02-03,actual,16:19,2024-02-03,16:35,2024-02-03,actual,Airbus A321
+Phoenix,PHX,16:24,2024-02-03,['AA1450'],['American Airlines'],B,Landed - On-time [+],09:35,2024-02-03,09:28,2024-02-03,actual,16:24,2024-02-03,16:38,2024-02-03,actual,Airbus A321neo
+Dublin,DUB,16:25,2024-02-03,['EI133'],['Aer Lingus'],C,Landed - On-time [+],14:10,2024-02-03,13:58,2024-02-03,actual,16:25,2024-02-03,16:01,2024-02-03,actual,Airbus A330-200
+Hyannis,HYA,16:31,2024-02-03,['9K7141'],['Cape Air'],C,Landed - On-time [+],15:50,2024-02-03,15:20,2024-02-03,actual,16:31,2024-02-03,15:54,2024-02-03,actual,Tecnam P2012 Traveler
+Houston,IAH,16:34,2024-02-03,['B6932'],['JetBlue Airways'],C,Landed - On-time [+],11:50,2024-02-03,11:36,2024-02-03,actual,16:34,2024-02-03,16:15,2024-02-03,actual,Airbus A220-300 Passenger
+Orlando,MCO,16:36,2024-02-03,['NK2060'],['Spirit Airlines'],B,Landed - On-time [+],13:31,2024-02-03,13:29,2024-02-03,actual,16:36,2024-02-03,16:38,2024-02-03,actual,Airbus A321
+Morgantown,MGW,16:38,2024-02-03,['RVJ100'],['Aircraft Management Group'],,Unknown [+],15:15,2024-02-03,15:15,2024-02-03,scheduled,16:38,2024-02-03,16:38,2024-02-03,scheduled,
+Morgantown,MGW,16:38,2024-02-03,['RVJ400'],['Aircraft Management Group'],,Landed - Delayed [+],15:15,2024-02-03,16:28,2024-02-03,actual,16:38,2024-02-03,17:49,2024-02-03,actual,
+New Orleans,MSY,16:42,2024-02-03,['DL2355'],['Delta Air Lines'],A,Landed - On-time [+],12:25,2024-02-03,12:17,2024-02-03,actual,16:42,2024-02-03,16:25,2024-02-03,actual,Airbus A220-100 Passenger
+Washington,DCA,16:44,2024-02-03,['AA1421'],['American Airlines'],B,Landed - On-time [+],14:59,2024-02-03,14:52,2024-02-03,actual,16:44,2024-02-03,16:26,2024-02-03,actual,Airbus A319
+Punta Cana,PUJ,16:49,2024-02-03,['B62896'],['JetBlue Airways'],E,Landed - On-time [+],13:20,2024-02-03,13:11,2024-02-03,actual,16:49,2024-02-03,16:21,2024-02-03,actual,Airbus A320
+Los Angeles,LAX,16:50,2024-02-03,['UA2609'],['United Airlines'],B,Landed - Delayed [+],08:20,2024-02-03,08:14,2024-02-03,actual,16:50,2024-02-03,17:07,2024-02-03,actual,Boeing 757-200 Passenger
+Shannon,SNN,16:50,2024-02-03,['EI135'],['Aer Lingus'],C,Landed - On-time [+],14:45,2024-02-03,14:21,2024-02-03,actual,16:50,2024-02-03,16:12,2024-02-03,actual,Airbus A321neo
+San Juan,SJU,16:52,2024-02-03,['B6462'],['JetBlue Airways'],C,Landed - Delayed [+],13:29,2024-02-03,14:20,2024-02-03,actual,16:52,2024-02-03,18:45,2024-02-03,actual,Airbus A320
+Charleston,CHS,16:55,2024-02-03,['B668'],['JetBlue Airways'],C,Landed - On-time [+],14:35,2024-02-03,14:30,2024-02-03,actual,16:55,2024-02-03,16:39,2024-02-03,actual,Embraer 190
+Augusta,AUG,16:57,2024-02-03,['9K1006'],['Cape Air'],C,Landed - On-time [+],15:40,2024-02-03,15:50,2024-02-03,actual,16:57,2024-02-03,16:55,2024-02-03,actual,Tecnam P2012 Traveler
+San Francisco,SFO,17:02,2024-02-03,['UA716'],['United Airlines'],B,Landed - Delayed [+],08:25,2024-02-03,08:24,2024-02-03,actual,17:02,2024-02-03,17:17,2024-02-03,actual,Boeing 757-200 Passenger
+Sint Maarten,SXM,17:03,2024-02-03,['B61878'],['JetBlue Airways'],E,Landed - Delayed [+],13:20,2024-02-03,13:59,2024-02-03,actual,17:03,2024-02-03,17:22,2024-02-03,actual,Airbus A321
+San Juan,SJU,17:05,2024-02-03,['DL1780'],['Delta Air Lines'],A,Landed - On-time [+],13:40,2024-02-03,13:34,2024-02-03,actual,17:05,2024-02-03,16:52,2024-02-03,actual,Airbus A321neo
+Dallas,DFW,17:07,2024-02-03,['DL472'],['Delta Air Lines'],A,Landed - On-time [+],12:30,2024-02-03,12:30,2024-02-03,actual,17:07,2024-02-03,17:12,2024-02-03,actual,Airbus A220-100 Passenger
+Houston,IAH,17:08,2024-02-03,['UA2439'],['United Airlines'],B,Landed - Delayed [+],12:25,2024-02-03,12:56,2024-02-03,actual,17:08,2024-02-03,17:45,2024-02-03,actual,Airbus A319
+Minneapolis,MSP,17:10,2024-02-03,['DL1146'],['Delta Air Lines'],A,Landed - On-time [+],13:20,2024-02-03,13:17,2024-02-03,actual,17:10,2024-02-03,17:01,2024-02-03,actual,Airbus A320
+Rockland,RKD,17:15,2024-02-03,['9K1856'],['Cape Air'],C,Landed - On-time [+],15:55,2024-02-03,15:37,2024-02-03,actual,17:15,2024-02-03,16:44,2024-02-03,actual,Tecnam P2012 Traveler
+Denver,DEN,17:19,2024-02-03,['B6394'],['JetBlue Airways'],C,Canceled [+],11:30,2024-02-03,11:30,2024-02-03,scheduled,17:19,2024-02-03,17:19,2024-02-03,scheduled,Airbus A220-300 Passenger
+Baltimore,BWI,17:20,2024-02-03,['WN2779'],['Southwest Airlines'],B,Landed - On-time [+],15:50,2024-02-03,15:57,2024-02-03,actual,17:20,2024-02-03,17:16,2024-02-03,actual,Boeing 737-800 Passenger
+Tokyo,NRT,17:20,2024-02-03,['JL8'],['JAL'],E,Landed - On-time [+],18:30,2024-02-03,18:31,2024-02-03,actual,17:20,2024-02-03,17:21,2024-02-03,actual,Boeing 787-9
+Savannah,SAV,17:24,2024-02-03,['DL5605'],['Delta Air Lines'],A,Landed - On-time [+],15:00,2024-02-03,14:50,2024-02-03,actual,17:24,2024-02-03,17:13,2024-02-03,actual,Embraer 175
+Rutland,RUT,17:25,2024-02-03,['9K70'],['Cape Air'],C,Canceled [+],16:10,2024-02-03,16:10,2024-02-03,scheduled,17:25,2024-02-03,17:25,2024-02-03,scheduled,Tecnam P2012 Traveler
+Seattle,SEA,17:25,2024-02-03,['AS306'],['Alaska Airlines'],B,Landed - Delayed [+],09:05,2024-02-03,09:05,2024-02-03,actual,17:25,2024-02-03,17:48,2024-02-03,actual,Boeing 737-900 Passenger
+Charlotte,CLT,17:27,2024-02-03,['AA1529'],['American Airlines'],B,Landed - Delayed [+],15:23,2024-02-03,17:01,2024-02-03,actual,17:27,2024-02-03,19:08,2024-02-03,actual,Airbus A321
+Louisville,SDF,17:27,2024-02-03,['DL5610'],['Delta Air Lines'],A,Landed - On-time [+],15:14,2024-02-03,15:04,2024-02-03,actual,17:27,2024-02-03,17:32,2024-02-03,actual,Embraer 175
+Cancun,CUN,17:35,2024-02-03,['B6772'],['JetBlue Airways'],E,Landed - Delayed [+],13:22,2024-02-03,17:39,2024-02-03,actual,17:35,2024-02-03,21:41,2024-02-03,actual,Airbus A220-300 Passenger
+Aruba,AUA,17:39,2024-02-03,['B674'],['JetBlue Airways'],C,Landed - On-time [+],13:30,2024-02-03,13:34,2024-02-03,actual,17:39,2024-02-03,17:39,2024-02-03,actual,Airbus A321
+Charleston,CHS,17:39,2024-02-03,['DL1222'],['Delta Air Lines'],A,Landed - On-time [+],15:15,2024-02-03,15:06,2024-02-03,actual,17:39,2024-02-03,17:24,2024-02-03,actual,Airbus A220-100 Passenger
+Saranac Lake,SLK,17:39,2024-02-03,['9K1034'],['Cape Air'],C,Landed - On-time [+],16:05,2024-02-03,15:45,2024-02-03,actual,17:39,2024-02-03,17:00,2024-02-03,actual,Tecnam P2012 Traveler
+Lebanon,LEB,17:40,2024-02-03,['9K1880'],['Cape Air'],C,Landed - On-time [+],16:45,2024-02-03,16:30,2024-02-03,actual,17:40,2024-02-03,17:30,2024-02-03,actual,Tecnam P2012 Traveler
+Memphis,MEM,17:41,2024-02-03,['DL8930'],['Delta Air Lines'],,Landed - On-time [+],14:00,2024-02-03,14:22,2024-02-03,actual,17:41,2024-02-03,17:47,2024-02-03,actual,Boeing 757-200 Passenger
+Nantucket,ACK,17:43,2024-02-03,['9K5341'],['Cape Air'],C,Landed - On-time [+],16:55,2024-02-03,16:57,2024-02-03,actual,17:43,2024-02-03,17:50,2024-02-03,actual,Cessna (Light aircraft)
+San Juan,SJU,17:43,2024-02-03,['B6808'],['JetBlue Airways'],C,Landed - Delayed [+],14:18,2024-02-03,16:20,2024-02-03,actual,17:43,2024-02-03,19:37,2024-02-03,actual,Airbus A321
+Reykjavik,KEF,17:45,2024-02-03,['FI631'],['Icelandair'],E,Landed - Delayed [+],17:00,2024-02-03,18:03,2024-02-03,actual,17:45,2024-02-03,18:30,2024-02-03,actual,Boeing 767-300 Passenger
+Montego Bay,MBJ,17:45,2024-02-03,['B61194'],['JetBlue Airways'],E,Landed - On-time [+],13:34,2024-02-03,13:19,2024-02-03,actual,17:45,2024-02-03,17:50,2024-02-03,actual,Airbus A321
+Aruba,AUA,17:48,2024-02-03,['DL1761'],['Delta Air Lines'],E,Landed - On-time [+],13:35,2024-02-03,13:48,2024-02-03,actual,17:48,2024-02-03,17:27,2024-02-03,actual,Boeing 737-900 Passenger
+Newark,EWR,17:48,2024-02-03,['UA3453'],['United Airlines'],B,Landed - On-time [+],16:30,2024-02-03,16:25,2024-02-03,actual,17:48,2024-02-03,17:26,2024-02-03,actual,Embraer 175 (Enhanced Winglets)
+Atlanta,ATL,17:49,2024-02-03,['DL821'],['Delta Air Lines'],A,Landed - On-time [+],15:15,2024-02-03,15:12,2024-02-03,actual,17:49,2024-02-03,17:40,2024-02-03,actual,Airbus A321neo
+Denver,DEN,17:49,2024-02-03,['DL652'],['Delta Air Lines'],A,Landed - Delayed [+],11:52,2024-02-03,12:35,2024-02-03,actual,17:49,2024-02-03,19:25,2024-02-03,actual,Airbus A321neo
+Detroit,DTW,17:55,2024-02-03,['DL1389'],['Delta Air Lines'],A,Landed - On-time [+],16:00,2024-02-03,15:52,2024-02-03,actual,17:55,2024-02-03,17:52,2024-02-03,actual,Airbus A320
+Punta Cana,PUJ,17:59,2024-02-03,['AA459'],['American Airlines'],E,Landed - On-time [+],14:49,2024-02-03,14:31,2024-02-03,actual,17:59,2024-02-03,17:57,2024-02-03,actual,Boeing 737-800 Passenger
+Miami,MIA,18:05,2024-02-03,['AA3982'],['American Airlines'],B,Landed - On-time [+],14:47,2024-02-03,14:47,2024-02-03,actual,18:05,2024-02-03,18:13,2024-02-03,actual,
+Saint Louis,STL,18:05,2024-02-03,['WN3558'],['Southwest Airlines'],B,Landed - On-time [+],14:35,2024-02-03,14:27,2024-02-03,actual,18:05,2024-02-03,18:01,2024-02-03,actual,Boeing 737 Passenger
+Austin,AUS,18:08,2024-02-03,['DL1059'],['Delta Air Lines'],A,Landed - On-time [+],13:20,2024-02-03,13:13,2024-02-03,actual,18:08,2024-02-03,18:07,2024-02-03,actual,Airbus A220-300 Passenger
+Washington,DCA,18:08,2024-02-03,['B62654'],['JetBlue Airways'],C,Landed - On-time [+],16:30,2024-02-03,16:15,2024-02-03,actual,18:08,2024-02-03,17:52,2024-02-03,actual,Embraer 190
+Key West,EYW,18:10,2024-02-03,['B62064'],['JetBlue Airways'],C,Landed - On-time [+],14:45,2024-02-03,14:40,2024-02-03,actual,18:10,2024-02-03,18:05,2024-02-03,actual,Airbus A220-300 Passenger
+San Salvador,SAL,18:14,2024-02-03,['B68592'],['JetBlue Airways'],,Landed - On-time [+],12:10,2024-02-03,11:59,2024-02-03,actual,18:14,2024-02-03,17:58,2024-02-03,actual,Airbus A321
+Munich,MUC,18:20,2024-02-03,['LH8P'],['Lufthansa'],,Landed - On-time [+],16:08,2024-02-03,16:20,2024-02-03,actual,18:20,2024-02-03,18:22,2024-02-03,actual,Airbus A340-600
+New York,JFK,18:21,2024-02-03,['DL5695'],['Delta Air Lines'],A,Landed - On-time [+],16:59,2024-02-03,16:53,2024-02-03,actual,18:21,2024-02-03,18:01,2024-02-03,actual,Embraer 175
+Panama City,PTY,18:21,2024-02-03,['CM366'],['Copa Airlines'],E,Landed - On-time [+],12:48,2024-02-03,12:43,2024-02-03,actual,18:21,2024-02-03,18:08,2024-02-03,actual,Boeing 737-800 Passenger
+New York,JFK,18:23,2024-02-03,['AA4271'],['American Airlines'],B,Landed - On-time [+],17:00,2024-02-03,16:52,2024-02-03,actual,18:23,2024-02-03,18:18,2024-02-03,actual,Embraer 175
+Istanbul,IST,18:25,2024-02-03,['TK81'],['Turkish Airlines'],E,Landed - On-time [+],15:25,2024-02-03,15:25,2024-02-03,actual,18:25,2024-02-03,18:24,2024-02-03,actual,Airbus A330-300
+Washington,DCA,18:26,2024-02-03,['DL5732'],['Delta Air Lines'],A,Landed - On-time [+],16:45,2024-02-03,16:38,2024-02-03,actual,18:26,2024-02-03,18:20,2024-02-03,actual,Embraer 175
+Fort Lauderdale,FLL,18:26,2024-02-03,['B670'],['JetBlue Airways'],C,Landed - On-time [+],15:04,2024-02-03,14:55,2024-02-03,actual,18:26,2024-02-03,18:13,2024-02-03,actual,Airbus A321
+Atlanta,ATL,18:35,2024-02-03,['NK1444'],['Spirit Airlines'],B,Landed - On-time [+],16:04,2024-02-03,16:04,2024-02-03,actual,18:35,2024-02-03,18:26,2024-02-03,actual,Airbus A320
+Munich,MUC,18:35,2024-02-03,['LH424'],['Lufthansa'],E,Landed - On-time [+],15:50,2024-02-03,16:07,2024-02-03,actual,18:35,2024-02-03,18:32,2024-02-03,actual,Airbus A340-600
+Newark,EWR,18:38,2024-02-03,['UA644'],['United Airlines'],B,Landed - On-time [+],17:19,2024-02-03,17:09,2024-02-03,actual,18:38,2024-02-03,18:08,2024-02-03,actual,Boeing 737 Passenger
+Aruba,AUA,18:39,2024-02-03,['B6974'],['JetBlue Airways'],C,Landed - On-time [+],14:30,2024-02-03,14:29,2024-02-03,actual,18:39,2024-02-03,18:16,2024-02-03,actual,Airbus A321neo
+Orlando,MCO,18:39,2024-02-03,['DL1570'],['Delta Air Lines'],A,Landed - Delayed [+],15:40,2024-02-03,16:32,2024-02-03,actual,18:39,2024-02-03,19:26,2024-02-03,actual,Airbus A321neo
+Dulles,IAD,18:42,2024-02-03,['UA688'],['United Airlines'],B,Landed - On-time [+],17:07,2024-02-03,17:04,2024-02-03,actual,18:42,2024-02-03,18:49,2024-02-03,actual,Boeing 737-900 Passenger
+Chicago,ORD,18:42,2024-02-03,['AA311'],['American Airlines'],B,Landed - Delayed [+],15:30,2024-02-03,15:58,2024-02-03,actual,18:42,2024-02-03,19:32,2024-02-03,actual,Airbus A319
+Memphis,MEM,18:48,2024-02-03,['FX554'],['FedEx'],,Landed - Delayed [+],15:20,2024-02-03,15:34,2024-02-03,actual,18:48,2024-02-03,19:08,2024-02-03,actual,Boeing 767-300 Passenger
+Miami,MIA,18:48,2024-02-03,['NK1171'],['Spirit Airlines'],B,Landed - On-time [+],15:25,2024-02-03,15:25,2024-02-03,actual,18:48,2024-02-03,18:36,2024-02-03,actual,Airbus A320
+San Juan,SJU,18:48,2024-02-03,['DL1864'],['Delta Air Lines'],A,Landed - On-time [+],15:20,2024-02-03,15:11,2024-02-03,actual,18:48,2024-02-03,18:27,2024-02-03,actual,Boeing 737-800 Passenger
+Toronto,YTZ,18:50,2024-02-03,['PD2945'],['Porter Airlines Canada'],E,Landed - On-time [+],17:15,2024-02-03,17:17,2024-02-03,actual,18:50,2024-02-03,18:53,2024-02-03,actual,De Havilland (Bombardier) DHC-8-400 Dash 8Q
+Columbus,CMH,18:51,2024-02-03,['AA4304'],['American Airlines'],B,Landed - Delayed [+],16:56,2024-02-03,16:54,2024-02-03,actual,18:51,2024-02-03,19:15,2024-02-03,actual,Embraer 175
+New York,JFK,18:58,2024-02-03,['B61118'],['JetBlue Airways'],C,Landed - Delayed [+],17:43,2024-02-03,18:45,2024-02-03,actual,18:58,2024-02-03,19:52,2024-02-03,actual,Embraer 190
+Kansas City,MCI,18:58,2024-02-03,['DL5705'],['Delta Air Lines'],A,Landed - On-time [+],15:00,2024-02-03,14:48,2024-02-03,actual,18:58,2024-02-03,18:55,2024-02-03,actual,Embraer 175
+Bridgetown,BGI,19:01,2024-02-03,['B61844'],['JetBlue Airways'],E,Landed - On-time [+],14:24,2024-02-03,14:06,2024-02-03,actual,19:01,2024-02-03,18:14,2024-02-03,actual,Airbus A321
+Cincinnati,CVG,19:06,2024-02-03,['DL5803'],['Delta Air Lines'],A,Landed - On-time [+],17:00,2024-02-03,16:51,2024-02-03,actual,19:06,2024-02-03,18:58,2024-02-03,actual,Embraer 175
+Puerto Plata,POP,19:11,2024-02-03,['B6786'],['JetBlue Airways'],E,Landed - On-time [+],16:14,2024-02-03,15:57,2024-02-03,actual,19:11,2024-02-03,18:43,2024-02-03,actual,Airbus A320
+Grand Cayman Island,GCM,19:14,2024-02-03,['B6442'],['JetBlue Airways'],E,Landed - On-time [+],15:15,2024-02-03,14:59,2024-02-03,actual,19:14,2024-02-03,19:16,2024-02-03,actual,Airbus A220-300 Passenger
+Cleveland,CLE,19:16,2024-02-03,['B6640'],['JetBlue Airways'],C,Landed - On-time [+],17:32,2024-02-03,17:41,2024-02-03,actual,19:16,2024-02-03,19:24,2024-02-03,actual,Embraer 190
+Indianapolis,IND,19:19,2024-02-03,['FX3714'],['FedEx'],,Landed - On-time [+],17:30,2024-02-03,17:12,2024-02-03,actual,19:19,2024-02-03,19:01,2024-02-03,actual,Boeing 767-300 Passenger
+Los Angeles,LAX,19:23,2024-02-03,['B6888'],['JetBlue Airways'],C,Landed - Delayed [+],11:00,2024-02-03,10:54,2024-02-03,actual,19:23,2024-02-03,19:38,2024-02-03,actual,Airbus A321neo
+Miami,MIA,19:25,2024-02-03,['B6720'],['JetBlue Airways'],C,Landed - Delayed [+],16:10,2024-02-03,22:04,2024-02-03,actual,19:25,2024-02-03,01:23,2024-02-04,actual,Airbus A320
+Cancun,CUN,19:27,2024-02-03,['B62772'],['JetBlue Airways'],E,Landed - On-time [+],15:15,2024-02-03,15:05,2024-02-03,actual,19:27,2024-02-03,19:26,2024-02-03,actual,Airbus A220-300 Passenger
+Philadelphia,PHL,19:27,2024-02-03,['AA2255'],['American Airlines'],B,Landed - On-time [+],18:08,2024-02-03,18:06,2024-02-03,actual,19:27,2024-02-03,19:24,2024-02-03,actual,Airbus A321neo
+London,LHR,19:30,2024-02-03,['VS11'],['Virgin Atlantic'],E,Landed - On-time [+],16:35,2024-02-03,16:42,2024-02-03,actual,19:30,2024-02-03,19:12,2024-02-03,actual,Airbus A330-900neo
+Cancun,CUN,19:35,2024-02-03,['AA55'],['American Airlines'],E,Landed - Delayed [+],15:25,2024-02-03,16:36,2024-02-03,actual,19:35,2024-02-03,20:44,2024-02-03,actual,Boeing 737-800 Passenger
+Montego Bay,MBJ,19:36,2024-02-03,['AA2942'],['American Airlines'],E,Landed - On-time [+],15:35,2024-02-03,15:18,2024-02-03,actual,19:36,2024-02-03,19:44,2024-02-03,actual,Airbus A319
+Santiago,STI,19:37,2024-02-03,['B6924'],['JetBlue Airways'],E,Landed - On-time [+],16:32,2024-02-03,16:17,2024-02-03,actual,19:37,2024-02-03,19:42,2024-02-03,actual,Airbus A321
+Minneapolis,MSP,19:38,2024-02-03,['DL1315'],['Delta Air Lines'],A,Landed - On-time [+],15:45,2024-02-03,15:38,2024-02-03,actual,19:38,2024-02-03,19:29,2024-02-03,actual,Airbus A220-100 Passenger
+Aruba,AUA,19:40,2024-02-03,['B6474'],['JetBlue Airways'],C,Landed - On-time [+],15:35,2024-02-03,15:44,2024-02-03,actual,19:40,2024-02-03,19:27,2024-02-03,actual,Airbus A320
+Massena,MSS,19:40,2024-02-03,['4B865'],['Boutique Air'],B,Landed - On-time [+],18:20,2024-02-03,18:17,2024-02-03,actual,19:40,2024-02-03,19:40,2024-02-03,actual,Pilatus PC-12
+San Antonio,SAT,19:42,2024-02-03,['B61566'],['JetBlue Airways'],C,Landed - On-time [+],14:45,2024-02-03,14:40,2024-02-03,actual,19:42,2024-02-03,19:47,2024-02-03,actual,Airbus A220-300 Passenger
+Saint Lucia,UVF,19:42,2024-02-03,['B6364'],['JetBlue Airways'],E,Landed - On-time [+],15:13,2024-02-03,14:55,2024-02-03,actual,19:42,2024-02-03,19:06,2024-02-03,actual,Airbus A320
+Raleigh/Durham,RDU,19:45,2024-02-03,['B6684'],['JetBlue Airways'],C,Landed - On-time [+],17:45,2024-02-03,17:28,2024-02-03,actual,19:45,2024-02-03,19:19,2024-02-03,actual,Embraer 190
+Detroit,DTW,19:46,2024-02-03,['B61136'],['JetBlue Airways'],C,Landed - Delayed [+],17:55,2024-02-03,17:38,2024-02-03,actual,19:46,2024-02-03,20:07,2024-02-03,actual,Embraer 190
+San Francisco,SFO,19:52,2024-02-03,['UA673'],['United Airlines'],B,Landed - On-time [+],11:05,2024-02-03,11:00,2024-02-03,actual,19:52,2024-02-03,19:48,2024-02-03,actual,Boeing 757-200 Passenger
+Nashville,BNA,19:54,2024-02-03,['B6206'],['JetBlue Airways'],C,Landed - On-time [+],16:20,2024-02-03,16:03,2024-02-03,actual,19:54,2024-02-03,19:43,2024-02-03,actual,Embraer 190
+Westchester County,HPN,19:54,2024-02-03,['DL8840'],['Delta Air Lines'],,Unknown [+],19:15,2024-02-03,19:15,2024-02-03,scheduled,19:54,2024-02-03,19:54,2024-02-03,scheduled,Boeing 757-200 Passenger
+Martha's Vineyard,MVY,19:55,2024-02-03,['9K3041'],['Cape Air'],C,En Route [+],19:15,2024-02-03,19:15,2024-02-03,scheduled,19:55,2024-02-03,19:55,2024-02-03,scheduled,Cessna (Light aircraft)
+New York,LGA,19:56,2024-02-03,['DL5767'],['Delta Air Lines'],A,Landed - On-time [+],18:30,2024-02-03,18:24,2024-02-03,actual,19:56,2024-02-03,19:41,2024-02-03,actual,Embraer 175
+Washington,DCA,19:57,2024-02-03,['AA4524'],['American Airlines'],B,Landed - On-time [+],18:20,2024-02-03,18:17,2024-02-03,actual,19:57,2024-02-03,20:01,2024-02-03,actual,Embraer 175 (Enhanced Winglets)
+Las Vegas,LAS,19:57,2024-02-03,['B6778'],['JetBlue Airways'],C,Landed - On-time [+],11:43,2024-02-03,11:30,2024-02-03,actual,19:57,2024-02-03,19:54,2024-02-03,actual,Airbus A320
+Denver,DEN,20:01,2024-02-03,['UA682'],['United Airlines'],B,Landed - Delayed [+],14:10,2024-02-03,16:16,2024-02-03,actual,20:01,2024-02-03,22:39,2024-02-03,actual,Boeing 737-800 Passenger
+Nashville,BNA,20:05,2024-02-03,['WN2471'],['Southwest Airlines'],B,Landed - Delayed [+],16:45,2024-02-03,16:59,2024-02-03,actual,20:05,2024-02-03,20:29,2024-02-03,actual,Boeing 737MAX 8 Passenger
+Bogota,BOG,20:05,2024-02-03,['AV222'],['Avianca'],E,Landed - Delayed [+],13:55,2024-02-03,13:53,2024-02-03,actual,20:05,2024-02-03,20:32,2024-02-03,actual,Airbus A319
+Washington,DCA,20:05,2024-02-03,['B62754'],['JetBlue Airways'],C,Landed - On-time [+],18:30,2024-02-03,18:16,2024-02-03,actual,20:05,2024-02-03,19:54,2024-02-03,actual,Embraer 190
+Lisbon,LIS,20:05,2024-02-03,['TP215'],['TAP Air Portugal'],E,Landed - On-time [+],17:20,2024-02-03,17:25,2024-02-03,actual,20:05,2024-02-03,19:24,2024-02-03,actual,Airbus A321neo
+Chicago,MDW,20:05,2024-02-03,['WN968'],['Southwest Airlines'],B,Landed - On-time [+],16:55,2024-02-03,16:52,2024-02-03,actual,20:05,2024-02-03,20:10,2024-02-03,actual,Boeing 737MAX 8 Passenger
+Ponta Delgada (Azores),PDL,20:05,2024-02-03,['S4271'],['Azores Airlines'],E,Landed - On-time [+],17:55,2024-02-03,17:35,2024-02-03,actual,20:05,2024-02-03,19:00,2024-02-03,actual,Airbus A321neo
+Washington,DCA,20:06,2024-02-03,['DL5709'],['Delta Air Lines'],A,Landed - On-time [+],18:30,2024-02-03,18:20,2024-02-03,actual,20:06,2024-02-03,19:57,2024-02-03,actual,Embraer 175
+Raleigh/Durham,RDU,20:10,2024-02-03,['DL2339'],['Delta Air Lines'],A,Landed - On-time [+],18:10,2024-02-03,17:56,2024-02-03,actual,20:10,2024-02-03,19:49,2024-02-03,actual,Airbus A220-100 Passenger
+West Palm Beach,PBI,20:13,2024-02-03,['B61222'],['JetBlue Airways'],C,Landed - On-time [+],16:59,2024-02-03,16:47,2024-02-03,actual,20:13,2024-02-03,19:56,2024-02-03,actual,Embraer 190
+Zurich,ZRH,20:15,2024-02-03,['LX52'],['SWISS'],E,Landed - On-time [+],17:35,2024-02-03,17:37,2024-02-03,actual,20:15,2024-02-03,19:57,2024-02-03,actual,Airbus A330-300
+Philadelphia,PHL,20:22,2024-02-03,['AA1874'],['American Airlines'],B,Landed - On-time [+],19:00,2024-02-03,18:52,2024-02-03,actual,20:22,2024-02-03,20:06,2024-02-03,actual,Airbus A319
+Dallas,DFW,20:25,2024-02-03,['AA1048'],['American Airlines'],B,Landed - On-time [+],15:54,2024-02-03,15:48,2024-02-03,actual,20:25,2024-02-03,20:20,2024-02-03,actual,Boeing 737-800 Passenger
+Atlanta,ATL,20:27,2024-02-03,['DL300'],['Delta Air Lines'],A,Landed - On-time [+],17:50,2024-02-03,17:49,2024-02-03,actual,20:27,2024-02-03,20:32,2024-02-03,actual,Airbus A321
+Montreal,YUL,20:30,2024-02-03,['VJT736'],['VistaJet'],,Landed - On-time [+],19:30,2024-02-03,19:44,2024-02-03,actual,20:30,2024-02-03,20:30,2024-02-03,actual,BOMBARDIER BD-700 Global 7000
+Atlanta,ATL,20:31,2024-02-03,['B6996'],['JetBlue Airways'],C,Landed - On-time [+],17:55,2024-02-03,17:37,2024-02-03,actual,20:31,2024-02-03,20:09,2024-02-03,actual,Embraer 190
+Miami,MIA,20:31,2024-02-03,['AA1074'],['American Airlines'],B,Landed - On-time [+],17:15,2024-02-03,17:13,2024-02-03,actual,20:31,2024-02-03,20:37,2024-02-03,actual,Boeing 737-800 Passenger
+Providenciales,PLS,20:31,2024-02-03,['AA1159'],['American Airlines'],E,Landed - On-time [+],16:57,2024-02-03,16:50,2024-02-03,actual,20:31,2024-02-03,20:29,2024-02-03,actual,Boeing 737-800 Passenger
+Nassau,NAS,20:50,2024-02-03,['DL1936'],['Delta Air Lines'],E,Landed - On-time [+],17:30,2024-02-03,17:07,2024-02-03,actual,20:50,2024-02-03,20:07,2024-02-03,actual,Boeing 737-800 Passenger
+Fort Lauderdale,FLL,20:51,2024-02-03,['NK298'],['Spirit Airlines'],B,Landed - On-time [+],17:35,2024-02-03,17:47,2024-02-03,actual,20:51,2024-02-03,21:00,2024-02-03,actual,Airbus A321
+Charlotte,CLT,20:55,2024-02-03,['AA2838'],['American Airlines'],B,Landed - Delayed [+],18:52,2024-02-03,19:13,2024-02-03,actual,20:55,2024-02-03,21:21,2024-02-03,actual,Airbus A321
+Orlando,MCO,21:00,2024-02-03,['B6812'],['JetBlue Airways'],C,Landed - On-time [+],17:55,2024-02-03,17:54,2024-02-03,actual,21:00,2024-02-03,21:11,2024-02-03,actual,Airbus A320
+Washington,DCA,21:02,2024-02-03,['B62354'],['JetBlue Airways'],C,Landed - On-time [+],19:30,2024-02-03,19:15,2024-02-03,actual,21:02,2024-02-03,21:02,2024-02-03,actual,Embraer 190
+Montego Bay,MBJ,21:02,2024-02-03,['DL1899'],['Delta Air Lines'],E,Landed - On-time [+],16:50,2024-02-03,16:41,2024-02-03,actual,21:02,2024-02-03,20:48,2024-02-03,actual,Boeing 737-900 Passenger
+Richmond,RIC,21:02,2024-02-03,['B61482'],['JetBlue Airways'],C,Landed - Delayed [+],19:22,2024-02-03,19:49,2024-02-03,actual,21:02,2024-02-03,21:20,2024-02-03,actual,Airbus A320
+Guanacaste,LIR,21:03,2024-02-03,['B6898'],['JetBlue Airways'],E,Landed - On-time [+],14:39,2024-02-03,14:25,2024-02-03,actual,21:03,2024-02-03,20:50,2024-02-03,actual,Airbus A321
+Chicago,ORD,21:16,2024-02-03,['DL5601'],['Delta Air Lines'],A,Landed - On-time [+],17:50,2024-02-03,17:41,2024-02-03,actual,21:16,2024-02-03,21:05,2024-02-03,actual,Embraer 175
+Austin,AUS,21:26,2024-02-03,['1I155'],['NetJets Aviation'],,Landed - On-time [+],17:00,2024-02-03,17:07,2024-02-03,actual,21:26,2024-02-03,21:24,2024-02-03,actual,Bombardier BD-700 Global Express/Global 500
+Dallas,DFW,21:31,2024-02-03,['B61214'],['JetBlue Airways'],C,Landed - Delayed [+],17:01,2024-02-03,17:12,2024-02-03,actual,21:31,2024-02-03,22:12,2024-02-03,actual,Embraer 190
+Tampa,TPA,21:34,2024-02-03,['DL2229'],['Delta Air Lines'],A,Landed - On-time [+],18:30,2024-02-03,18:19,2024-02-03,actual,21:34,2024-02-03,21:17,2024-02-03,actual,Boeing 737-800 Passenger
+Newark,EWR,21:39,2024-02-03,['UA1542'],['United Airlines'],B,Landed - Delayed [+],20:20,2024-02-03,21:05,2024-02-03,actual,21:39,2024-02-03,22:06,2024-02-03,actual,Boeing 737-900 Passenger
+Barcelona,BCN,21:40,2024-02-03,['IB2625'],['Iberia'],E,Landed - On-time [+],18:45,2024-02-03,19:06,2024-02-03,actual,21:40,2024-02-03,21:01,2024-02-03,actual,Airbus A330-200
+Aruba,AUA,21:44,2024-02-03,['B6274'],['JetBlue Airways'],C,Landed - On-time [+],17:45,2024-02-03,17:53,2024-02-03,actual,21:44,2024-02-03,21:50,2024-02-03,actual,Airbus A321
+Chicago,ORD,21:53,2024-02-03,['UA1568'],['United Airlines'],B,Landed - On-time [+],18:30,2024-02-03,18:29,2024-02-03,actual,21:53,2024-02-03,21:57,2024-02-03,actual,Boeing 737-900 Passenger
+Fort Myers,RSW,21:54,2024-02-03,['DL391'],['Delta Air Lines'],A,Landed - On-time [+],18:40,2024-02-03,18:35,2024-02-03,actual,21:54,2024-02-03,21:55,2024-02-03,actual,Airbus A320
+London,LHR,21:55,2024-02-03,['BA239'],['British Airways'],E,Landed - On-time [+],19:05,2024-02-03,19:21,2024-02-03,actual,21:55,2024-02-03,21:41,2024-02-03,actual,Boeing 787-9
+San Francisco,SFO,21:55,2024-02-03,['UA2374'],['United Airlines'],B,Landed - On-time [+],13:15,2024-02-03,13:05,2024-02-03,actual,21:55,2024-02-03,21:56,2024-02-03,actual,Boeing 757-200 Passenger
+Pittsburgh,PIT,21:56,2024-02-03,['B62186'],['JetBlue Airways'],C,Landed - On-time [+],20:20,2024-02-03,19:54,2024-02-03,actual,21:56,2024-02-03,21:27,2024-02-03,actual,Embraer 190
+Cancun,CUN,21:58,2024-02-03,['DL1927'],['Delta Air Lines'],E,Landed - On-time [+],17:45,2024-02-03,17:41,2024-02-03,actual,21:58,2024-02-03,22:00,2024-02-03,actual,Boeing 737-900 Passenger
+Orlando,MCO,22:00,2024-02-03,['B61152'],['JetBlue Airways'],C,Landed - On-time [+],18:55,2024-02-03,18:52,2024-02-03,actual,22:00,2024-02-03,22:07,2024-02-03,actual,Airbus A321
+New York,JFK,22:03,2024-02-03,['B6918'],['JetBlue Airways'],C,Landed - On-time [+],20:40,2024-02-03,20:37,2024-02-03,actual,22:03,2024-02-03,21:47,2024-02-03,actual,Embraer 190
+Washington,DCA,22:05,2024-02-03,['B62854'],['JetBlue Airways'],C,Landed - On-time [+],20:30,2024-02-03,20:18,2024-02-03,actual,22:05,2024-02-03,21:44,2024-02-03,actual,Embraer 190
+Punta Cana,PUJ,22:08,2024-02-03,['DL1971'],['Delta Air Lines'],E,Landed - On-time [+],18:45,2024-02-03,18:38,2024-02-03,actual,22:08,2024-02-03,21:35,2024-02-03,actual,Boeing 737-900 Passenger
+Denver,DEN,22:10,2024-02-03,['WN3221'],['Southwest Airlines'],B,Landed - Delayed [+],16:25,2024-02-03,19:37,2024-02-03,actual,22:10,2024-02-03,02:02,2024-02-04,actual,Boeing 737-800 Passenger
+West Palm Beach,PBI,22:10,2024-02-03,['B61922'],['JetBlue Airways'],C,Landed - On-time [+],19:06,2024-02-03,19:08,2024-02-03,actual,22:10,2024-02-03,22:02,2024-02-03,actual,Embraer 190
+New York,JFK,22:11,2024-02-03,['AA110'],['American Airlines'],B,Landed - On-time [+],21:00,2024-02-03,20:56,2024-02-03,actual,22:11,2024-02-03,22:10,2024-02-03,actual,Airbus A321
+Miami,MIA,22:12,2024-02-03,['AA2539'],['American Airlines'],B,Landed - On-time [+],18:57,2024-02-03,19:07,2024-02-03,actual,22:12,2024-02-03,22:18,2024-02-03,actual,Boeing 737-800 Passenger
+Baltimore,BWI,22:15,2024-02-03,['WN149'],['Southwest Airlines'],B,Landed - On-time [+],20:50,2024-02-03,20:42,2024-02-03,actual,22:15,2024-02-03,22:07,2024-02-03,actual,Boeing 737MAX 8 Passenger
+Chicago,ORD,22:16,2024-02-03,['AA407'],['American Airlines'],B,Landed - Delayed [+],18:55,2024-02-03,20:13,2024-02-03,actual,22:16,2024-02-03,23:49,2024-02-03,actual,Boeing 737-800 Passenger
+Dallas,DFW,22:17,2024-02-03,['AA2306'],['American Airlines'],B,Landed - Delayed [+],17:45,2024-02-03,17:48,2024-02-03,actual,22:17,2024-02-03,22:34,2024-02-03,actual,Boeing 737-800 Passenger
+Milwaukee,MKE,22:23,2024-02-03,['DL5643'],['Delta Air Lines'],A,Landed - On-time [+],18:55,2024-02-03,18:45,2024-02-03,actual,22:23,2024-02-03,22:05,2024-02-03,actual,Embraer 175
+St. George's,GND,22:28,2024-02-03,['B6238'],['JetBlue Airways'],E,Landed - On-time [+],17:51,2024-02-03,17:45,2024-02-03,actual,22:28,2024-02-03,21:57,2024-02-03,actual,Airbus A321
+Fort Myers,RSW,22:32,2024-02-03,['B61766'],['JetBlue Airways'],C,Landed - On-time [+],19:24,2024-02-03,19:22,2024-02-03,actual,22:32,2024-02-03,22:36,2024-02-03,actual,Airbus A321
+Chicago,ORD,22:33,2024-02-03,['B6412'],['JetBlue Airways'],C,Landed - On-time [+],19:15,2024-02-03,19:04,2024-02-03,actual,22:33,2024-02-03,22:32,2024-02-03,actual,Embraer 190
+Toronto,YYZ,22:34,2024-02-03,['AC772'],['Air Canada'],B,Landed - Delayed [+],20:55,2024-02-03,22:20,2024-02-03,actual,22:34,2024-02-03,23:55,2024-02-03,actual,Airbus A220-300 Passenger
+Charlotte,CLT,22:44,2024-02-03,['AA1843'],['American Airlines'],B,Landed - Delayed [+],20:35,2024-02-03,22:03,2024-02-03,actual,22:44,2024-02-03,00:12,2024-02-04,actual,Boeing 737-800 Passenger
+Houston,IAH,22:47,2024-02-03,['UA551'],['United Airlines'],B,Landed - Delayed [+],18:05,2024-02-03,20:04,2024-02-03,actual,22:47,2024-02-03,00:43,2024-02-04,actual,Boeing 737-800 Passenger
+New York,JFK,22:52,2024-02-03,['DL2903'],['Delta Air Lines'],A,Landed - On-time [+],21:35,2024-02-03,21:30,2024-02-03,actual,22:52,2024-02-03,22:30,2024-02-03,actual,Airbus A220-100 Passenger
+New York,JFK,22:54,2024-02-03,['AA4262'],['American Airlines'],B,Landed - On-time [+],21:40,2024-02-03,21:32,2024-02-03,actual,22:54,2024-02-03,22:35,2024-02-03,actual,Embraer 175 (Enhanced Winglets)
+New York,JFK,22:54,2024-02-03,['B6318'],['JetBlue Airways'],C,Landed - Delayed [+],21:30,2024-02-03,22:25,2024-02-03,actual,22:54,2024-02-03,23:30,2024-02-03,actual,Embraer 190
+Raleigh/Durham,RDU,22:57,2024-02-03,['B61484'],['JetBlue Airways'],C,Landed - On-time [+],20:59,2024-02-03,20:45,2024-02-03,actual,22:57,2024-02-03,22:42,2024-02-03,actual,Airbus A220-300 Passenger
+New York,JFK,23:23,2024-02-03,['B6208'],['JetBlue Airways'],C,Landed - On-time [+],21:59,2024-02-03,22:19,2024-02-03,actual,23:23,2024-02-03,23:31,2024-02-03,actual,Embraer 190
+Miami,MIA,23:27,2024-02-03,['DL2311'],['Delta Air Lines'],A,Landed - On-time [+],19:59,2024-02-03,19:50,2024-02-03,actual,23:27,2024-02-03,23:38,2024-02-03,actual,Airbus A321
+Atlanta,ATL,23:31,2024-02-03,['DL855'],['Delta Air Lines'],A,Landed - On-time [+],20:59,2024-02-03,20:55,2024-02-03,actual,23:31,2024-02-03,23:18,2024-02-03,actual,Boeing 757-200 Passenger
+Detroit,DTW,23:40,2024-02-03,['DL1377'],['Delta Air Lines'],A,Landed - Delayed [+],21:35,2024-02-03,21:34,2024-02-03,actual,23:40,2024-02-03,23:59,2024-02-03,actual,Airbus A220-100 Passenger
+Dallas,DFW,23:42,2024-02-03,['AA1366'],['American Airlines'],B,Landed - Delayed [+],19:08,2024-02-03,19:42,2024-02-03,actual,23:42,2024-02-03,00:31,2024-02-04,actual,Boeing 737-800 Passenger
+Denver,DEN,23:43,2024-02-03,['UA1510'],['United Airlines'],B,Landed - Delayed [+],17:53,2024-02-03,17:57,2024-02-03,actual,23:43,2024-02-03,00:04,2024-02-04,actual,Boeing 737-900 Passenger
+Dulles,IAD,23:44,2024-02-03,['UA352'],['United Airlines'],B,Landed - On-time [+],22:09,2024-02-03,22:07,2024-02-03,actual,23:44,2024-02-03,23:40,2024-02-03,actual,Boeing 737MAX 8 Passenger
+Washington,DCA,23:45,2024-02-03,['AA2120'],['American Airlines'],B,Landed - On-time [+],22:10,2024-02-03,22:08,2024-02-03,actual,23:45,2024-02-03,23:35,2024-02-03,actual,Airbus A319
+New York,JFK,23:47,2024-02-03,['B61318'],['JetBlue Airways'],C,Landed - On-time [+],22:29,2024-02-03,22:24,2024-02-03,actual,23:47,2024-02-03,23:27,2024-02-03,actual,Embraer 190
+San Juan,SJU,23:50,2024-02-03,['B6362'],['JetBlue Airways'],C,Landed - On-time [+],20:24,2024-02-03,20:28,2024-02-03,actual,23:50,2024-02-03,23:27,2024-02-03,actual,Airbus A321
+Orlando,MCO,23:54,2024-02-03,['B61952'],['JetBlue Airways'],C,Landed - On-time [+],20:50,2024-02-03,20:44,2024-02-03,actual,23:54,2024-02-03,23:53,2024-02-03,actual,Embraer 190
+Salt Lake City,SLC,23:54,2024-02-03,['DL2528'],['Delta Air Lines'],A,Landed - Delayed [+],17:20,2024-02-03,17:18,2024-02-03,actual,23:54,2024-02-03,00:10,2024-02-04,actual,Airbus A321neo
+Phoenix,PHX,23:55,2024-02-03,['AA567'],['American Airlines'],B,Landed - Delayed [+],17:07,2024-02-03,17:09,2024-02-03,actual,23:55,2024-02-03,00:17,2024-02-04,actual,Airbus A321neo
+Tampa,TPA,23:56,2024-02-03,['B61192'],['JetBlue Airways'],C,Landed - On-time [+],20:55,2024-02-03,20:47,2024-02-03,actual,23:56,2024-02-03,00:06,2024-02-04,actual,Airbus A321
+Fort Lauderdale,FLL,23:57,2024-02-03,['NK616'],['Spirit Airlines'],B,Landed - On-time [+],20:40,2024-02-03,20:36,2024-02-03,actual,23:57,2024-02-03,23:48,2024-02-03,actual,Airbus A320neo
+Austin,AUS,23:59,2024-02-03,['B61238'],['JetBlue Airways'],C,Landed - On-time [+],19:15,2024-02-02,19:11,2024-02-02,actual,00:09,2024-02-03,00:01,2024-02-03,actual,Airbus A220-300 Passenger
+Seattle,SEA,23:59,2024-02-03,['AS460'],['Alaska Airlines'],B,Landed - On-time [+],15:45,2024-02-03,15:43,2024-02-03,actual,23:59,2024-02-03,00:13,2024-02-04,actual,Boeing 737MAX 9 Passenger
