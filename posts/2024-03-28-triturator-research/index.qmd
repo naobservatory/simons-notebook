@@ -225,7 +225,7 @@ def return_destination_trit_plot():
     plt.title("Total Flights per Triturator")
 
     plt.tight_layout()
-    plt.savefig("triturator_flights.png", dpi=600)
+    plt.show()
 
 return_destination_trit_plot()
 ```
