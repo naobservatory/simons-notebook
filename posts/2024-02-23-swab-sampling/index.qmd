@@ -96,11 +96,7 @@ df.columns = df.columns.str.replace(", ", "\n")
 df = df.melt(var_name='Study & Comparison', value_name='CT Difference')
 
 mean_ct_diff = df.groupby('Study & Comparison')['CT Difference'].mean().reset_index()
-
-
-
-
-
+print(mean_ct_diff)
 fig = plt.figure(figsize=(8, 3.5))
 order = df["Study & Comparison"].unique()
 sns.stripplot(data=df, y='Study & Comparison', x='CT Difference', hue='Study & Comparison',jitter=True, alpha=0.6, order=order,zorder=0)
@@ -205,7 +201,7 @@ df.columns = df.columns.str.replace(", ", "\n")
 
 df = df.melt(var_name='Study & Comparison', value_name='CT Difference')
 mean_ct_diff = df.groupby('Study & Comparison')['CT Difference'].mean().reset_index()
-
+print(mean_ct_diff)
 fig = plt.figure(figsize=(8, 1.5))
 
 order = df["Study & Comparison"].unique()
@@ -297,7 +293,7 @@ df = df.melt(var_name='Study & Comparison', value_name='Genome Copy Number Diffe
 df['Study & Comparison'] = df['Study & Comparison'].str.split(',').str[-1]
 
 mean_ct_diff = df.groupby('Study & Comparison')['Genome Copy Number Difference'].mean().reset_index()
-
+print(mean_ct_diff)
 fig = plt.figure(figsize=(8, 2))
 sns.stripplot(data=df, y='Study & Comparison', x='Genome Copy Number Difference', hue='Study & Comparison', jitter=True)
 sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='Genome Copy Number Difference', linestyles='none', markers='D', color='black', markersize=5, errorbar=None, order=order,zorder=1)

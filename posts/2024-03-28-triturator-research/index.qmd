@@ -24,30 +24,31 @@ import datetime as dt
 import ast
 import random
 import math
+import csv
+import gspread as gs
+from IPython.display import Markdown
+from tabulate import tabulate
 from collections import defaultdict
 from IPython.display import Markdown
-import csv
 from tabulate import tabulate
 
 
 
 def return_airline_trit_dict():
-    airline_trit_dict = defaultdict(str)
-    with open("data/2024-03-28_airlines_triturators.tsv") as infile:
-        reader = csv.DictReader(infile, delimiter='\t')
-        for row in reader:
-            airline = row['Airline'].strip()
-            triturator = row['Triturator'].strip()
-            prettier_triturator = {
-                "Swissport": "Swissport\nTriturator",
-                "American Airlines": "American Airlines\nTriturator",
-                "Unknown": "Unknown",
-                "No Triturator Used": "No Triturator used"
-            }
-            triturator = prettier_triturator.get(triturator, triturator)
-            airline_trit_dict[airline] = triturator
+    gc = gs.oauth()
+    sh = gc.open("Airlines_Triturators")
+    worksheet = sh.get_worksheet(0)
+    df = pd.DataFrame(worksheet.get_all_records())
+    prettier_triturator = {
+        "Swissport": "Swissport\nTriturator",
+        "American Airlines": "American Airlines\nTriturator",
+        "Unknown": "Unknown",
+        "No Triturator Used": "No Triturator used"
+    }
+    df['Prettier Triturator'] = df['Triturator'].map(prettier_triturator).fillna(df['Triturator'])
+    # Convert to dictionary
+    airline_trit_dict = pd.Series(df['Prettier Triturator'].values,index=df['Airline']).to_dict()
     return airline_trit_dict
-
 
 def return_flights():
     airline_trit_dict = return_airline_trit_dict()
@@ -160,9 +161,6 @@ us_flights_df = return_flights()
 
 ```
 
-
-
-
 # Introduction
 
 In Q1 we collected several pieces of information to better understand the composition of Project Runway triturator samples. One important piece was information on inbound flights to Boston, which included flight duration, airline, plane type, etc. This data was collated by a scraper created by Lenni, found [here](https://github.com/naobservatory/BOSTraffic/tree/master). A script that downloads the data from AWS can be found [here](https://github.com/naobservatory/simons-notebook/blob/main/posts/2024-03-28-triturator-research/get-all-flights.py).
@@ -174,12 +172,26 @@ We need to know where the waste on these flights ends up. We thus spent some tim
 
 
 ```{python}
-from IPython.display import Markdown
-from tabulate import tabulate
-table = pd.read_csv("data/2024-03-28_airlines_triturators.tsv", sep="\t")[["Airline", "Triturator","Ground handling", "Source",]]
+def create_airline_table():
+    gc = gs.oauth()
+    sh = gc.open("Airlines_Triturators")
+    worksheet = sh.get_worksheet(0)
+    table = pd.DataFrame(worksheet.get_all_records())[["Airline", "Triturator","Ground handling", "Source",]]
+
+    df = us_flights_df
+    df["Flight Hours"] = df["Flight Time"].apply(time_to_float)
+    airline_hours = df.groupby("Prime Airline")["Flight Hours"].sum().to_dict()
+
+    table["Flight Hours"] = table["Airline"].map(airline_hours).fillna(0).astype(int)
+    table = table.sort_values(by="Flight Hours", ascending=False)
+    return table
+
+table = create_airline_table()
+
+
 Markdown(tabulate(
   table.values,
-  headers=["Airline","Triturator","Ground Handling","Source"],
+  headers=["Airline","Triturator","Ground Handling","Source", "Flight Hours"],
   showindex=False,
 ))
 
@@ -187,26 +199,16 @@ Markdown(tabulate(
 ```
 
 ```{python}
-
 def return_plotting_df():
     df = us_flights_df
-
-
-    # create a df with number of flights per triturator
     df = df.groupby("Triturator Status").size().reset_index(name="Flights")
-    # sort the df by number of flights
     df = df.sort_values(by="Flights", ascending=False)
     return df
 
-
 def return_destination_trit():
     df = return_plotting_df()
-
     fig, ax = plt.subplots(figsize=(8, 3))
-
-    # sns colors (tab). no trit = orange, unknown = red swissport = green, american airlines = blue
     colors = {"No Triturator used": "tab:orange", "Unknown": "tab:red", "Swissport\nTriturator": "tab:green", "American Airlines\nTriturator": "tab:blue"}
-
 
     df.plot(
         kind="barh",
@@ -223,7 +225,6 @@ def return_destination_trit():
     plt.ylabel("")
     plt.xlabel("Total Flights")
     plt.title("Total Flights per Triturator and Airline")
-
     plt.tight_layout()
     plt.show()
 
@@ -249,7 +250,7 @@ def return_plotting_df():
     df = df.drop("Total", axis=1)
     return df
 
-def return_destination_trit_plot():
+def total_flights_airline_trit_plot():
     df = return_plotting_df()
 
     df = df.head(50)
@@ -270,7 +271,7 @@ def return_destination_trit_plot():
     plt.tight_layout()
     plt.show()
 
-return_destination_trit_plot()
+total_flights_airline_trit_plot()
 ```
 
 
@@ -289,7 +290,6 @@ def return_plotting_df():
         df.groupby(["Prime Airline", "Triturator Status"])
         .agg({"Flight Hours": "sum"})
         .reset_index()
-
     )
 
     df = df.pivot(
@@ -304,14 +304,11 @@ def return_plotting_df():
 
 
 
-def return_destination_trit_plot():
+def total_flight_hours_airline_trit_plot():
     df = return_plotting_df()
-
     df = df.head(50)
     fig, ax = plt.subplots(figsize=(8, 7))
     df.plot.barh(stacked=True, ax=ax, width=0.8)
-
-
     # drop title of legend box
     ax.legend().set_title("")
     ax.spines["right"].set_visible(False)
@@ -326,18 +323,7 @@ def return_destination_trit_plot():
     plt.show()
 
 
-
-
-
-def start():
-    return_destination_trit_plot()
-
-
-
-
-if __name__ == "__main__":
-    start()
-
+total_flight_hours_airline_trit_plot()
 ```
 
 ## Airlines
@@ -395,10 +381,6 @@ def return_destination_trit_plot():
     plt.tight_layout()
     plt.savefig("triturator_destination_flighs.png", dpi=600)
 
-
-
-
-
 return_destination_trit_plot()
 
 
@@ -437,9 +419,6 @@ def return_plotting_df():
     df = df.drop("Total", axis=1)
 
     return df
-
-
-
 
 def return_destination_trit_plot():
     df = return_plotting_df()
@@ -500,7 +479,6 @@ def return_plotting_df():
     df = df.drop("Total", axis=1)
 
     return df
-
 
 
 def return_destination_trit_plot():
