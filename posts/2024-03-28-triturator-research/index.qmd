@@ -73,18 +73,15 @@ def return_flights():
             airlines = ast.literal_eval(airline)
             prime_airline = airlines[0]
             prime_airline = prime_airline.strip()
-            if nation == "Canada":
-                triturator_status = "Unknown"
-            elif prime_airline in airline_trit_dict:
+            if prime_airline in airline_trit_dict:
                 triturator_status = airline_trit_dict[prime_airline]
             elif prime_airline == "JetBlue": # Sometimes it's JetBlue, sometimes it's JetBlue Airways
                 triturator_status = "Swissport\nTriturator"
-
+            elif nation == "Canada":
+                triturator_status = "Unknown"
             elif nation != "United States":
                 triturator_status = "Swissport\nTriturator"
                 unmatched_airlines[prime_airline] += 1
-
-
             else:
                 triturator_status = "Unknown"
                 unmatched_airlines[prime_airline] += 1
@@ -379,7 +376,7 @@ def return_destination_trit_plot():
     plt.title(f"Total Flights per Country/State and Triturator (Top 50)\n{first_date} - {last_date}")
 
     plt.tight_layout()
-    plt.savefig("triturator_destination_flighs.png", dpi=600)
+    plt.show()
 
 return_destination_trit_plot()
 
@@ -446,7 +443,7 @@ def return_destination_trit_plot():
     plt.title(f"Total Flight Hours per Country/State and Triturator (Top 50)\n{first_date} - {last_date}")
 
     plt.tight_layout()
-    plt.savefig("triturator_destination_flight_hours.png", dpi=600)
+    plt.show()
 
 
 return_destination_trit_plot()
