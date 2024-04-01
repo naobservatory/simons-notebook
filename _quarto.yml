@@ -6,10 +6,8 @@ website:
   navbar:
     background: primary
     search: true
-format:
-  html:
-    theme: cosmo
-    css: styles.css
+execute:
+  freeze: auto  # re-render only when source changes
 
 
 
