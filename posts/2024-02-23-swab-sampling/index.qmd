@@ -188,39 +188,35 @@ Studies that use NP swabs as their gold standard are useful to better understand
 
 ```{python}
 
-```
+df = pd.read_csv('data/2024-04-02-mt-ct.tsv', sep='\t', skiprows=1)
+df_ct = df["Tu et al. 2020, Nasopharyngeal"].to_frame()
 
-```{python}
-#| fig-cap: "**Figure 1: Nasal vs Nasopharyngeal.# , Mid-Turbinate, and combined Oropharyngeal/ Nasal swabs.** Data from Kojima et al. 2020, Tu et al. 2020, Muller et al. 2021, and Desmet et al. 2021."
+df_ct = df_ct.rename(columns={"Tu et al. 2020, Nasopharyngeal": "CT Difference"})
+df_ct['Study & Comparison'] = 'Tu et al. 2020,\nNasopharyngeal'
 
-
-#All CT difference data were calculated in and are taken from https://docs.google.com/spreadsheets/d/1YP4mxT_vxiFwXU5ZuBM4obq_oscfhe05ODWwHFHEznM/
-df = pd.read_csv('data/2024-03-29-mt-ct.tsv', sep='\t', skiprows=1)
-df.columns = df.columns.str.replace(", ", "\n")
-
-
-df = df.melt(var_name='Study & Comparison', value_name='CT Difference')
-mean_ct_diff = df.groupby('Study & Comparison')['CT Difference'].mean().reset_index()
+mean_ct_diff = df_ct.groupby('Study & Comparison', as_index=False)['CT Difference'].mean()
 print(mean_ct_diff)
-fig = plt.figure(figsize=(8, 1.5))
+fig = plt.figure(figsize=(8, 0.75))
 
-order = df["Study & Comparison"].unique()
-sns.stripplot(data=df, y='Study & Comparison', x='CT Difference', hue='Study & Comparison',jitter=True, alpha=0.6, order=order,zorder=0)
-sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='CT Difference', linestyles='none', markers='D', color='#36454F', markersize=5, errorbar=None, order=order,zorder=1)
+sns.stripplot(data=df_ct, y='Study & Comparison', x='CT Difference', hue='Study & Comparison', jitter=True, alpha=0.6, zorder=0)
+sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='CT Difference', linestyles='none', markers='D', color='#36454F', markersize=5, errorbar=None,zorder=1)
 
 plt.legend([],[], frameon=False)
-# drop y axis label
 plt.ylabel('')
 plt.xlabel(u'SARS-CoV-2 qPCR CT Δ (MT - NT)')
 plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
-for x in 5, 0, -5, -10, -15:
+
+x_marks = [-10, -7.5, -5, -2.5, 0, 2.5, 5]
+
+for x in x_marks:
     if x == 0:
         plt.axvline(x=x, color='red', linestyle='--', alpha=0.5)
         continue
     plt.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+    #set ticks
 
-for y in 0.5, 1.5:
-    plt.axhline(y=y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+plt.xticks(x_marks)
+
 
 min_x, max_x = plt.xlim()
 
@@ -231,7 +227,56 @@ plt.gca().spines['right'].set_visible(False)
 plt.gca().spines['top'].set_visible(False)
 plt.gca().spines['left'].set_visible(False)
 plt.show()
+plt.clf()
 ```
+
+
+```{python}
+df = pd.read_csv('data/2024-04-02-mt-ct.tsv', sep='\t', skiprows=1)
+
+df_copy_number =  df["Muller et al. 2021, Nasopharyngeal"].to_frame()
+
+df_copy_number = df_copy_number.rename(columns={"Muller et al. 2021, Nasopharyngeal": "Genome Copy Number Difference"})
+df_copy_number['Study & Comparison'] = "Muller et al. 2021,\nNasopharyngeal"
+mean_genome_diff = df_copy_number.groupby('Study & Comparison')['Genome Copy Number Difference'].mean().reset_index()
+print(mean_genome_diff)
+fig = plt.figure(figsize=(8, 0.7))
+
+sns.stripplot(data=df_copy_number, y='Study & Comparison', x='Genome Copy Number Difference', jitter=True, alpha=0.6,zorder=1, color='tab:orange')
+sns.pointplot(data=mean_genome_diff, y='Study & Comparison', x='Genome Copy Number Difference', linestyles='none', markers='D', color='#36454F', markersize=5, errorbar=None, zorder=1)
+plt.legend([],[], frameon=False)
+
+
+plt.ylabel('')
+plt.xlabel(u'Genome Copy Number Δ (MT - NT), Logged')
+
+plt.gca().invert_xaxis()
+plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+for x in -4, -2, 0, 2:
+    if x == 0:
+        plt.axvline(x=x, color='red', linestyle='--', alpha=0.5)
+        continue
+    plt.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+plt.xticks([-4, -2, 0, 2])
+
+
+
+min_x, max_x = plt.xlim()
+
+plt.text(max_x/2,-0.6, 'Favors Nasopharyngeal', fontsize=10, color='black', ha='center')
+plt.text(min_x/2,-0.6, 'Favors Mid-Turbinate', fontsize=10, color='black', ha='center')
+
+plt.gca().spines['right'].set_visible(False)
+plt.gca().spines['top'].set_visible(False)
+plt.gca().spines['left'].set_visible(False)
+
+plt.show()
+
+
+
+```
+
 
 ### Nasal Swabs
 
@@ -288,18 +333,8 @@ plt.show()
 # turn tsv into dataframe. Ignore first row. Second row is column names.
 df = pd.read_csv('data/leung_genome_copy_differences.tsv', sep='\t', skiprows=1)
 
-
-
-
-
-
 df = df.melt(var_name='Study & Comparison', value_name='Genome Copy Number Difference')
 df['Study & Comparison'] = df['Study & Comparison'].str.split(',').str[-1]
-
-
-
-
-
 
 
 mean_ct_diff = df.groupby('Study & Comparison')['Genome Copy Number Difference'].mean().reset_index()
