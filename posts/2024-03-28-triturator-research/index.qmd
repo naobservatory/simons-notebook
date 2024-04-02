@@ -9,6 +9,8 @@ jupyter: venv
 filters:
     - black-formatter
 cap-location: bottom
+draft: true
+draft-mode: gone
 ---
 
 

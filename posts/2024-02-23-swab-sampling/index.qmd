@@ -98,9 +98,9 @@ df = df.melt(var_name='Study & Comparison', value_name='CT Difference')
 mean_ct_diff = df.groupby('Study & Comparison')['CT Difference'].mean().reset_index()
 print(mean_ct_diff)
 fig = plt.figure(figsize=(8, 3.5))
-order = df["Study & Comparison"].unique()
-sns.stripplot(data=df, y='Study & Comparison', x='CT Difference', hue='Study & Comparison',jitter=True, alpha=0.6, order=order,zorder=0)
-sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='CT Difference', linestyles='none', markers='D', color='black', markersize=5, errorbar=None, order=order,zorder=1)
+
+sns.stripplot(data=df, y='Study & Comparison', x='CT Difference', hue='Study & Comparison',jitter=True, alpha=0.6, zorder=0)
+sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='CT Difference', linestyles='none', markers='D', color='#36454F', markersize=5, errorbar=None, zorder=1)
 #sns.boxplot(data=df,
 #            showmeans=True,
 #            meanline=True,
@@ -206,7 +206,7 @@ fig = plt.figure(figsize=(8, 1.5))
 
 order = df["Study & Comparison"].unique()
 sns.stripplot(data=df, y='Study & Comparison', x='CT Difference', hue='Study & Comparison',jitter=True, alpha=0.6, order=order,zorder=0)
-sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='CT Difference', linestyles='none', markers='D', color='black', markersize=5, errorbar=None, order=order,zorder=1)
+sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='CT Difference', linestyles='none', markers='D', color='#36454F', markersize=5, errorbar=None, order=order,zorder=1)
 
 plt.legend([],[], frameon=False)
 # drop y axis label
@@ -289,14 +289,24 @@ plt.show()
 df = pd.read_csv('data/leung_genome_copy_differences.tsv', sep='\t', skiprows=1)
 
 
+
+
+
+
 df = df.melt(var_name='Study & Comparison', value_name='Genome Copy Number Difference')
 df['Study & Comparison'] = df['Study & Comparison'].str.split(',').str[-1]
+
+
+
+
+
+
 
 mean_ct_diff = df.groupby('Study & Comparison')['Genome Copy Number Difference'].mean().reset_index()
 print(mean_ct_diff)
 fig = plt.figure(figsize=(8, 2))
-sns.stripplot(data=df, y='Study & Comparison', x='Genome Copy Number Difference', hue='Study & Comparison', jitter=True)
-sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='Genome Copy Number Difference', linestyles='none', markers='D', color='black', markersize=5, errorbar=None, order=order,zorder=1)
+sns.stripplot(data=df, y='Study & Comparison', x='Genome Copy Number Difference', hue='Study & Comparison', jitter=True, alpha=0.6,zorder=1)
+sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='Genome Copy Number Difference', linestyles='none', markers='D', color='#36454F', markersize=5, errorbar=None, zorder=1)
 plt.legend([],[], frameon=False)
 # drop y axis label
 plt.ylabel('')
