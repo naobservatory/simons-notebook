@@ -774,11 +774,18 @@ df_np_babiker_ras = df_np_babiker['scv2_ra'].dropna().tolist()
 df_np_various_thorburn_ras = df_np_various_thorburn['relative_abundance'].dropna().tolist()
 df_np_various_graf_ras = df_np_various_graf['relative_abundance'].dropna().tolist()
 
-fig, axs = plt.subplots(2, 2, figsize=(9, 10), sharey=True)
+df_np_mostafa = pd.read_csv('data/mostafa_np_scv2_ct_mgs.tsv', sep='\t', skiprows=1)
+df_np_mostafa.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Severity Index': 'severity_index'}, inplace=True)
+df_np_mostafa['scv2_ct'] = df_np_mostafa['scv2_ct'].replace(',', '.', regex=True).astype(float)
+df_np_mostafa_ras = df_np_mostafa['scv2_ra'].dropna().tolist()
+
+
+
+fig, axs = plt.subplots(2, 3, figsize=(15, 9), sharey=True)
 n_swab_range = [50, 100, 200, 400, 800]
-studies = ["Lu","Babiker", "Thorburn", "Graf"]
-for i, (study, positive_ras) in enumerate(zip(studies, [df_op_lu_ras, df_np_babiker_ras, df_np_various_thorburn_ras, df_np_various_graf_ras])):
-    ax = axs[i // 2, i % 2]  # Calculate the correct subplot position
+studies = ["Lu","Babiker", "Mostafa", "Thorburn", "Graf"]
+for i, (study, positive_ras) in enumerate(zip(studies, [df_op_lu_ras, df_np_babiker_ras, df_np_mostafa_ras, df_np_various_thorburn_ras, df_np_various_graf_ras])):
+    ax = axs[i // 3, i % 3]  # Calculate the correct subplot position
     df = simulate_detection(positive_ras)
     for n_swabs in n_swab_range:
         ax.plot(df.index, df[n_swabs], label=f'{n_swabs} swabs')
@@ -794,13 +801,15 @@ for i, (study, positive_ras) in enumerate(zip(studies, [df_op_lu_ras, df_np_babi
         log_y = 10**y
         ax.axhline(y=log_y, color='black', linestyle='--', linewidth=0.5, alpha=0.5)
     if study == "Lu":
-        ax.set_title('OP, SARS-CoV-2, Inpatients', fontsize=10)
+        ax.set_title('Oropharyngeal, SARS-CoV-2, Inpatients', fontsize=10)
     elif study == "Babiker":
-        ax.set_title('NP, SARS-CoV-2, Inpatients & Outpatients', fontsize=10)
+        ax.set_title('Nasopharyngeal, SARS-CoV-2, Inpatients & Outpatients', fontsize=10)
     elif study == "Thorburn":
         ax.set_title('Nasopharyngeal, Various Pathogens, Outpatients', fontsize=10)
     elif study == "Graf":
         ax.set_title('Nasopharyngeal, Various Pathogens, 5yo Inpatients', fontsize=10)
+    elif study == "Mostafa":
+        ax.set_title('Nasal, SARS-CoV-2, Inpatients & Outpatients', fontsize=10)
 
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)

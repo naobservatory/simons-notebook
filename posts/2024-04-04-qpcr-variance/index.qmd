@@ -144,7 +144,7 @@ for i, (qpcr_target, extraction_kit, pcr_instrument) in enumerate(unique_combina
 
     sns.violinplot(data=distributions, ax=axs[i], orient='h')
     for x in np.arange(XMIN, XMAX, 2.5):
-        print(x)
+
         axs[i].axvline(x, color='gray', alpha=0.1, zorder=-1)
     axs[i].set_yticks(range(len(concentrations_per_ml)))
     axs[i].set_yticklabels(y_axis_labels)
@@ -500,11 +500,5 @@ for i, (qpcr_target, qpcr_kit, extraction_kit, pcr_instrument) in enumerate(uniq
     axs[i].spines['top'].set_color('none')
     axs[i].spines['right'].set_color('none')
 plt.show()
-```
-
-
-```{python}
-
-print(np.random.normal(0, 1))
 ```
 
