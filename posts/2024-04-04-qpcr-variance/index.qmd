@@ -1,0 +1,499 @@
+---
+title: "qPCR variance"
+author: "Simon Grimm "
+date: 2024-04-04
+toc: true
+nocode: true
+format:
+  html:
+    code-fold: true
+jupyter: venv
+
+cap-location: bottom
+---
+# Introduction
+
+This is research based on the "[Pooled swab sampling for pathogen early detection](https://docs.google.com/document/d/1xVlqz1COMDkS81UuiItbzRzFFT2Rxj2S-9Z_FiO3wEY/edit)" project.
+
+In our swab sampling research we want to compare qPCR results across different studies. Doing this requires a better understand how much variance is introduced by differing qPCR protocols. In the study [Assessing the comparability of cycle threshold values derived from five external quality assessment rounds for omicron nucleic acid testing](https://virologyj.biomedcentral.com/articles/10.1186/s12985-023-02032-z) researchers compared the qPCR results across many different laboratories who all used different combinations of qPCR machines, qPCR kits, and nucleic extraction methods. We can use this data to get an initial idea of how differing qPCR results might differ from one another.
+
+```{python}
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+```
+
+# Differing qPCR kits
+
+
+## Raw data
+```{python}
+#| warning: false
+
+data = pd.read_csv("data/s1-qpcr-kits-claude.tsv", sep="\t")
+data = data.apply(lambda x: x.str.strip() if x.dtype == "string" else x)
+data.columns = [col.strip() for col in data.columns]
+
+Y_MIN, Y_MAX = (28,40)
+
+
+unique_combinations = data[['qPCR target', 'extraction kit', 'PCR instrument']].drop_duplicates().values.tolist()
+concentrations_per_ml = ["2_e3", "1_e3", "5_e2", "2_e2"]
+
+table_iterator = -1
+for qpcr_target, extraction_kit, pcr_instrument in unique_combinations:
+    fig, ax = plt.subplots(figsize=(9, 5))
+    table_iterator += 1
+
+    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['extraction kit'] == extraction_kit) & (data['PCR instrument'] == pcr_instrument)]
+    qpcr_kits = sub_table['RT-PCR kit'].unique().tolist()
+    n_qpcr_kits = len(qpcr_kits)
+    x_increment = 0.7 / n_qpcr_kits
+    x_offset = -0.45
+    for qpcr_kit in qpcr_kits:
+        x_offset += x_increment
+        y_means = sub_table[sub_table['RT-PCR kit'] == qpcr_kit][["mean_2_e3", "mean_1_e3", "mean_5_e2", "mean_2_e2"]].values.flatten()
+        n_labs_values = sub_table[sub_table['RT-PCR kit'] == qpcr_kit][["n_labs_2_e3", "n_labs_1_e3", "n_labs_5_e2", "n_labs_2_e2"]].values.flatten()
+        min_n_labs = min(n_labs_values)
+        max_n_labs = max(n_labs_values)
+        if min_n_labs == max_n_labs:
+            n_labs_label = f"n = {min_n_labs}"
+        else:
+            n_labs_label = f"n = {min_n_labs} - {max_n_labs}"
+
+        y_sds = sub_table[sub_table['RT-PCR kit'] == qpcr_kit][["sd_2_e3", "sd_1_e3", "sd_5_e2", "sd_2_e2"]].values.flatten()
+        x_values = [x + x_offset for x in range(len(y_means))]
+        ax.errorbar(x_values, y_means, y_sds, alpha=0.5, label=f"{qpcr_kit}\n({n_labs_label})", fmt='o', linestyle='None')
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), frameon=False, ncol=4, title="qPCR kit")
+
+    ax.set_ylim(Y_MIN, Y_MAX)
+    ax.set_xticks(range(len(y_means)))
+    for x in range(Y_MIN, Y_MAX, 2):
+        ax.axhline(x, color='gray', alpha=0.1)
+    x_labels = []
+    for concentration in concentrations_per_ml:
+        tidy_concentration  = concentration.replace("_", " ").replace("e", "E")
+        label = f"{tidy_concentration} gc / ml"
+        x_labels.append(label)
+    ax.set_xticklabels(x_labels)
+    qpcr_target, extraction_kit, pcr_instrument = qpcr_target.strip(), extraction_kit.strip(), pcr_instrument.strip()
+    plt.title(f"qPCR target: {qpcr_target}, Extraction kit: {extraction_kit}, PCR instrument: {pcr_instrument}")
+    # drop top and right spine
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+
+
+
+
+```
+
+## Plotting aggregate distribution of samples where only the qPCR kit differed
+
+It is hard to discern how much variance there is between all the different kits, even within one concentration level. Something we can do to help make the variance more visible is to i) look only at examples where the qPCR kit differed, ii) take the means and standard deviations of the samples from each qPCR kit at a given concentration level, and iii) sample each qPCR kit's distribution, weighed by the number of labs using that kit.[^1]
+
+[^1]: This might well be wrong: A stanard deviation already contains information on the number of underlying samples.
+
+```{python}
+#| warning: false
+
+data = pd.read_csv("data/s1-qpcr-kits-claude.tsv", sep="\t")
+
+data.columns = [col.strip() for col in data.columns]
+
+absolute_sample_size = 3000
+XMIN, XMAX = (-10, 10)
+
+# only keep rows where neither extraction kit orPqCR instrumet are == "various"
+data = data[~data['extraction kit'].str.contains("various")]
+data = data[~data['PCR instrument'].str.contains("various")].reset_index()
+
+unique_combinations = data[['qPCR target', 'extraction kit', 'PCR instrument']].drop_duplicates().values.tolist()
+
+n_unique_combinations = len(unique_combinations)
+
+fig, axs = plt.subplots(n_unique_combinations, figsize=(9, 5), sharex=True)
+
+concentrations_per_ml = ["2_e3", "1_e3", "5_e2", "2_e2"]
+
+for i, (qpcr_target, extraction_kit, pcr_instrument) in enumerate(unique_combinations):
+    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['extraction kit'] == extraction_kit) & (data['PCR instrument'] == pcr_instrument)]
+
+    distributions = []
+    y_axis_labels = []
+
+
+    for concentration in concentrations_per_ml:
+        means = sub_table[f"mean_{concentration}"].values.tolist()
+        sds = sub_table[f"sd_{concentration}"].values.tolist()
+        n_labs = sub_table[f"n_labs_{concentration}"].values.tolist()
+        total_labs = sum(n_labs)
+        sample_per_lab = absolute_sample_size // total_labs
+
+        samples = np.hstack([np.random.normal(m, sd, sample_per_lab * n) for m, sd, n in zip(means, sds, n_labs)])
+        mean = np.mean(samples)
+        distribution_around_zero = samples - mean
+        distributions.append(distribution_around_zero)
+        y_axis_labels.append(concentration + "\n" + f"n = {total_labs}")
+
+
+
+    sns.violinplot(data=distributions, ax=axs[i], orient='h')
+    axs[i].set_yticks(range(len(concentrations_per_ml)))
+    axs[i].set_yticklabels(y_axis_labels)
+    axs[i].set_title(f"qPCR target: {qpcr_target.strip()}, Extraction kit: {extraction_kit.strip()}, qPCR kit: {qpcr_kit.strip()}")
+    axs[i].set_xlim(XMIN, XMAX)
+    axs[i].spines['top'].set_color('none')
+    axs[i].spines['right'].set_color('none')
+plt.show()
+```
+
+# Differing NA Extraction kits
+
+
+```{python}
+#| warning: false
+data = pd.read_csv("data/s2-na-kits-claude.tsv", sep="\t")
+data = data.apply(lambda x: x.str.strip() if x.dtype == "string" else x)
+data.columns = [col.strip() for col in data.columns]
+
+Y_MIN, Y_MAX = (28,40)
+
+# Extract unique combinations of qPCR target, Extraction kit, and PCR instrument
+unique_combinations = data[['qPCR target', 'RT-PCR kit', 'PCR instrument']].drop_duplicates().values.tolist()
+concentrations_per_ml = ["2_e3", "1_e3", "5_e2", "2_e2"]
+
+table_iterator = -1
+for qpcr_target, qpcr_kit, pcr_instrument in unique_combinations:
+    fig, ax = plt.subplots(figsize=(9, 5))
+    table_iterator += 1
+
+
+    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['RT-PCR kit'] == qpcr_kit) & (data['PCR instrument'] == pcr_instrument)]
+    extraction_kits = sub_table['extraction kit'].unique().tolist()
+    n_extraction_kits = len(extraction_kits)
+    x_increment = 0.7 / n_extraction_kits
+
+    x_offset = -0.45
+
+
+    for extraction_kit in extraction_kits:
+        x_offset += x_increment
+        y_means = sub_table[sub_table['extraction kit'] == extraction_kit][["mean_2_e3", "mean_1_e3", "mean_5_e2", "mean_2_e2"]].values.flatten()
+        n_labs_values = sub_table[sub_table['extraction kit'] == extraction_kit][["n_labs_2_e3", "n_labs_1_e3", "n_labs_5_e2", "n_labs_2_e2"]].values.flatten()
+        min_n_labs = min(n_labs_values)
+        max_n_labs = max(n_labs_values)
+        if min_n_labs == max_n_labs:
+            n_labs_label = f"n = {min_n_labs}"
+        else:
+            n_labs_label = f"n = {min_n_labs} - {max_n_labs}"
+
+        y_sds = sub_table[sub_table['extraction kit'] == extraction_kit][["sd_2_e3", "sd_1_e3", "sd_5_e2", "sd_2_e2"]].values.flatten()
+        x_values = [x + x_offset for x in range(len(y_means))]
+        ax.errorbar(x_values, y_means, y_sds, alpha=0.5, label=f"{extraction_kit}\n({n_labs_label})", fmt='o')
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), frameon=False, ncol=4, title="Extraction kit")
+
+
+    ax.set_xticks(range(len(y_means)))
+    ax.set_ylim(Y_MIN, Y_MAX)
+    for x in range(Y_MIN, Y_MAX, 2):
+        ax.axhline(x, color='gray', alpha=0.1)
+    x_labels = []
+    for concentration in concentrations_per_ml:
+        tidy_concentration  = concentration.replace("_", " ").replace("e", "E")
+        label = f"{tidy_concentration} gc / ml"
+        x_labels.append(label)
+    ax.set_xticklabels(x_labels)
+    qpcr_target, qpcr_kit, pcr_instrument = qpcr_target.strip(), qpcr_kit.strip(), pcr_instrument.strip()
+    plt.title(f"qPCR target: {qpcr_target}, qPCR kit: {qpcr_kit}, PCR instrument: {pcr_instrument}")
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+
+
+```
+
+## Plotting aggregate distribution of samples where only the NA extraction kit differed
+
+
+```{python}
+#| warning: false
+
+data = pd.read_csv("data/s2-na-kits-claude.tsv", sep="\t")
+data.columns = [col.strip() for col in data.columns]
+
+absolute_sample_size = 3000
+XMIN, XMAX = (-10, 10)
+
+# only keep rows where neither extraction kit orPqCR instrumet are == "various"
+data = data[~data['extraction kit'].str.contains("various")]
+data = data[~data['PCR instrument'].str.contains("various")].reset_index()
+
+unique_combinations = data[['qPCR target', 'RT-PCR kit', 'PCR instrument']].drop_duplicates().values.tolist()
+
+n_unique_combinations = len(unique_combinations)
+
+fig, axs = plt.subplots(n_unique_combinations, figsize=(9, 2.5 * n_unique_combinations), sharex=True)
+
+concentrations_per_ml = ["2_e3", "1_e3", "5_e2", "2_e2"]
+
+for i, (qpcr_target, qpcr_kit, pcr_instrument) in enumerate(unique_combinations):
+    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['RT-PCR kit'] == qpcr_kit) & (data['PCR instrument'] == pcr_instrument)]
+
+    distributions = []
+    y_axis_labels = []
+
+
+    for concentration in concentrations_per_ml:
+        means = sub_table[f"mean_{concentration}"].values.tolist()
+        sds = sub_table[f"sd_{concentration}"].values.tolist()
+        n_labs = sub_table[f"n_labs_{concentration}"].values.tolist()
+        total_labs = sum(n_labs)
+        sample_per_lab = absolute_sample_size // total_labs
+
+        samples = np.hstack([np.random.normal(m, sd, sample_per_lab * n) for m, sd, n in zip(means, sds, n_labs)])
+        mean = np.mean(samples)
+        distribution_around_zero = samples - mean
+        distributions.append(distribution_around_zero)
+        y_axis_labels.append(concentration + "\n" + f"n = {total_labs}")
+
+
+
+    sns.violinplot(data=distributions, ax=axs[i], orient='h')
+    axs[i].set_yticks(range(len(concentrations_per_ml)))
+    axs[i].set_yticklabels(y_axis_labels)
+    axs[i].set_title(f"qPCR target: {qpcr_target.strip()}, qPCR kit: {qpcr_kit.strip()}, PCR instrument: {pcr_instrument.strip()}")
+    axs[i].set_xlim(XMIN, XMAX)
+    axs[i].spines['top'].set_color('none')
+    axs[i].spines['right'].set_color('none')
+plt.show()
+```
+
+# Differing PCR machines
+```{python}
+#| warning: false
+
+data = pd.read_csv("data/s3-qpcr-machines-claude.tsv", sep="\t")
+data = data.apply(lambda x: x.str.strip() if x.dtype == "string" else x)
+data.columns = [col.strip() for col in data.columns]
+
+Y_MIN, Y_MAX = (28,40)
+
+unique_combinations = data[['qPCR target', 'extraction kit', 'RT-PCR kit']].drop_duplicates().values.tolist()
+concentrations_per_ml = ["2_e3", "1_e3", "5_e2", "2_e2"]
+
+table_iterator = -1
+for qpcr_target, extraction_kit, qpcr_kit in unique_combinations:
+    fig, ax = plt.subplots(figsize=(9, 5))
+    table_iterator += 1
+
+    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['extraction kit'] == extraction_kit) & (data['RT-PCR kit'] == qpcr_kit)]
+    pcr_instruments = sub_table['PCR instrument'].unique().tolist()
+    n_pcr_instruments = len(pcr_instruments)
+    x_increment = 0.7 / n_pcr_instruments
+
+    x_offset = -0.45
+    for pcr_instrument in pcr_instruments:
+        x_offset += x_increment
+
+        y_means = sub_table[sub_table['PCR instrument'] == pcr_instrument][["mean_2_e3", "mean_1_e3", "mean_5_e2", "mean_2_e2"]].values.flatten()
+        n_labs_values = sub_table[sub_table['PCR instrument'] == pcr_instrument][["n_labs_2_e3", "n_labs_1_e3", "n_labs_5_e2", "n_labs_2_e2"]].values.flatten()
+        min_n_labs = min(n_labs_values)
+        max_n_labs = max(n_labs_values)
+        if min_n_labs == max_n_labs:
+            n_labs_label = f"n = {min_n_labs}"
+        else:
+            n_labs_label = f"n = {min_n_labs} - {max_n_labs}"
+
+        y_sds = sub_table[sub_table['PCR instrument'] == pcr_instrument][["sd_2_e3", "sd_1_e3", "sd_5_e2", "sd_2_e2"]].values.flatten()
+        x_values = [x + x_offset for x in range(len(y_means))]
+        ax.errorbar(x_values, y_means, y_sds, alpha=0.5, label=f"{pcr_instrument}\n({n_labs_label})", fmt='o')
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), frameon=False, ncol=4, title="PCR instrument")
+
+    ax.set_ylim(Y_MIN, Y_MAX)
+    ax.set_xticks(range(len(y_means)))
+    for x in range(Y_MIN, Y_MAX, 2):
+        ax.axhline(x, color='gray', alpha=0.1)
+    x_labels = []
+    for concentration in concentrations_per_ml:
+        tidy_concentration  = concentration.replace("_", " ").replace("e", "E")
+        label = f"{tidy_concentration} gc / ml"
+        x_labels.append(label)
+    ax.set_xticklabels(x_labels)
+    qpcr_target, extraction_kit, qpcr_kit = qpcr_target.strip(), extraction_kit.strip(), qpcr_kit.strip()
+    plt.title(f"qPCR target: {qpcr_target}, Extraction kit: {extraction_kit}, qPCR kit: {qpcr_kit}")
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+
+```
+
+## Plotting aggregate distribution of samples where only the RT-PCR kit differed
+
+
+```{python}
+#| warning: false
+
+data = pd.read_csv("data/s3-qpcr-machines-claude.tsv", sep="\t")
+data.columns = [col.strip() for col in data.columns]
+
+absolute_sample_size = 3000
+XMIN, XMAX = (-10, 10)
+
+# only keep rows where neither extraction kit orPqCR instrumet are == "various"
+data = data[~data['extraction kit'].str.contains("various")]
+data = data[~data['PCR instrument'].str.contains("various")].reset_index()
+
+unique_combinations = data[['qPCR target', 'RT-PCR kit', 'extraction kit']].drop_duplicates().values.tolist()
+
+n_unique_combinations = len(unique_combinations)
+
+fig, axs = plt.subplots(n_unique_combinations, figsize=(9, 2.5 * n_unique_combinations), sharex=True)
+
+concentrations_per_ml = ["2_e3", "1_e3", "5_e2", "2_e2"]
+
+for i, (qpcr_target, qpcr_kit, extraction_kit) in enumerate(unique_combinations):
+    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['RT-PCR kit'] == qpcr_kit) & (data['extraction kit'] == extraction_kit)]
+
+    distributions = []
+    y_axis_labels = []
+
+
+    for concentration in concentrations_per_ml:
+        means = sub_table[f"mean_{concentration}"].values.tolist()
+        sds = sub_table[f"sd_{concentration}"].values.tolist()
+        n_labs = sub_table[f"n_labs_{concentration}"].values.tolist()
+        total_labs = sum(n_labs)
+        sample_per_lab = absolute_sample_size // total_labs
+
+        samples = np.hstack([np.random.normal(m, sd, sample_per_lab * n) for m, sd, n in zip(means, sds, n_labs)])
+        mean = np.mean(samples)
+        distribution_around_zero = samples - mean
+        distributions.append(distribution_around_zero)
+        y_axis_labels.append(concentration + "\n" + f"n = {total_labs}")
+
+
+
+    sns.violinplot(data=distributions, ax=axs[i], orient='h')
+    axs[i].set_yticks(range(len(concentrations_per_ml)))
+    axs[i].set_yticklabels(y_axis_labels)
+    axs[i].set_title(f"qPCR target: {qpcr_target.strip()}, qPCR kit: {qpcr_kit.strip()}, Extraction kit: {extraction_kit.strip()}")
+    axs[i].set_xlim(XMIN, XMAX)
+    axs[i].spines['top'].set_color('none')
+    axs[i].spines['right'].set_color('none')
+plt.show()
+```
+
+
+
+# Differing labs
+
+```{python}
+#| warning: false
+
+# Load the new dataset
+data = pd.read_csv("data/s4-individual-labs-claude.tsv", sep="\t")
+data = data.apply(lambda x: x.str.strip() if x.dtype == "string" else x)
+data.columns = [col.strip() for col in data.columns]
+
+Y_MIN, Y_MAX = (28,40)
+
+
+unique_combinations = data[['qPCR target', 'extraction kit', 'RT-PCR kit', 'PCR instrument']].drop_duplicates().values.tolist()
+concentrations_per_ml = ["2_e3", "1_e3", "5_e2", "2_e2"]
+
+table_iterator = -1
+for qpcr_target, extraction_kit, qpcr_kit, pcr_instrument in unique_combinations:
+    fig, ax = plt.subplots(figsize=(9, 5))
+    table_iterator += 1
+
+    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['extraction kit'] == extraction_kit) & (data['RT-PCR kit'] == qpcr_kit)]
+    lab_codes = sub_table['lab_code'].unique().tolist()  # Use lab_code
+    n_lab_codes = len(lab_codes)  # Use n_lab_codes
+    x_increment = 0.7 / n_lab_codes
+
+    x_offset = -0.45
+    for lab_code in lab_codes:  # Iterate over lab_code
+
+        y_means = sub_table[sub_table['lab_code'] == lab_code][["mean_2_e3", "mean_1_e3", "mean_5_e2", "mean_2_e2"]].values.flatten()
+        n_samples_values = sub_table[sub_table['lab_code'] == lab_code][["n_samples_2_e3", "n_samples_1_e3", "n_samples_5_e2", "n_samples_2_e2"]].values.flatten()
+
+
+        y_sds = sub_table[sub_table['lab_code'] == lab_code][["sd_2_e3", "sd_1_e3", "sd_5_e2", "sd_2_e2"]].values.flatten()
+        x_offset += x_increment
+        x_values = [x + x_offset for x in range(len(y_means))]
+        ax.errorbar(x_values, y_means, y_sds, alpha=0.5, label=f"{lab_code}", fmt='o')
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), frameon=False, ncol=4, title="Lab Code")
+
+    ax.set_ylim(Y_MIN, Y_MAX)
+    ax.set_xticks(range(len(y_means)))
+    for x in range(Y_MIN, Y_MAX, 2):
+        ax.axhline(x, color='gray', alpha=0.1)
+    x_labels = []
+    for concentration in concentrations_per_ml:
+        tidy_concentration  = concentration.replace("_", " ").replace("e", "E")
+        label = f"{tidy_concentration} gc / ml"
+        x_labels.append(label)
+    ax.set_xticklabels(x_labels)
+    qpcr_target, extraction_kit, qpcr_kit = qpcr_target.strip(), extraction_kit.strip(), qpcr_kit.strip()
+    plt.title(f"qPCR target: {qpcr_target}, Extraction kit: {extraction_kit}, qPCR kit: {qpcr_kit}, PCR instrument: {pcr_instrument}")
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+
+
+```
+
+
+## Plotting aggregate distribution of samples where labs differed
+
+
+```{python}
+#| warning: false
+
+data = pd.read_csv("data/s4-individual-labs-claude.tsv", sep="\t")
+data.columns = [col.strip() for col in data.columns]
+
+absolute_sample_size = 3000
+XMIN, XMAX = (-10, 10)
+
+# only keep rows where neither extraction kit orPqCR instrumet are == "various"
+data = data[~data['extraction kit'].str.contains("various")]
+data = data[~data['PCR instrument'].str.contains("various")].reset_index()
+
+unique_combinations = data[['qPCR target', 'RT-PCR kit', 'extraction kit', 'PCR instrument']].drop_duplicates().values.tolist()
+
+n_unique_combinations = len(unique_combinations)
+
+fig, axs = plt.subplots(n_unique_combinations, figsize=(9, 2.5 * n_unique_combinations), sharex=True)
+
+concentrations_per_ml = ["2_e3", "1_e3", "5_e2", "2_e2"]
+
+for i, (qpcr_target, qpcr_kit, extraction_kit, pcr_instrument) in enumerate(unique_combinations):
+    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['RT-PCR kit'] == qpcr_kit) & (data['extraction kit'] == extraction_kit) & (data['PCR instrument'] == pcr_instrument)]
+
+    distributions = []
+    y_axis_labels = []
+
+
+    for concentration in concentrations_per_ml:
+        means = sub_table[f"mean_{concentration}"].values.tolist()
+        sds = sub_table[f"sd_{concentration}"].values.tolist()
+        n_labs = len(means)
+
+
+        samples = np.hstack([np.random.normal(m, sd) for m, sd in zip(means, sds)])
+        mean = np.mean(samples)
+        distribution_around_zero = samples - mean
+        distributions.append(distribution_around_zero)
+        y_axis_labels.append(concentration + "\n" + f"n = {n_labs}")
+
+
+
+    sns.violinplot(data=distributions, ax=axs[i], orient='h')
+    axs[i].set_yticks(range(len(concentrations_per_ml)))
+    axs[i].set_yticklabels(y_axis_labels)
+    axs[i].set_title(f"qPCR target: {qpcr_target.strip()}, qPCR kit: {qpcr_kit.strip()}, Extraction kit: {extraction_kit.strip()}, PCR instrument: {pcr_instrument.strip()}")
+    axs[i].set_xlim(XMIN, XMAX)
+    axs[i].spines['top'].set_color('none')
+    axs[i].spines['right'].set_color('none')
+plt.show()
+```

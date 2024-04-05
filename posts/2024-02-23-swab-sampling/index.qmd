@@ -389,30 +389,61 @@ We identified two studies that performed paired metagenomic sequencing and SARS-
 ```{python}
 #| warning: false
 #| fig-cap: "**Figure 4: SARS-CoV-2 qPCR CT vs SARS-CoV-2 RA.**\nTop Figure: Throat Swabs. Data from Lu et al. 2021.\nBottom Figure: Nasopharyngeal Swabs. Data from Babiker et al. 2020."
-df_throat = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
-df_throat.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
-df_nasopharyngeal = pd.read_csv('data/babiker_np_ct_mgs.tsv', sep='\t', skiprows=1)
-df_nasopharyngeal.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Inpatient/ED vs. Outpatient': 'patient_status'}, inplace=True)
-df_nasopharyngeal['scv2_ct'] = df_nasopharyngeal['scv2_ct'].replace(',', '.', regex=True).astype(float)
 
-fig, axs= plt.subplots(2, 1, figsize=(9, 6))
-for i, (ax, df) in enumerate(zip(axs, [df_throat, df_nasopharyngeal])):
+
+df_op_lu = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
+df_op_lu.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
+df_np_babiker = pd.read_csv('data/babiker_np_ct_mgs.tsv', sep='\t', skiprows=1)
+df_np_babiker.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Inpatient/ED vs. Outpatient': 'patient_status'}, inplace=True)
+df_np_mostafa = pd.read_csv('data/mostafa_np_scv2_ct_mgs.tsv', sep='\t', skiprows=1)
+
+severity_dict = {
+    1: "Required ventilator",
+    2: "ICU",
+    3: "Admitted",
+    4: "Not admitted",
+    0: "Unknown"
+}
+
+df_np_mostafa.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra'}, inplace=True)
+
+
+df_np_mostafa['Severity Index'] = df_np_mostafa['Severity Index'].astype(int).replace(severity_dict)
+
+
+df_np_babiker['scv2_ct'] = df_np_babiker['scv2_ct'].replace(',', '.', regex=True).astype(float)
+
+fig, axs= plt.subplots(3, 1, figsize=(7.5, 8))
+studies = ["Lu et al. 2021", "Babiker et al. 2020", "Mostafa et al. 2020"]
+for ax, df, study in zip(axs, [df_op_lu, df_np_babiker, df_np_mostafa], studies):
     sns_default_colors = sns.color_palette()
-    # pick 4th and 10th color from palette
+    #viridis clor palette with 5 colors
+    viridis_colors = sns.color_palette("CMRmap", 5)
 
     x_lim = 12.5, 40
-    y_lim = 10**-8, 10**0
-    if i == 1:
-        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='patient_status', style='patient_status', palette=sns_default_colors, s=70)
-        ax.legend(title='', loc="upper left")
-        ax.set_xlabel('SARS-CoV-2 qPCR CT Value')
+    y_lim = 10**-8, 2
+    if study == "Lu et al. 2021":
+        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', color=sns_default_colors[0], s=70)
+        ax.set_xlabel('')
         ax.set_xlim(x_lim)
-        ax.set_ylim(10**-8, 10**0)
-    else:
-        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', color=sns_default_colors[3], s=70)
+        y_lim_adjusted = (y_lim[0], y_lim[1] * 1.05)  # Adjust upper limit to ensure top dot is fully displayed
+        ax.set_ylim(y_lim_adjusted)
+        ax.legend(labels=['Inpatient'], loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+    elif study == "Babiker et al. 2020":
+        order = ["Inpatient", "Outpatient",]
+        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='patient_status', style='patient_status', palette=sns_default_colors, s=70, hue_order=order)
+        ax.set_xlabel('')
+        ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+        ax.set_xlim(x_lim)
+        ax.set_ylim(y_lim)
+    elif study == "Mostafa et al. 2020":
+        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='Severity Index', palette=sns_default_colors, s=70, style='Severity Index')
         ax.set_xlabel('')
         ax.set_xlim(x_lim)
         ax.set_ylim(y_lim)
+        ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+        ax.set_xlabel('SARS-CoV-2 qPCR CT Value')
+
 
     ax.set_yscale('log')
     ax.invert_xaxis()
@@ -433,23 +464,37 @@ Some observations:
 * For the same CT value, Lu et al. 2021 returns higher relative abundance.
 * Outpatients in Lu et al. have slightly higher relative abundances for the same CT value.
 
-### Influenza A
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Other pathogens
+
+#### Influenza A
+
+ - Swab samples were received from ambulatory patients with signs of influenza virus infection
+ - Samples include 11 swabs, 5 sputum, 7 BAL fluid, 1 tracheal secretion.
+ - It might be worth dropping the non-swab samples.
 
 ```{python}
 
-df_influenza = pd.read_csv('data/fischer_influenza_ct_mgs.tsv', sep='\t', skiprows=1)
-df_influenza.rename(columns={"FluA CT":"flua_ct", "Relative Abundance": "flua_mgs"}, inplace=True)
-#drop rows where flua_ct is a string
-#print(df_influenza['flua_ct'].unique())
-df_influenza['flua_ct'] = df_influenza[df_influenza['flua_ct'] != 'Neg']['flua_ct'].astype(int)
+df_fischer_influenza = pd.read_csv('data/fischer_influenza_ct_mgs.tsv', sep='\t', skiprows=1)
+df_fischer_influenza.rename(columns={"FluA CT":"flua_ct", "Relative Abundance": "flua_mgs"}, inplace=True)
+df_fischer_influenza['flua_ct'] = df_fischer_influenza[df_fischer_influenza['flua_ct'] != 'Neg']['flua_ct'].astype(int)
 
-
-
-
-fig, ax = plt.subplots(1, 1, figsize=(9, 3))
+fig, ax = plt.subplots(1, 1, figsize=(7.5,3))
 ax.set_xlim(12.5, 40)
 ax.set_ylim(10**-8, 10**0)
-sns.scatterplot(data=df_influenza, x='flua_ct', y='flua_mgs', hue='Sample Type', color=sns_default_colors, s=70)
+sns.scatterplot(data=df_fischer_influenza, x='flua_ct', y='flua_mgs', hue='Sample Type', style='Sample Type', color=sns_default_colors, s=70)
 ax.set_xlabel('Influenza A qPCR CT Value')
 ax.set_ylabel('Relative Abundance')
 ax.set_yscale('log')
@@ -462,20 +507,172 @@ for x in np.arange(15, 40, 5):
 for y in range(-7, 1, 1):
     log_y = 10**y
     ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
-
+ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+plt.show()
+plt.clf()
 
 
 ```
 
+#### Influenza A, B, Mumps, and Measles
+
+
+ - Various clinical sample types including ones we a ren't interested in (skin, urine, feces)
+ - "respiratory" swabs, unclear what type of swab
+
+```{python}
+df_huang_various = pd.read_csv('data/huang_resp_ct_mgs.tsv', sep='\t', skiprows=1)
+df_huang_various["relative_abundance"] = df_huang_various["Matches per million reads"] / 1e6
+
+fig, ax = plt.subplots(1,1, figsize=(7.5,3))
+ax.set_xlim(12.5, 40)
+ax.set_ylim(10**-8, 10**0)
+
+sns.scatterplot(data=df_huang_various, x='CT', y='relative_abundance', hue='Virus', style='Virus', color=sns_default_colors, s=70)
+ax.set_xlabel('qPCR CT Value')
+ax.set_ylabel('Relative Abundance')
+ax.set_yscale('log')
+ax.invert_xaxis()
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+for x in np.arange(15, 40, 5):
+    ax.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+for y in range(-7, 1, 1):
+    log_y = 10**y
+    ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+
+plt.show()
+plt.clf()
+```
+
+
+#### Rhinovirus, Metapneumovirus, Coronavirus, Respiratory syncytial virus, and Parainfluenza
+
+ - Adults
+ - NP swabs
+ - adults with upper respiratory tract infections
+ - outpatients who reported symptoms (participants were part of the VIDARIS trial https://jamanetwork.com/journals/jama/fullarticle/1367547)
+
+
+```{python}
+df_thorburn_various = pd.read_csv('data/thorburn_np_ct_mgs.tsv', sep='\t', skiprows=1)
+
+def map_virus_names(virus_list):
+    full_name_dict = {
+        "HCoV": "Seasonal Coronavirus",
+        "hMPV": "Metapneumovirus",
+        "HRV": "Rhinovirus",
+        "PIV": "Parainfluenza Virus",
+        "RSV": "Respiratory Syncytial Virus",
+        "Influenza A": "Influenza A",
+        "N/A": None
+    }
+
+    def find_full_name(virus):
+        if not isinstance(virus, str):
+            return None
+        for key in full_name_dict:
+            if key in virus:
+                return full_name_dict[key]
+        return virus
+    return [find_full_name(virus) for virus in virus_list]
+
+for col in ["Taxonomy", "PCR"]:
+    df_thorburn_various[col] = map_virus_names(df_thorburn_various[col])
+
+df_thorburn_various = df_thorburn_various[df_thorburn_various["Taxonomy"] == df_thorburn_various["PCR"]]
+df_thorburn_various["relative_abundance"] = df_thorburn_various["% reads mapping"] / 100
+fig, ax = plt.subplots(1, 1, figsize=(7.5,3))
+ax.set_xlim(12.5, 40)
+ax.set_ylim(10**-8, 10**0)
+sns.scatterplot(data=df_thorburn_various, x='Ct', y='relative_abundance', hue='Taxonomy', style='Taxonomy', color=sns_default_colors, s=70)
+ax.set_xlabel('qPCR CT Value')
+ax.set_ylabel('Relative Abundance')
+ax.set_yscale('log')
+ax.invert_xaxis()
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+for x in np.arange(15, 40, 5):
+    ax.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+for y in range(-7, 1, 1):
+    log_y = 10**y
+    ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+
+plt.show()
+plt.clf()
+
+
+```
+
+### Rhinovirus, Metapneumovirus, Respiratory syncytial virus, Influenza A, Influenza B, and Parainfluenza
+ - Children under 5
+ - nasopharyngeal
+ - RNA seq
+ - most likely inpatients (most authors work in a pediatrics department)
+```{python}
+df_graf_various = pd.read_csv('data/graf_np_ct_mgs.tsv', sep='\t', skiprows=1)
+df_graf_various.rename(columns={"Virus": "virus", "Viral copies/ml": "viral_copies_ml"}, inplace=True)
+
+# create an empty column for relative abundance
+df_graf_various["relative_abundance"] = None
+
+def rpkm_to_ra(df):
+    genome_lengths_in_kb = {
+        "Influenza A": 13.5,
+        "Influenza B": 14.5,
+        "Metapneumovirus": 13.3,
+        "Rhinovirus": 7.2,
+        "Parainfluenzavirus 1": 15.5,
+        "Parainfluenzavirus 3": 15.5,
+        "Parainfluenzavirus 4": 17.4,
+        "Respiratory Syncytial Virus": 15.2
+    }
 
 
 
+    for virus, virus_length in genome_lengths_in_kb.items():
+        df.loc[df["virus"] == virus, "relative_abundance"] = df.loc[df["virus"] == virus, "RPKM"] * virus_length / 1e6
+
+    return df
+df_graf_various = rpkm_to_ra(df_graf_various)
+
+# summarize parainfluenzavirus columns under "Parainfluenzavirus"
+df_graf_various["virus"] = df_graf_various["virus"].str.replace(r'Parainfluenzavirus \d', 'Parainfluenzavirus (1,3,4)', regex=True)
 
 
+fig, ax = plt.subplots(1,1, figsize=(7.5,3))
+
+sns.scatterplot(data = df_graf_various, x='viral_copies_ml', y='relative_abundance', hue='virus', style='virus', color=sns_default_colors, s=70)
+ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+
+ax.set_yscale('log')
+ax.set_xscale('log')
+ax.set_ylim(10**-8, 10**0)
+ax.set_xlabel('Viral copies per ml')
+ax.set_ylabel('Relative Abundance')
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+
+for x in np.arange(1, 11,1):
+    log_x = 10**x
+    ax.axvline(x=log_x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+for y in range(-7, 1, 1):
+    log_y = 10**y
+    ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+
+plt.show()
+plt.clf()
 
 
-
-
+```
 
 
 
@@ -509,7 +706,7 @@ def simulate_detection(positive_ras):
             return 0
         ra = 0
         for _ in range(n_sick):
-            ra = random.choice(positive_ras)
+            ra += random.choice(positive_ras)
         return ra / n_swabs
 
     def simulate_many(n_simulations, n_swabs):
@@ -529,42 +726,82 @@ def simulate_detection(positive_ras):
     df.columns = n_swab_range
 
     return df
-df_throat = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
-df_throat.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
+df_op_lu = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
+df_op_lu.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
 
-df_nasopharyngeal = pd.read_csv('data/babiker_np_ct_mgs.tsv', sep='\t', skiprows=1)
-df_nasopharyngeal.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Inpatient/ED vs. Outpatient': 'patient_status'}, inplace=True)
-df_nasopharyngeal['scv2_ct'] = df_throat['scv2_ct'].replace(',', '.', regex=True).astype(float)
+df_np_various_thorburn = pd.read_csv('data/thorburn_np_ct_mgs.tsv', sep='\t', skiprows=1)
+df_np_various_thorburn['relative_abundance'] = df_np_various_thorburn["% reads mapping"] / 100
+df_np_various_graf = pd.read_csv('data/graf_np_ct_mgs.tsv', sep='\t', skiprows=1)
+df_np_various_graf.rename(columns={"Virus": "virus", "Viral copies/ml": "viral_copies_ml"}, inplace=True)
 
-df_throat_ras = df_throat['scv2_ra'].dropna().tolist()
-df_nasopharyngeal_ras = df_nasopharyngeal['scv2_ra'].dropna().tolist()
-fig, axs = plt.subplots(1, 2, figsize=(9, 5), sharey=True)
+
+
+# create an empty column for relative abundance
+df_np_various_graf["relative_abundance"] = None
+
+def rpkm_to_ra(df):
+    genome_lengths_in_kb = {
+        "Influenza A": 13.5,
+        "Influenza B": 14.5,
+        "Metapneumovirus": 13.3,
+        "Rhinovirus": 7.2,
+        "Parainfluenzavirus 1": 15.5,
+        "Parainfluenzavirus 3": 15.5,
+        "Parainfluenzavirus 4": 17.4,
+        "Respiratory Syncytial Virus": 15.2
+    }
+
+
+
+    for virus, virus_length in genome_lengths_in_kb.items():
+        df.loc[df["virus"] == virus, "relative_abundance"] = df.loc[df["virus"] == virus, "RPKM"] * virus_length / 1e6
+
+    return df
+df_np_various_graf = rpkm_to_ra(df_np_various_graf)
+
+df_np_babiker = pd.read_csv('data/babiker_np_ct_mgs.tsv', sep='\t', skiprows=1)
+df_np_babiker.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Inpatient/ED vs. Outpatient': 'patient_status'}, inplace=True)
+df_np_babiker['scv2_ct'] = df_op_lu['scv2_ct'].replace(',', '.', regex=True).astype(float)
+
+df_op_lu_ras = df_op_lu['scv2_ra'].dropna().tolist()
+df_np_babiker_ras = df_np_babiker['scv2_ra'].dropna().tolist()
+df_np_various_thorburn_ras = df_np_various_thorburn['relative_abundance'].dropna().tolist()
+df_np_various_graf_ras = df_np_various_graf['relative_abundance'].dropna().tolist()
+
+fig, axs = plt.subplots(2, 2, figsize=(9, 10), sharey=True)
 n_swab_range = [50, 100, 200, 400, 800]
-for i, positive_ras in enumerate([df_throat_ras, df_nasopharyngeal_ras]):
-    df= simulate_detection(positive_ras)
+studies = ["Lu","Babiker", "Thorburn", "Graf"]
+for i, (study, positive_ras) in enumerate(zip(studies, [df_op_lu_ras, df_np_babiker_ras, df_np_various_thorburn_ras, df_np_various_graf_ras])):
+    ax = axs[i // 2, i % 2]  # Calculate the correct subplot position
+    df = simulate_detection(positive_ras)
     for n_swabs in n_swab_range:
-        axs[i].plot(df.index, df[n_swabs], label=f'{n_swabs} swabs')
-    axs[i].set_xlabel('Percentile')
-    axs[i].set_ylabel('RA')
-    axs[i].set_yscale('log')
+        ax.plot(df.index, df[n_swabs], label=f'{n_swabs} swabs')
+    ax.set_xlabel('Percentile')
+    ax.set_ylabel('RA')
+    ax.set_yscale('log')
     # turn on y tick labels for both plots
-    axs[i].yaxis.set_tick_params(labelleft=True)
-    for x in range (0, 100, 20):
-        axs[i].axvline(x=x, color='black', linestyle='--', linewidth=0.5, alpha=0.5)
+    ax.yaxis.set_tick_params(labelleft=True)
+    for x in range(0, 100, 20):
+        ax.axvline(x=x, color='black', linestyle='--', linewidth=0.5, alpha=0.5)
 
-    for y in range (-1, -10, -1):
+    for y in range(-1, -10, -1):
         log_y = 10**y
-        axs[i].axhline(y=log_y, color='black', linestyle='--', linewidth=0.5, alpha=0.5)
-    if i == 0:
-        axs[i].set_title('Throat')
-    else:
-        axs[i].set_title('Nasopharyngeal')
+        ax.axhline(y=log_y, color='black', linestyle='--', linewidth=0.5, alpha=0.5)
+    if study == "Lu":
+        ax.set_title('OP, SARS-CoV-2, Inpatients', fontsize=10)
+    elif study == "Babiker":
+        ax.set_title('NP, SARS-CoV-2, Inpatients & Outpatients', fontsize=10)
+    elif study == "Thorburn":
+        ax.set_title('Nasopharyngeal, Various Pathogens, Outpatients', fontsize=10)
+    elif study == "Graf":
+        ax.set_title('Nasopharyngeal, Various Pathogens, 5yo Inpatients', fontsize=10)
 
-    axs[i].spines['right'].set_visible(False)
-    axs[i].spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
     ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=True)
-    if i == 1:
-        axs[i].legend()
+    if i == 3:  # Only add legend to the last plot
+        handles, labels = ax.get_legend_handles_labels()
+        fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.05), ncol=5)
 ```
 
 

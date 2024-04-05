@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Simon Grimm">
+<meta name="dcterms.date" content="2024-04-04">
+
+<title>Simon’s Public NAO Notebook - qPCR variance</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Simon’s Public NAO Notebook</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#differing-qpcr-kits" id="toc-differing-qpcr-kits" class="nav-link" data-scroll-target="#differing-qpcr-kits">Differing qPCR kits</a>
+  <ul class="collapse">
+  <li><a href="#raw-data" id="toc-raw-data" class="nav-link" data-scroll-target="#raw-data">Raw data</a></li>
+  <li><a href="#plotting-aggregate-distribution-of-samples-where-only-the-qpcr-kit-differed" id="toc-plotting-aggregate-distribution-of-samples-where-only-the-qpcr-kit-differed" class="nav-link" data-scroll-target="#plotting-aggregate-distribution-of-samples-where-only-the-qpcr-kit-differed">Plotting aggregate distribution of samples where only the qPCR kit differed</a></li>
+  </ul></li>
+  <li><a href="#differing-na-extraction-kits" id="toc-differing-na-extraction-kits" class="nav-link" data-scroll-target="#differing-na-extraction-kits">Differing NA Extraction kits</a>
+  <ul class="collapse">
+  <li><a href="#plotting-aggregate-distribution-of-samples-where-only-the-na-extraction-kit-differed" id="toc-plotting-aggregate-distribution-of-samples-where-only-the-na-extraction-kit-differed" class="nav-link" data-scroll-target="#plotting-aggregate-distribution-of-samples-where-only-the-na-extraction-kit-differed">Plotting aggregate distribution of samples where only the NA extraction kit differed</a></li>
+  </ul></li>
+  <li><a href="#differing-pcr-machines" id="toc-differing-pcr-machines" class="nav-link" data-scroll-target="#differing-pcr-machines">Differing PCR machines</a>
+  <ul class="collapse">
+  <li><a href="#plotting-aggregate-distribution-of-samples-where-only-the-rt-pcr-kit-differed" id="toc-plotting-aggregate-distribution-of-samples-where-only-the-rt-pcr-kit-differed" class="nav-link" data-scroll-target="#plotting-aggregate-distribution-of-samples-where-only-the-rt-pcr-kit-differed">Plotting aggregate distribution of samples where only the RT-PCR kit differed</a></li>
+  </ul></li>
+  <li><a href="#differing-labs" id="toc-differing-labs" class="nav-link" data-scroll-target="#differing-labs">Differing labs</a>
+  <ul class="collapse">
+  <li><a href="#plotting-aggregate-distribution-of-samples-where-labs-differed" id="toc-plotting-aggregate-distribution-of-samples-where-labs-differed" class="nav-link" data-scroll-target="#plotting-aggregate-distribution-of-samples-where-labs-differed">Plotting aggregate distribution of samples where labs differed</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">qPCR variance</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Simon Grimm </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 4, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>This is research based on the “<a href="https://docs.google.com/document/d/1xVlqz1COMDkS81UuiItbzRzFFT2Rxj2S-9Z_FiO3wEY/edit">Pooled swab sampling for pathogen early detection</a>” project.</p>
+<p>In our swab sampling research we want to compare qPCR results across different studies. Doing this requires a better understand how much variance is introduced by differing qPCR protocols. In the study <a href="https://virologyj.biomedcentral.com/articles/10.1186/s12985-023-02032-z">Assessing the comparability of cycle threshold values derived from five external quality assessment rounds for omicron nucleic acid testing</a> researchers compared the qPCR results across many different laboratories who all used different combinations of qPCR machines, qPCR kits, and nucleic extraction methods. We can use this data to get an initial idea of how differing qPCR results might differ from one another.</p>
+<div id="e4d9c533" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="differing-qpcr-kits" class="level1">
+<h1>Differing qPCR kits</h1>
+<section id="raw-data" class="level2">
+<h2 class="anchored" data-anchor-id="raw-data">Raw data</h2>
+<div id="7be1d011" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s1-qpcr-kits-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.<span class="bu">apply</span>(<span class="kw">lambda</span> x: x.<span class="bu">str</span>.strip() <span class="cf">if</span> x.dtype <span class="op">==</span> <span class="st">"string"</span> <span class="cf">else</span> x)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>data.columns <span class="op">=</span> [col.strip() <span class="cf">for</span> col <span class="kw">in</span> data.columns]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Y_MIN, Y_MAX <span class="op">=</span> (<span class="dv">28</span>,<span class="dv">40</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>unique_combinations <span class="op">=</span> data[[<span class="st">'qPCR target'</span>, <span class="st">'extraction kit'</span>, <span class="st">'PCR instrument'</span>]].drop_duplicates().values.tolist()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>concentrations_per_ml <span class="op">=</span> [<span class="st">"2_e3"</span>, <span class="st">"1_e3"</span>, <span class="st">"5_e2"</span>, <span class="st">"2_e2"</span>]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>table_iterator <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> qpcr_target, extraction_kit, pcr_instrument <span class="kw">in</span> unique_combinations:</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    table_iterator <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    sub_table <span class="op">=</span> data[(data[<span class="st">'qPCR target'</span>] <span class="op">==</span> qpcr_target) <span class="op">&amp;</span> (data[<span class="st">'extraction kit'</span>] <span class="op">==</span> extraction_kit) <span class="op">&amp;</span> (data[<span class="st">'PCR instrument'</span>] <span class="op">==</span> pcr_instrument)]</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    qpcr_kits <span class="op">=</span> sub_table[<span class="st">'RT-PCR kit'</span>].unique().tolist()</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    n_qpcr_kits <span class="op">=</span> <span class="bu">len</span>(qpcr_kits)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    x_increment <span class="op">=</span> <span class="fl">0.7</span> <span class="op">/</span> n_qpcr_kits</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    x_offset <span class="op">=</span> <span class="op">-</span><span class="fl">0.45</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> qpcr_kit <span class="kw">in</span> qpcr_kits:</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        x_offset <span class="op">+=</span> x_increment</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        y_means <span class="op">=</span> sub_table[sub_table[<span class="st">'RT-PCR kit'</span>] <span class="op">==</span> qpcr_kit][[<span class="st">"mean_2_e3"</span>, <span class="st">"mean_1_e3"</span>, <span class="st">"mean_5_e2"</span>, <span class="st">"mean_2_e2"</span>]].values.flatten()</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        n_labs_values <span class="op">=</span> sub_table[sub_table[<span class="st">'RT-PCR kit'</span>] <span class="op">==</span> qpcr_kit][[<span class="st">"n_labs_2_e3"</span>, <span class="st">"n_labs_1_e3"</span>, <span class="st">"n_labs_5_e2"</span>, <span class="st">"n_labs_2_e2"</span>]].values.flatten()</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        min_n_labs <span class="op">=</span> <span class="bu">min</span>(n_labs_values)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        max_n_labs <span class="op">=</span> <span class="bu">max</span>(n_labs_values)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> min_n_labs <span class="op">==</span> max_n_labs:</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>            n_labs_label <span class="op">=</span> <span class="ss">f"n = </span><span class="sc">{</span>min_n_labs<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>            n_labs_label <span class="op">=</span> <span class="ss">f"n = </span><span class="sc">{</span>min_n_labs<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>max_n_labs<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        y_sds <span class="op">=</span> sub_table[sub_table[<span class="st">'RT-PCR kit'</span>] <span class="op">==</span> qpcr_kit][[<span class="st">"sd_2_e3"</span>, <span class="st">"sd_1_e3"</span>, <span class="st">"sd_5_e2"</span>, <span class="st">"sd_2_e2"</span>]].values.flatten()</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        x_values <span class="op">=</span> [x <span class="op">+</span> x_offset <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(y_means))]</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        ax.errorbar(x_values, y_means, y_sds, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>qpcr_kit<span class="sc">}</span><span class="ch">\n</span><span class="ss">(</span><span class="sc">{</span>n_labs_label<span class="sc">}</span><span class="ss">)"</span>, fmt<span class="op">=</span><span class="st">'o'</span>, linestyle<span class="op">=</span><span class="st">'None'</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        ax.legend(loc<span class="op">=</span><span class="st">'upper center'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.05</span>), frameon<span class="op">=</span><span class="va">False</span>, ncol<span class="op">=</span><span class="dv">4</span>, title<span class="op">=</span><span class="st">"qPCR kit"</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(Y_MIN, Y_MAX)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks(<span class="bu">range</span>(<span class="bu">len</span>(y_means)))</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(Y_MIN, Y_MAX, <span class="dv">2</span>):</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        ax.axhline(x, color<span class="op">=</span><span class="st">'gray'</span>, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    x_labels <span class="op">=</span> []</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> concentration <span class="kw">in</span> concentrations_per_ml:</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        tidy_concentration  <span class="op">=</span> concentration.replace(<span class="st">"_"</span>, <span class="st">" "</span>).replace(<span class="st">"e"</span>, <span class="st">"E"</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>tidy_concentration<span class="sc">}</span><span class="ss"> gc / ml"</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        x_labels.append(label)</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    ax.set_xticklabels(x_labels)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    qpcr_target, extraction_kit, pcr_instrument <span class="op">=</span> qpcr_target.strip(), extraction_kit.strip(), pcr_instrument.strip()</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"qPCR target: </span><span class="sc">{</span>qpcr_target<span class="sc">}</span><span class="ss">, Extraction kit: </span><span class="sc">{</span>extraction_kit<span class="sc">}</span><span class="ss">, PCR instrument: </span><span class="sc">{</span>pcr_instrument<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># drop top and right spine</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_color(<span class="st">'none'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-1.png" width="715" height="562" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-2.png" width="715" height="562" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-3.png" width="715" height="527" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-4.png" width="715" height="527" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-5.png" width="715" height="527" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-6.png" width="715" height="527" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-7.png" width="715" height="527" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-8.png" width="715" height="527" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="plotting-aggregate-distribution-of-samples-where-only-the-qpcr-kit-differed" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-aggregate-distribution-of-samples-where-only-the-qpcr-kit-differed">Plotting aggregate distribution of samples where only the qPCR kit differed</h2>
+<p>It is hard to discern how much variance there is between all the different kits, even within one concentration level. Something we can do to help make the variance more visible is to i) look only at examples where the qPCR kit differed, ii) take the means and standard deviations of the samples from each qPCR kit at a given concentration level, and iii) sample each qPCR kit’s distribution, weighed by the number of labs using that kit.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div id="704e8e57" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s1-qpcr-kits-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>data.columns <span class="op">=</span> [col.strip() <span class="cf">for</span> col <span class="kw">in</span> data.columns]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>absolute_sample_size <span class="op">=</span> <span class="dv">3000</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>XMIN, XMAX <span class="op">=</span> (<span class="op">-</span><span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># only keep rows where neither extraction kit orPqCR instrumet are == "various"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[<span class="op">~</span>data[<span class="st">'extraction kit'</span>].<span class="bu">str</span>.contains(<span class="st">"various"</span>)]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[<span class="op">~</span>data[<span class="st">'PCR instrument'</span>].<span class="bu">str</span>.contains(<span class="st">"various"</span>)].reset_index()</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>unique_combinations <span class="op">=</span> data[[<span class="st">'qPCR target'</span>, <span class="st">'extraction kit'</span>, <span class="st">'PCR instrument'</span>]].drop_duplicates().values.tolist()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>n_unique_combinations <span class="op">=</span> <span class="bu">len</span>(unique_combinations)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(n_unique_combinations, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>concentrations_per_ml <span class="op">=</span> [<span class="st">"2_e3"</span>, <span class="st">"1_e3"</span>, <span class="st">"5_e2"</span>, <span class="st">"2_e2"</span>]</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (qpcr_target, extraction_kit, pcr_instrument) <span class="kw">in</span> <span class="bu">enumerate</span>(unique_combinations):</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    sub_table <span class="op">=</span> data[(data[<span class="st">'qPCR target'</span>] <span class="op">==</span> qpcr_target) <span class="op">&amp;</span> (data[<span class="st">'extraction kit'</span>] <span class="op">==</span> extraction_kit) <span class="op">&amp;</span> (data[<span class="st">'PCR instrument'</span>] <span class="op">==</span> pcr_instrument)]</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    distributions <span class="op">=</span> []</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    y_axis_labels <span class="op">=</span> []</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> concentration <span class="kw">in</span> concentrations_per_ml:</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        means <span class="op">=</span> sub_table[<span class="ss">f"mean_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        sds <span class="op">=</span> sub_table[<span class="ss">f"sd_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        n_labs <span class="op">=</span> sub_table[<span class="ss">f"n_labs_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        total_labs <span class="op">=</span> <span class="bu">sum</span>(n_labs)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        sample_per_lab <span class="op">=</span> absolute_sample_size <span class="op">//</span> total_labs</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        samples <span class="op">=</span> np.hstack([np.random.normal(m, sd, sample_per_lab <span class="op">*</span> n) <span class="cf">for</span> m, sd, n <span class="kw">in</span> <span class="bu">zip</span>(means, sds, n_labs)])</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        mean <span class="op">=</span> np.mean(samples)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        distribution_around_zero <span class="op">=</span> samples <span class="op">-</span> mean</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>        distributions.append(distribution_around_zero)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>        y_axis_labels.append(concentration <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> <span class="ss">f"n = </span><span class="sc">{</span>total_labs<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    sns.violinplot(data<span class="op">=</span>distributions, ax<span class="op">=</span>axs[i], orient<span class="op">=</span><span class="st">'h'</span>)</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yticks(<span class="bu">range</span>(<span class="bu">len</span>(concentrations_per_ml)))</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yticklabels(y_axis_labels)</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f"qPCR target: </span><span class="sc">{</span>qpcr_target<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">, Extraction kit: </span><span class="sc">{</span>extraction_kit<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">, qPCR kit: </span><span class="sc">{</span>qpcr_kit<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    axs[i].set_xlim(XMIN, XMAX)</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">'top'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">'right'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-4-output-1.png" width="758" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="differing-na-extraction-kits" class="level1">
+<h1>Differing NA Extraction kits</h1>
+<div id="b91c1e27" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s2-na-kits-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.<span class="bu">apply</span>(<span class="kw">lambda</span> x: x.<span class="bu">str</span>.strip() <span class="cf">if</span> x.dtype <span class="op">==</span> <span class="st">"string"</span> <span class="cf">else</span> x)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>data.columns <span class="op">=</span> [col.strip() <span class="cf">for</span> col <span class="kw">in</span> data.columns]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>Y_MIN, Y_MAX <span class="op">=</span> (<span class="dv">28</span>,<span class="dv">40</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract unique combinations of qPCR target, Extraction kit, and PCR instrument</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>unique_combinations <span class="op">=</span> data[[<span class="st">'qPCR target'</span>, <span class="st">'RT-PCR kit'</span>, <span class="st">'PCR instrument'</span>]].drop_duplicates().values.tolist()</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>concentrations_per_ml <span class="op">=</span> [<span class="st">"2_e3"</span>, <span class="st">"1_e3"</span>, <span class="st">"5_e2"</span>, <span class="st">"2_e2"</span>]</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>table_iterator <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> qpcr_target, qpcr_kit, pcr_instrument <span class="kw">in</span> unique_combinations:</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    table_iterator <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    sub_table <span class="op">=</span> data[(data[<span class="st">'qPCR target'</span>] <span class="op">==</span> qpcr_target) <span class="op">&amp;</span> (data[<span class="st">'RT-PCR kit'</span>] <span class="op">==</span> qpcr_kit) <span class="op">&amp;</span> (data[<span class="st">'PCR instrument'</span>] <span class="op">==</span> pcr_instrument)]</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    extraction_kits <span class="op">=</span> sub_table[<span class="st">'extraction kit'</span>].unique().tolist()</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    n_extraction_kits <span class="op">=</span> <span class="bu">len</span>(extraction_kits)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    x_increment <span class="op">=</span> <span class="fl">0.7</span> <span class="op">/</span> n_extraction_kits</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    x_offset <span class="op">=</span> <span class="op">-</span><span class="fl">0.45</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> extraction_kit <span class="kw">in</span> extraction_kits:</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        x_offset <span class="op">+=</span> x_increment</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        y_means <span class="op">=</span> sub_table[sub_table[<span class="st">'extraction kit'</span>] <span class="op">==</span> extraction_kit][[<span class="st">"mean_2_e3"</span>, <span class="st">"mean_1_e3"</span>, <span class="st">"mean_5_e2"</span>, <span class="st">"mean_2_e2"</span>]].values.flatten()</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        n_labs_values <span class="op">=</span> sub_table[sub_table[<span class="st">'extraction kit'</span>] <span class="op">==</span> extraction_kit][[<span class="st">"n_labs_2_e3"</span>, <span class="st">"n_labs_1_e3"</span>, <span class="st">"n_labs_5_e2"</span>, <span class="st">"n_labs_2_e2"</span>]].values.flatten()</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        min_n_labs <span class="op">=</span> <span class="bu">min</span>(n_labs_values)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        max_n_labs <span class="op">=</span> <span class="bu">max</span>(n_labs_values)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> min_n_labs <span class="op">==</span> max_n_labs:</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>            n_labs_label <span class="op">=</span> <span class="ss">f"n = </span><span class="sc">{</span>min_n_labs<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>            n_labs_label <span class="op">=</span> <span class="ss">f"n = </span><span class="sc">{</span>min_n_labs<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>max_n_labs<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        y_sds <span class="op">=</span> sub_table[sub_table[<span class="st">'extraction kit'</span>] <span class="op">==</span> extraction_kit][[<span class="st">"sd_2_e3"</span>, <span class="st">"sd_1_e3"</span>, <span class="st">"sd_5_e2"</span>, <span class="st">"sd_2_e2"</span>]].values.flatten()</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>        x_values <span class="op">=</span> [x <span class="op">+</span> x_offset <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(y_means))]</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        ax.errorbar(x_values, y_means, y_sds, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>extraction_kit<span class="sc">}</span><span class="ch">\n</span><span class="ss">(</span><span class="sc">{</span>n_labs_label<span class="sc">}</span><span class="ss">)"</span>, fmt<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        ax.legend(loc<span class="op">=</span><span class="st">'upper center'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.05</span>), frameon<span class="op">=</span><span class="va">False</span>, ncol<span class="op">=</span><span class="dv">4</span>, title<span class="op">=</span><span class="st">"Extraction kit"</span>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks(<span class="bu">range</span>(<span class="bu">len</span>(y_means)))</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(Y_MIN, Y_MAX)</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(Y_MIN, Y_MAX, <span class="dv">2</span>):</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>        ax.axhline(x, color<span class="op">=</span><span class="st">'gray'</span>, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    x_labels <span class="op">=</span> []</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> concentration <span class="kw">in</span> concentrations_per_ml:</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>        tidy_concentration  <span class="op">=</span> concentration.replace(<span class="st">"_"</span>, <span class="st">" "</span>).replace(<span class="st">"e"</span>, <span class="st">"E"</span>)</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>tidy_concentration<span class="sc">}</span><span class="ss"> gc / ml"</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>        x_labels.append(label)</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    ax.set_xticklabels(x_labels)</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    qpcr_target, qpcr_kit, pcr_instrument <span class="op">=</span> qpcr_target.strip(), qpcr_kit.strip(), pcr_instrument.strip()</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"qPCR target: </span><span class="sc">{</span>qpcr_target<span class="sc">}</span><span class="ss">, qPCR kit: </span><span class="sc">{</span>qpcr_kit<span class="sc">}</span><span class="ss">, PCR instrument: </span><span class="sc">{</span>pcr_instrument<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_color(<span class="st">'none'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-1.png" width="715" height="596" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-2.png" width="715" height="596" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-3.png" width="715" height="562" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-4.png" width="715" height="562" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-5.png" width="715" height="527" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-6.png" width="715" height="527" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="plotting-aggregate-distribution-of-samples-where-only-the-na-extraction-kit-differed" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-aggregate-distribution-of-samples-where-only-the-na-extraction-kit-differed">Plotting aggregate distribution of samples where only the NA extraction kit differed</h2>
+<div id="008e114f" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s2-na-kits-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>data.columns <span class="op">=</span> [col.strip() <span class="cf">for</span> col <span class="kw">in</span> data.columns]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>absolute_sample_size <span class="op">=</span> <span class="dv">3000</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>XMIN, XMAX <span class="op">=</span> (<span class="op">-</span><span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># only keep rows where neither extraction kit orPqCR instrumet are == "various"</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[<span class="op">~</span>data[<span class="st">'extraction kit'</span>].<span class="bu">str</span>.contains(<span class="st">"various"</span>)]</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[<span class="op">~</span>data[<span class="st">'PCR instrument'</span>].<span class="bu">str</span>.contains(<span class="st">"various"</span>)].reset_index()</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>unique_combinations <span class="op">=</span> data[[<span class="st">'qPCR target'</span>, <span class="st">'RT-PCR kit'</span>, <span class="st">'PCR instrument'</span>]].drop_duplicates().values.tolist()</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>n_unique_combinations <span class="op">=</span> <span class="bu">len</span>(unique_combinations)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(n_unique_combinations, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">2.5</span> <span class="op">*</span> n_unique_combinations), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>concentrations_per_ml <span class="op">=</span> [<span class="st">"2_e3"</span>, <span class="st">"1_e3"</span>, <span class="st">"5_e2"</span>, <span class="st">"2_e2"</span>]</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (qpcr_target, qpcr_kit, pcr_instrument) <span class="kw">in</span> <span class="bu">enumerate</span>(unique_combinations):</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    sub_table <span class="op">=</span> data[(data[<span class="st">'qPCR target'</span>] <span class="op">==</span> qpcr_target) <span class="op">&amp;</span> (data[<span class="st">'RT-PCR kit'</span>] <span class="op">==</span> qpcr_kit) <span class="op">&amp;</span> (data[<span class="st">'PCR instrument'</span>] <span class="op">==</span> pcr_instrument)]</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    distributions <span class="op">=</span> []</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    y_axis_labels <span class="op">=</span> []</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> concentration <span class="kw">in</span> concentrations_per_ml:</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        means <span class="op">=</span> sub_table[<span class="ss">f"mean_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        sds <span class="op">=</span> sub_table[<span class="ss">f"sd_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        n_labs <span class="op">=</span> sub_table[<span class="ss">f"n_labs_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        total_labs <span class="op">=</span> <span class="bu">sum</span>(n_labs)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        sample_per_lab <span class="op">=</span> absolute_sample_size <span class="op">//</span> total_labs</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        samples <span class="op">=</span> np.hstack([np.random.normal(m, sd, sample_per_lab <span class="op">*</span> n) <span class="cf">for</span> m, sd, n <span class="kw">in</span> <span class="bu">zip</span>(means, sds, n_labs)])</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        mean <span class="op">=</span> np.mean(samples)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        distribution_around_zero <span class="op">=</span> samples <span class="op">-</span> mean</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        distributions.append(distribution_around_zero)</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        y_axis_labels.append(concentration <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> <span class="ss">f"n = </span><span class="sc">{</span>total_labs<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    sns.violinplot(data<span class="op">=</span>distributions, ax<span class="op">=</span>axs[i], orient<span class="op">=</span><span class="st">'h'</span>)</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yticks(<span class="bu">range</span>(<span class="bu">len</span>(concentrations_per_ml)))</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yticklabels(y_axis_labels)</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f"qPCR target: </span><span class="sc">{</span>qpcr_target<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">, qPCR kit: </span><span class="sc">{</span>qpcr_kit<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">, PCR instrument: </span><span class="sc">{</span>pcr_instrument<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    axs[i].set_xlim(XMIN, XMAX)</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">'top'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">'right'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-6-output-1.png" width="766" height="801" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="differing-pcr-machines" class="level1">
+<h1>Differing PCR machines</h1>
+<div id="d617a970" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s3-qpcr-machines-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.<span class="bu">apply</span>(<span class="kw">lambda</span> x: x.<span class="bu">str</span>.strip() <span class="cf">if</span> x.dtype <span class="op">==</span> <span class="st">"string"</span> <span class="cf">else</span> x)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>data.columns <span class="op">=</span> [col.strip() <span class="cf">for</span> col <span class="kw">in</span> data.columns]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>Y_MIN, Y_MAX <span class="op">=</span> (<span class="dv">28</span>,<span class="dv">40</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>unique_combinations <span class="op">=</span> data[[<span class="st">'qPCR target'</span>, <span class="st">'extraction kit'</span>, <span class="st">'RT-PCR kit'</span>]].drop_duplicates().values.tolist()</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>concentrations_per_ml <span class="op">=</span> [<span class="st">"2_e3"</span>, <span class="st">"1_e3"</span>, <span class="st">"5_e2"</span>, <span class="st">"2_e2"</span>]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>table_iterator <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> qpcr_target, extraction_kit, qpcr_kit <span class="kw">in</span> unique_combinations:</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    table_iterator <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    sub_table <span class="op">=</span> data[(data[<span class="st">'qPCR target'</span>] <span class="op">==</span> qpcr_target) <span class="op">&amp;</span> (data[<span class="st">'extraction kit'</span>] <span class="op">==</span> extraction_kit) <span class="op">&amp;</span> (data[<span class="st">'RT-PCR kit'</span>] <span class="op">==</span> qpcr_kit)]</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    pcr_instruments <span class="op">=</span> sub_table[<span class="st">'PCR instrument'</span>].unique().tolist()</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    n_pcr_instruments <span class="op">=</span> <span class="bu">len</span>(pcr_instruments)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    x_increment <span class="op">=</span> <span class="fl">0.7</span> <span class="op">/</span> n_pcr_instruments</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    x_offset <span class="op">=</span> <span class="op">-</span><span class="fl">0.45</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> pcr_instrument <span class="kw">in</span> pcr_instruments:</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        x_offset <span class="op">+=</span> x_increment</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        y_means <span class="op">=</span> sub_table[sub_table[<span class="st">'PCR instrument'</span>] <span class="op">==</span> pcr_instrument][[<span class="st">"mean_2_e3"</span>, <span class="st">"mean_1_e3"</span>, <span class="st">"mean_5_e2"</span>, <span class="st">"mean_2_e2"</span>]].values.flatten()</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        n_labs_values <span class="op">=</span> sub_table[sub_table[<span class="st">'PCR instrument'</span>] <span class="op">==</span> pcr_instrument][[<span class="st">"n_labs_2_e3"</span>, <span class="st">"n_labs_1_e3"</span>, <span class="st">"n_labs_5_e2"</span>, <span class="st">"n_labs_2_e2"</span>]].values.flatten()</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        min_n_labs <span class="op">=</span> <span class="bu">min</span>(n_labs_values)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        max_n_labs <span class="op">=</span> <span class="bu">max</span>(n_labs_values)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> min_n_labs <span class="op">==</span> max_n_labs:</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>            n_labs_label <span class="op">=</span> <span class="ss">f"n = </span><span class="sc">{</span>min_n_labs<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>            n_labs_label <span class="op">=</span> <span class="ss">f"n = </span><span class="sc">{</span>min_n_labs<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>max_n_labs<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        y_sds <span class="op">=</span> sub_table[sub_table[<span class="st">'PCR instrument'</span>] <span class="op">==</span> pcr_instrument][[<span class="st">"sd_2_e3"</span>, <span class="st">"sd_1_e3"</span>, <span class="st">"sd_5_e2"</span>, <span class="st">"sd_2_e2"</span>]].values.flatten()</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        x_values <span class="op">=</span> [x <span class="op">+</span> x_offset <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(y_means))]</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        ax.errorbar(x_values, y_means, y_sds, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>pcr_instrument<span class="sc">}</span><span class="ch">\n</span><span class="ss">(</span><span class="sc">{</span>n_labs_label<span class="sc">}</span><span class="ss">)"</span>, fmt<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>        ax.legend(loc<span class="op">=</span><span class="st">'upper center'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.05</span>), frameon<span class="op">=</span><span class="va">False</span>, ncol<span class="op">=</span><span class="dv">4</span>, title<span class="op">=</span><span class="st">"PCR instrument"</span>)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(Y_MIN, Y_MAX)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks(<span class="bu">range</span>(<span class="bu">len</span>(y_means)))</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(Y_MIN, Y_MAX, <span class="dv">2</span>):</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>        ax.axhline(x, color<span class="op">=</span><span class="st">'gray'</span>, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    x_labels <span class="op">=</span> []</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> concentration <span class="kw">in</span> concentrations_per_ml:</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>        tidy_concentration  <span class="op">=</span> concentration.replace(<span class="st">"_"</span>, <span class="st">" "</span>).replace(<span class="st">"e"</span>, <span class="st">"E"</span>)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>tidy_concentration<span class="sc">}</span><span class="ss"> gc / ml"</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>        x_labels.append(label)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    ax.set_xticklabels(x_labels)</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    qpcr_target, extraction_kit, qpcr_kit <span class="op">=</span> qpcr_target.strip(), extraction_kit.strip(), qpcr_kit.strip()</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"qPCR target: </span><span class="sc">{</span>qpcr_target<span class="sc">}</span><span class="ss">, Extraction kit: </span><span class="sc">{</span>extraction_kit<span class="sc">}</span><span class="ss">, qPCR kit: </span><span class="sc">{</span>qpcr_kit<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_color(<span class="st">'none'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-7-output-1.png" width="715" height="492" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-7-output-2.png" width="715" height="492" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-7-output-3.png" width="715" height="492" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-7-output-4.png" width="715" height="492" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="plotting-aggregate-distribution-of-samples-where-only-the-rt-pcr-kit-differed" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-aggregate-distribution-of-samples-where-only-the-rt-pcr-kit-differed">Plotting aggregate distribution of samples where only the RT-PCR kit differed</h2>
+<div id="bc66d0ec" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s3-qpcr-machines-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>data.columns <span class="op">=</span> [col.strip() <span class="cf">for</span> col <span class="kw">in</span> data.columns]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>absolute_sample_size <span class="op">=</span> <span class="dv">3000</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>XMIN, XMAX <span class="op">=</span> (<span class="op">-</span><span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># only keep rows where neither extraction kit orPqCR instrumet are == "various"</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[<span class="op">~</span>data[<span class="st">'extraction kit'</span>].<span class="bu">str</span>.contains(<span class="st">"various"</span>)]</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[<span class="op">~</span>data[<span class="st">'PCR instrument'</span>].<span class="bu">str</span>.contains(<span class="st">"various"</span>)].reset_index()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>unique_combinations <span class="op">=</span> data[[<span class="st">'qPCR target'</span>, <span class="st">'RT-PCR kit'</span>, <span class="st">'extraction kit'</span>]].drop_duplicates().values.tolist()</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>n_unique_combinations <span class="op">=</span> <span class="bu">len</span>(unique_combinations)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(n_unique_combinations, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">2.5</span> <span class="op">*</span> n_unique_combinations), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>concentrations_per_ml <span class="op">=</span> [<span class="st">"2_e3"</span>, <span class="st">"1_e3"</span>, <span class="st">"5_e2"</span>, <span class="st">"2_e2"</span>]</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (qpcr_target, qpcr_kit, extraction_kit) <span class="kw">in</span> <span class="bu">enumerate</span>(unique_combinations):</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    sub_table <span class="op">=</span> data[(data[<span class="st">'qPCR target'</span>] <span class="op">==</span> qpcr_target) <span class="op">&amp;</span> (data[<span class="st">'RT-PCR kit'</span>] <span class="op">==</span> qpcr_kit) <span class="op">&amp;</span> (data[<span class="st">'extraction kit'</span>] <span class="op">==</span> extraction_kit)]</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    distributions <span class="op">=</span> []</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    y_axis_labels <span class="op">=</span> []</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> concentration <span class="kw">in</span> concentrations_per_ml:</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        means <span class="op">=</span> sub_table[<span class="ss">f"mean_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        sds <span class="op">=</span> sub_table[<span class="ss">f"sd_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        n_labs <span class="op">=</span> sub_table[<span class="ss">f"n_labs_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        total_labs <span class="op">=</span> <span class="bu">sum</span>(n_labs)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        sample_per_lab <span class="op">=</span> absolute_sample_size <span class="op">//</span> total_labs</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        samples <span class="op">=</span> np.hstack([np.random.normal(m, sd, sample_per_lab <span class="op">*</span> n) <span class="cf">for</span> m, sd, n <span class="kw">in</span> <span class="bu">zip</span>(means, sds, n_labs)])</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>        mean <span class="op">=</span> np.mean(samples)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>        distribution_around_zero <span class="op">=</span> samples <span class="op">-</span> mean</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>        distributions.append(distribution_around_zero)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>        y_axis_labels.append(concentration <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> <span class="ss">f"n = </span><span class="sc">{</span>total_labs<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    sns.violinplot(data<span class="op">=</span>distributions, ax<span class="op">=</span>axs[i], orient<span class="op">=</span><span class="st">'h'</span>)</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yticks(<span class="bu">range</span>(<span class="bu">len</span>(concentrations_per_ml)))</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yticklabels(y_axis_labels)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f"qPCR target: </span><span class="sc">{</span>qpcr_target<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">, qPCR kit: </span><span class="sc">{</span>qpcr_kit<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">, Extraction kit: </span><span class="sc">{</span>extraction_kit<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    axs[i].set_xlim(XMIN, XMAX)</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">'top'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">'right'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-8-output-1.png" width="766" height="801" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="differing-labs" class="level1">
+<h1>Differing labs</h1>
+<div id="7718c7e7" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the new dataset</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s4-individual-labs-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.<span class="bu">apply</span>(<span class="kw">lambda</span> x: x.<span class="bu">str</span>.strip() <span class="cf">if</span> x.dtype <span class="op">==</span> <span class="st">"string"</span> <span class="cf">else</span> x)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>data.columns <span class="op">=</span> [col.strip() <span class="cf">for</span> col <span class="kw">in</span> data.columns]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>Y_MIN, Y_MAX <span class="op">=</span> (<span class="dv">28</span>,<span class="dv">40</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>unique_combinations <span class="op">=</span> data[[<span class="st">'qPCR target'</span>, <span class="st">'extraction kit'</span>, <span class="st">'RT-PCR kit'</span>, <span class="st">'PCR instrument'</span>]].drop_duplicates().values.tolist()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>concentrations_per_ml <span class="op">=</span> [<span class="st">"2_e3"</span>, <span class="st">"1_e3"</span>, <span class="st">"5_e2"</span>, <span class="st">"2_e2"</span>]</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>table_iterator <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> qpcr_target, extraction_kit, qpcr_kit, pcr_instrument <span class="kw">in</span> unique_combinations:</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    table_iterator <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    sub_table <span class="op">=</span> data[(data[<span class="st">'qPCR target'</span>] <span class="op">==</span> qpcr_target) <span class="op">&amp;</span> (data[<span class="st">'extraction kit'</span>] <span class="op">==</span> extraction_kit) <span class="op">&amp;</span> (data[<span class="st">'RT-PCR kit'</span>] <span class="op">==</span> qpcr_kit)]</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    lab_codes <span class="op">=</span> sub_table[<span class="st">'lab_code'</span>].unique().tolist()  <span class="co"># Use lab_code</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    n_lab_codes <span class="op">=</span> <span class="bu">len</span>(lab_codes)  <span class="co"># Use n_lab_codes</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    x_increment <span class="op">=</span> <span class="fl">0.7</span> <span class="op">/</span> n_lab_codes</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    x_offset <span class="op">=</span> <span class="op">-</span><span class="fl">0.45</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> lab_code <span class="kw">in</span> lab_codes:  <span class="co"># Iterate over lab_code</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        y_means <span class="op">=</span> sub_table[sub_table[<span class="st">'lab_code'</span>] <span class="op">==</span> lab_code][[<span class="st">"mean_2_e3"</span>, <span class="st">"mean_1_e3"</span>, <span class="st">"mean_5_e2"</span>, <span class="st">"mean_2_e2"</span>]].values.flatten()</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>        n_samples_values <span class="op">=</span> sub_table[sub_table[<span class="st">'lab_code'</span>] <span class="op">==</span> lab_code][[<span class="st">"n_samples_2_e3"</span>, <span class="st">"n_samples_1_e3"</span>, <span class="st">"n_samples_5_e2"</span>, <span class="st">"n_samples_2_e2"</span>]].values.flatten()</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>        y_sds <span class="op">=</span> sub_table[sub_table[<span class="st">'lab_code'</span>] <span class="op">==</span> lab_code][[<span class="st">"sd_2_e3"</span>, <span class="st">"sd_1_e3"</span>, <span class="st">"sd_5_e2"</span>, <span class="st">"sd_2_e2"</span>]].values.flatten()</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>        x_offset <span class="op">+=</span> x_increment</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        x_values <span class="op">=</span> [x <span class="op">+</span> x_offset <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(y_means))]</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>        ax.errorbar(x_values, y_means, y_sds, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>lab_code<span class="sc">}</span><span class="ss">"</span>, fmt<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        ax.legend(loc<span class="op">=</span><span class="st">'upper center'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.05</span>), frameon<span class="op">=</span><span class="va">False</span>, ncol<span class="op">=</span><span class="dv">4</span>, title<span class="op">=</span><span class="st">"Lab Code"</span>)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(Y_MIN, Y_MAX)</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks(<span class="bu">range</span>(<span class="bu">len</span>(y_means)))</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(Y_MIN, Y_MAX, <span class="dv">2</span>):</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>        ax.axhline(x, color<span class="op">=</span><span class="st">'gray'</span>, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    x_labels <span class="op">=</span> []</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> concentration <span class="kw">in</span> concentrations_per_ml:</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>        tidy_concentration  <span class="op">=</span> concentration.replace(<span class="st">"_"</span>, <span class="st">" "</span>).replace(<span class="st">"e"</span>, <span class="st">"E"</span>)</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>tidy_concentration<span class="sc">}</span><span class="ss"> gc / ml"</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>        x_labels.append(label)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    ax.set_xticklabels(x_labels)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    qpcr_target, extraction_kit, qpcr_kit <span class="op">=</span> qpcr_target.strip(), extraction_kit.strip(), qpcr_kit.strip()</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"qPCR target: </span><span class="sc">{</span>qpcr_target<span class="sc">}</span><span class="ss">, Extraction kit: </span><span class="sc">{</span>extraction_kit<span class="sc">}</span><span class="ss">, qPCR kit: </span><span class="sc">{</span>qpcr_kit<span class="sc">}</span><span class="ss">, PCR instrument: </span><span class="sc">{</span>pcr_instrument<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_color(<span class="st">'none'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-1.png" width="746" height="536" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-2.png" width="735" height="536" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-3.png" width="753" height="536" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-4.png" width="755" height="477" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-5.png" width="718" height="536" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-6.png" width="715" height="536" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-7.png" width="722" height="536" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-8.png" width="723" height="477" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="plotting-aggregate-distribution-of-samples-where-labs-differed" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-aggregate-distribution-of-samples-where-labs-differed">Plotting aggregate distribution of samples where labs differed</h2>
+<div id="7182a56a" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s4-individual-labs-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>data.columns <span class="op">=</span> [col.strip() <span class="cf">for</span> col <span class="kw">in</span> data.columns]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>absolute_sample_size <span class="op">=</span> <span class="dv">3000</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>XMIN, XMAX <span class="op">=</span> (<span class="op">-</span><span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># only keep rows where neither extraction kit orPqCR instrumet are == "various"</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[<span class="op">~</span>data[<span class="st">'extraction kit'</span>].<span class="bu">str</span>.contains(<span class="st">"various"</span>)]</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[<span class="op">~</span>data[<span class="st">'PCR instrument'</span>].<span class="bu">str</span>.contains(<span class="st">"various"</span>)].reset_index()</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>unique_combinations <span class="op">=</span> data[[<span class="st">'qPCR target'</span>, <span class="st">'RT-PCR kit'</span>, <span class="st">'extraction kit'</span>, <span class="st">'PCR instrument'</span>]].drop_duplicates().values.tolist()</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>n_unique_combinations <span class="op">=</span> <span class="bu">len</span>(unique_combinations)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(n_unique_combinations, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">2.5</span> <span class="op">*</span> n_unique_combinations), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>concentrations_per_ml <span class="op">=</span> [<span class="st">"2_e3"</span>, <span class="st">"1_e3"</span>, <span class="st">"5_e2"</span>, <span class="st">"2_e2"</span>]</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (qpcr_target, qpcr_kit, extraction_kit, pcr_instrument) <span class="kw">in</span> <span class="bu">enumerate</span>(unique_combinations):</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    sub_table <span class="op">=</span> data[(data[<span class="st">'qPCR target'</span>] <span class="op">==</span> qpcr_target) <span class="op">&amp;</span> (data[<span class="st">'RT-PCR kit'</span>] <span class="op">==</span> qpcr_kit) <span class="op">&amp;</span> (data[<span class="st">'extraction kit'</span>] <span class="op">==</span> extraction_kit) <span class="op">&amp;</span> (data[<span class="st">'PCR instrument'</span>] <span class="op">==</span> pcr_instrument)]</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    distributions <span class="op">=</span> []</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    y_axis_labels <span class="op">=</span> []</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> concentration <span class="kw">in</span> concentrations_per_ml:</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        means <span class="op">=</span> sub_table[<span class="ss">f"mean_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        sds <span class="op">=</span> sub_table[<span class="ss">f"sd_</span><span class="sc">{</span>concentration<span class="sc">}</span><span class="ss">"</span>].values.tolist()</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        n_labs <span class="op">=</span> <span class="bu">len</span>(means)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        samples <span class="op">=</span> np.hstack([np.random.normal(m, sd) <span class="cf">for</span> m, sd <span class="kw">in</span> <span class="bu">zip</span>(means, sds)])</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        mean <span class="op">=</span> np.mean(samples)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        distribution_around_zero <span class="op">=</span> samples <span class="op">-</span> mean</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        distributions.append(distribution_around_zero)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        y_axis_labels.append(concentration <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> <span class="ss">f"n = </span><span class="sc">{</span>n_labs<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    sns.violinplot(data<span class="op">=</span>distributions, ax<span class="op">=</span>axs[i], orient<span class="op">=</span><span class="st">'h'</span>)</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yticks(<span class="bu">range</span>(<span class="bu">len</span>(concentrations_per_ml)))</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    axs[i].set_yticklabels(y_axis_labels)</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f"qPCR target: </span><span class="sc">{</span>qpcr_target<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">, qPCR kit: </span><span class="sc">{</span>qpcr_kit<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">, Extraction kit: </span><span class="sc">{</span>extraction_kit<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">, PCR instrument: </span><span class="sc">{</span>pcr_instrument<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    axs[i].set_xlim(XMIN, XMAX)</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">'top'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    axs[i].spines[<span class="st">'right'</span>].set_color(<span class="st">'none'</span>)</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-10-output-1.png" width="768" height="1540" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>This might well be wrong: A stanard deviation already contains information on the number of underlying samples.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
