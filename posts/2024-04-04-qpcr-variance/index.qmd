@@ -1,6 +1,7 @@
 ---
 title: "qPCR variance"
-author: "Simon Grimm "
+subtitle: "How much variance is introduced by varying qPCR protocols across different dimensions?"
+author: "Simon Grimm"
 date: 2024-04-04
 toc: true
 nocode: true
@@ -18,6 +19,8 @@ This is research based on the "[Pooled swab sampling for pathogen early detectio
 In our swab sampling research we want to compare qPCR results across different studies. Doing this requires a better understand how much variance is introduced by differing qPCR protocols. In the study [Assessing the comparability of cycle threshold values derived from five external quality assessment rounds for omicron nucleic acid testing](https://virologyj.biomedcentral.com/articles/10.1186/s12985-023-02032-z) researchers compared the qPCR results across many different laboratories who all used different combinations of qPCR machines, qPCR kits, and nucleic extraction methods. We can use this data to get an initial idea of how differing qPCR results might differ from one another.
 
 ```{python}
+#| label: load-packages
+#| include: false
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -28,7 +31,7 @@ import numpy as np
 # Differing qPCR kits
 
 
-## Raw data
+## Plotting qPCR results for different qPCR kits
 ```{python}
 #| warning: false
 
@@ -151,7 +154,7 @@ plt.show()
 
 # Differing NA Extraction kits
 
-
+## Plotting qPCR results for different NA extraction kits
 ```{python}
 #| warning: false
 data = pd.read_csv("data/s2-na-kits-claude.tsv", sep="\t")
@@ -270,6 +273,8 @@ plt.show()
 ```
 
 # Differing PCR machines
+
+## Plotting qPCR results for different qPCR machines
 ```{python}
 #| warning: false
 
@@ -385,7 +390,7 @@ plt.show()
 
 
 
-# Differing labs
+## Plotting qPCR results for different labs who all use the same protocol
 
 ```{python}
 #| warning: false
