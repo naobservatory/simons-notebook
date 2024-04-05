@@ -143,6 +143,9 @@ for i, (qpcr_target, extraction_kit, pcr_instrument) in enumerate(unique_combina
 
 
     sns.violinplot(data=distributions, ax=axs[i], orient='h')
+    for x in np.arange(XMIN, XMAX, 2.5):
+        print(x)
+        axs[i].axvline(x, color='gray', alpha=0.1, zorder=-1)
     axs[i].set_yticks(range(len(concentrations_per_ml)))
     axs[i].set_yticklabels(y_axis_labels)
     axs[i].set_title(f"qPCR target: {qpcr_target.strip()}, Extraction kit: {extraction_kit.strip()}, PCR instrument: {pcr_instrument.strip()}")
@@ -457,7 +460,7 @@ for qpcr_target, extraction_kit, qpcr_kit, pcr_instrument in unique_combinations
 data = pd.read_csv("data/s4-individual-labs-claude.tsv", sep="\t")
 data.columns = [col.strip() for col in data.columns]
 
-absolute_sample_size = 3000
+samples_per_lab = 300
 XMIN, XMAX = (-10, 10)
 
 # only keep rows where neither extraction kit orPqCR instrumet are == "various"
@@ -485,7 +488,7 @@ for i, (qpcr_target, qpcr_kit, extraction_kit, pcr_instrument) in enumerate(uniq
         n_labs = len(means)
 
 
-        samples = np.hstack([np.random.normal(m, sd) for m, sd in zip(means, sds)])
+        samples = np.hstack([np.random.normal(m, sd, samples_per_lab) for m, sd in zip(means, sds)])
         mean = np.mean(samples)
         distribution_around_zero = samples - mean
         distributions.append(distribution_around_zero)
@@ -502,3 +505,10 @@ for i, (qpcr_target, qpcr_kit, extraction_kit, pcr_instrument) in enumerate(uniq
     axs[i].spines['right'].set_color('none')
 plt.show()
 ```
+
+
+```{python}
+
+print(np.random.normal(0, 1))
+```
+
