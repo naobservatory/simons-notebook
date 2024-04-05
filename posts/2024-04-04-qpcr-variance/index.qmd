@@ -414,7 +414,7 @@ for qpcr_target, extraction_kit, qpcr_kit, pcr_instrument in unique_combinations
     fig, ax = plt.subplots(figsize=(9, 5))
     table_iterator += 1
 
-    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['extraction kit'] == extraction_kit) & (data['RT-PCR kit'] == qpcr_kit)]
+    sub_table = data[(data['qPCR target'] == qpcr_target) & (data['extraction kit'] == extraction_kit) & (data['RT-PCR kit'] == qpcr_kit) & (data['PCR instrument'] == pcr_instrument)]
     lab_codes = sub_table['lab_code'].unique().tolist()  # Use lab_code
     n_lab_codes = len(lab_codes)  # Use n_lab_codes
     x_increment = 0.7 / n_lab_codes
@@ -463,21 +463,17 @@ data.columns = [col.strip() for col in data.columns]
 samples_per_lab = 300
 XMIN, XMAX = (-10, 10)
 
-# only keep rows where neither extraction kit orPqCR instrumet are == "various"
-data = data[~data['extraction kit'].str.contains("various")]
-data = data[~data['PCR instrument'].str.contains("various")].reset_index()
+
 
 unique_combinations = data[['qPCR target', 'RT-PCR kit', 'extraction kit', 'PCR instrument']].drop_duplicates().values.tolist()
 
 n_unique_combinations = len(unique_combinations)
-
 fig, axs = plt.subplots(n_unique_combinations, figsize=(9, 2.5 * n_unique_combinations), sharex=True)
 
 concentrations_per_ml = ["2_e3", "1_e3", "5_e2", "2_e2"]
 
 for i, (qpcr_target, qpcr_kit, extraction_kit, pcr_instrument) in enumerate(unique_combinations):
     sub_table = data[(data['qPCR target'] == qpcr_target) & (data['RT-PCR kit'] == qpcr_kit) & (data['extraction kit'] == extraction_kit) & (data['PCR instrument'] == pcr_instrument)]
-
     distributions = []
     y_axis_labels = []
 
