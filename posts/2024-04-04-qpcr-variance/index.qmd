@@ -145,7 +145,7 @@ for i, (qpcr_target, extraction_kit, pcr_instrument) in enumerate(unique_combina
     sns.violinplot(data=distributions, ax=axs[i], orient='h')
     axs[i].set_yticks(range(len(concentrations_per_ml)))
     axs[i].set_yticklabels(y_axis_labels)
-    axs[i].set_title(f"qPCR target: {qpcr_target.strip()}, Extraction kit: {extraction_kit.strip()}, qPCR kit: {qpcr_kit.strip()}")
+    axs[i].set_title(f"qPCR target: {qpcr_target.strip()}, Extraction kit: {extraction_kit.strip()}, PCR instrument: {pcr_instrument.strip()}")
     axs[i].set_xlim(XMIN, XMAX)
     axs[i].spines['top'].set_color('none')
     axs[i].spines['right'].set_color('none')

@@ -388,7 +388,7 @@ The relative abundance of a target pathogen can be impacted by its microbial bac
 We identified two studies that performed paired metagenomic sequencing and SARS-CoV-2 qPCR on swab samples Lu et al. 2021, Babiker et al. 2020. We've reached out to the authors of two further studies that didn't have publicly available data.
 ```{python}
 #| warning: false
-#| fig-cap: "**Figure 4: SARS-CoV-2 qPCR CT vs SARS-CoV-2 RA.**\nTop Figure: Throat Swabs. Data from Lu et al. 2021.\nBottom Figure: Nasopharyngeal Swabs. Data from Babiker et al. 2020."
+#| fig-cap: "**Figure 4: SARS-CoV-2 qPCR CT vs SARS-CoV-2 RA.**\nTop Figure: Throat Swabs. Data from Lu et al. 2021. Middle Figure: NP Swabs. Data from Babiker et al. 2020. Bottom Figure: Nasal Swabs. Data from Mostafa et al. 2020."
 
 
 df_op_lu = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
@@ -414,6 +414,7 @@ df_np_mostafa['Severity Index'] = df_np_mostafa['Severity Index'].astype(int).re
 df_np_babiker['scv2_ct'] = df_np_babiker['scv2_ct'].replace(',', '.', regex=True).astype(float)
 
 fig, axs= plt.subplots(3, 1, figsize=(7.5, 8))
+fig.subplots_adjust(hspace=0.3)
 studies = ["Lu et al. 2021", "Babiker et al. 2020", "Mostafa et al. 2020"]
 for ax, df, study in zip(axs, [df_op_lu, df_np_babiker, df_np_mostafa], studies):
     sns_default_colors = sns.color_palette()
@@ -429,6 +430,7 @@ for ax, df, study in zip(axs, [df_op_lu, df_np_babiker, df_np_mostafa], studies)
         y_lim_adjusted = (y_lim[0], y_lim[1] * 1.05)  # Adjust upper limit to ensure top dot is fully displayed
         ax.set_ylim(y_lim_adjusted)
         ax.legend(labels=['Inpatient'], loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+        ax.set_title(study + " - Throat Swabs", x=0.00, y=1.0, ha='left')
     elif study == "Babiker et al. 2020":
         order = ["Inpatient", "Outpatient",]
         sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='patient_status', style='patient_status', palette=sns_default_colors, s=70, hue_order=order)
@@ -436,6 +438,7 @@ for ax, df, study in zip(axs, [df_op_lu, df_np_babiker, df_np_mostafa], studies)
         ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
         ax.set_xlim(x_lim)
         ax.set_ylim(y_lim)
+        ax.set_title(study + " - NP Swabs", x=0.00, y=1.0, ha='left')
     elif study == "Mostafa et al. 2020":
         sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='Severity Index', palette=sns_default_colors, s=70, style='Severity Index')
         ax.set_xlabel('')
@@ -443,6 +446,7 @@ for ax, df, study in zip(axs, [df_op_lu, df_np_babiker, df_np_mostafa], studies)
         ax.set_ylim(y_lim)
         ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
         ax.set_xlabel('SARS-CoV-2 qPCR CT Value')
+        ax.set_title(study + " - Nasal Swabs", x=0.00, y=1.0, ha='left')
 
 
     ax.set_yscale('log')
@@ -603,6 +607,7 @@ for y in range(-7, 1, 1):
     ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
 
 ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+ax.set_title("Thorburn et al. 2016 - NP Swabs - Outpatients", x=0.0, y=1.0, ha='left')
 
 plt.show()
 plt.clf()
@@ -667,6 +672,7 @@ for y in range(-7, 1, 1):
     ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
 
 ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+ax.set_title("Graf et al. 2016 - Nasopharyngeal Swabs - 5yo Inpatients", x=0.0, y=1.0, ha='left')
 
 plt.show()
 plt.clf()
