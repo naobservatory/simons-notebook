@@ -1,0 +1,26 @@
+Source: https://docs.google.com/spreadsheets/d/1ltqVDZfxZVresIQCoSNFXN4Sr5mlvMwLZVnv0ifdYBI/edit#gid=2040881118							
+Sample	Sample Type	FluA CT	Matrix  CT	H1  CT	Genotype	InflA/InflB RPM	Relative Abundance
+104	BAL fluid	26	28	Neg	fluAb	211,170	0.21117
+755	BAL fluid	33	32	30	H1N1	380	0.00038
+1,116	BAL fluid	30	28	29	H1N1	0	0
+1,721	BAL fluid	26	28	Neg	fluAb	109,031	0.109031
+2,535	BAL fluid	40	NT	Neg	fluAb	0	0
+2,292	BAL fluid	24	NT	23	H1N1	365,373	0.365373
+3,157	BAL fluid	30	NT	Neg	fluAb	2,517	0.002517
+1,773	Sputum	25	27	Neg	fluAb	57,493	0.057493
+1,168	Sputum	23	24	Neg	fluAb	200	0.0002
+853	Sputum	27	25	25	H1N1	10	0.00001
+677	Sputum	Neg	35	34	H1N1	0	0
+208	Sputum	30	Neg	27	H1N1	14	0.000014
+2,373	Swab	31	NT	Neg	fluAb	4	0.000004
+2,098	Swab	33	NT	Neg	fluAb	1,955	0.001955
+1,689	Swab	36	40	Neg	fluAb	0	0
+1,647	Swab	31	34	Neg	fluAb	32,113	0.032113
+1,539	Swab	30	30	28	H1N1	55	0.000055
+1,538	Swab	30	29	29	H1N1	319	0.000319
+768	Swab	36	35	34	H1N1	0	0
+83	Swab	29	29	25	H1N1	82,211	0.082211
+848	Swab	28	26	26	H1N1	208	0.000208
+2,295	Swab	32	28	Neg	fluAb	192	0.000192
+2,544	Swab	35	NT	Neg	fluAb	0	0
+14,087	Secretion	Neg	NT	NT	InflB (CT of 29)	14	0.000014

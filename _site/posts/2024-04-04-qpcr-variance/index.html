@@ -197,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Differing qPCR kits</h1>
 <section id="plotting-qpcr-results-for-different-qpcr-kits" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-qpcr-results-for-different-qpcr-kits">Plotting qPCR results for different qPCR kits</h2>
-<div id="bc9d4efc" class="cell" data-execution_count="2">
+<div id="0fe3f127" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s1-qpcr-kits-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
@@ -313,7 +313,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="plotting-aggregate-distribution-of-samples-where-only-the-qpcr-kit-differed" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-aggregate-distribution-of-samples-where-only-the-qpcr-kit-differed">Plotting aggregate distribution of samples where only the qPCR kit differed</h2>
 <p>It is hard to discern how much variance there is between all the different kits, even within one concentration level. Something we can do to help make the variance more visible is to i) look only at examples where the qPCR kit differed, ii) take the means and standard deviations of the samples from each qPCR kit at a given concentration level, and iii) sample each qPCR kit’s distribution, weighed by the number of labs using that kit.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div id="db92bfef" class="cell" data-execution_count="3">
+<div id="c8824e4c" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s1-qpcr-kits-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
@@ -383,7 +383,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Differing NA Extraction kits</h1>
 <section id="plotting-qpcr-results-for-different-na-extraction-kits" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-qpcr-results-for-different-na-extraction-kits">Plotting qPCR results for different NA extraction kits</h2>
-<div id="cab7f361" class="cell" data-execution_count="4">
+<div id="e89af26d" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s2-na-kits-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
@@ -488,7 +488,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="plotting-aggregate-distribution-of-samples-where-only-the-na-extraction-kit-differed" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-aggregate-distribution-of-samples-where-only-the-na-extraction-kit-differed">Plotting aggregate distribution of samples where only the NA extraction kit differed</h2>
-<div id="5bfe45fc" class="cell" data-execution_count="5">
+<div id="c6c0c0ba" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s2-na-kits-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
@@ -554,7 +554,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Differing PCR machines</h1>
 <section id="plotting-qpcr-results-for-different-qpcr-machines" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-qpcr-results-for-different-qpcr-machines">Plotting qPCR results for different qPCR machines</h2>
-<div id="efee257e" class="cell" data-execution_count="6">
+<div id="ff3a41de" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s3-qpcr-machines-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
@@ -641,7 +641,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="plotting-aggregate-distribution-of-samples-where-only-the-rt-pcr-kit-differed" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-aggregate-distribution-of-samples-where-only-the-rt-pcr-kit-differed">Plotting aggregate distribution of samples where only the RT-PCR kit differed</h2>
-<div id="50bc6124" class="cell" data-execution_count="7">
+<div id="6bdbeebf" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s3-qpcr-machines-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
@@ -704,7 +704,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="plotting-qpcr-results-for-different-labs-who-all-use-the-same-protocol" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-qpcr-results-for-different-labs-who-all-use-the-same-protocol">Plotting qPCR results for different labs who all use the same protocol</h2>
-<div id="10294505" class="cell" data-execution_count="8">
+<div id="60604f48" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the new dataset</span></span>
@@ -816,7 +816,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="plotting-aggregate-distribution-of-samples-where-labs-differed" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-aggregate-distribution-of-samples-where-labs-differed">Plotting aggregate distribution of samples where labs differed</h2>
-<div id="c2967873" class="cell" data-execution_count="9">
+<div id="364f6fa8" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"data/s4-individual-labs-claude.tsv"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>

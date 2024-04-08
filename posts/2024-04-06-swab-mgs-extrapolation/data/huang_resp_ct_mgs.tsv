@@ -1,0 +1,16 @@
+Source: https://docs.google.com/spreadsheets/d/1ltqVDZfxZVresIQCoSNFXN4Sr5mlvMwLZVnv0ifdYBI/edit#gid=1012591200								
+Virus	Sample type	CT	Total reads	Matches per million reads	Genome coverage (%)	Genome size (Kb)	Normalized reads	Accession number
+Influenza A	Resp. swab	20	9887420	12873	100	13.65	943.1	-
+Influenza A	Resp. swab	29	6362958	5	8.5	13.65	0.33	-
+Influenza A	Resp. swab	23	7797928	165	92.1	13.65	12.08	-
+Influenza A	Resp. swab	30	12274192	1	2.2	13.65	0.07	-
+Influenza A	Resp. swab	25	15933624	34	65	13.65	2.51	-
+Influenza B	Resp. swab	37	10522006	0	0	14.45	0	-
+Influenza B	Resp. swab	31	8803350	154	72	14.45	10.63	-
+Influenza B	Resp. swab	30	9078836	10	20.8	14.45	0.68	-
+Influenza B	Resp. swab	23	5493902	25	25.6	14.45	1.76	-
+Influenza B	Resp. swab	24	12186300	1093	89	14.45	75.61	-
+Measles	Resp. swab	20	13806054	3839	99.7	15.89	241.62	MH638233
+Measles	Resp. swab	19	13776058	299	97.2	15.89	18.79	-
+Mumps	Resp. swab	25	11330012	3913	100	15.38	254.43	MH638234
+Mumps	Resp. swab	26	5385648	2219	100	15.38	144.28	MH638235
