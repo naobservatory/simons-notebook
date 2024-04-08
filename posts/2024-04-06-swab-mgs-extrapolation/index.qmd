@@ -9,6 +9,7 @@ format:
     code-link: true
     df-print: paged
 editor: visual
+toc: true
 jupyter: venv
 filters:
     - black-formatter
