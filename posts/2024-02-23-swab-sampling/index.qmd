@@ -10,6 +10,8 @@ filters:
     - black-formatter
 cap-location: bottom
 draft: true
+execute:
+  freeze: auto
 ---
 
 ```{python}
@@ -80,10 +82,10 @@ Getting a better understanding of this is particularly relevant when pooling sam
 
 ### Viral load in different swab types
 
-
-
 Most studies on swab sampling performance treat nasopharyngeal swabs (NP swabs) as the gold standard, against which, nasal (Kojima et al. 2021; Tu et al. 2020), mid-turbinate (Tu et al. 2020; Muller et al. 2021), and combined nasal/oropharyngeal (Desmet et al. 2021) swabs are compared. NP swabs are commonly administered by a healthcare professional and a properly administered test absorbs material from below the inferior turbinate, and the nasopharynx located at the back of the nasal cavity. Given that nasopharyngeal swabs are not easily self-administerable, we will treat it here as the reference by which to compare swab types that could realistically be used in a large-scale surveillance program.
+
 #### Nasal swabs
+
 The CT value difference for paired NP/{Other} swabs are plotted in Figure 1. The CT value of the comparison swab is subtracted from the NP swab CT value. A lower CT is better, thus, a negative cycle threshold (CT) difference equates to a higher pathogen concentration in the NP swab.
 
 
@@ -324,13 +326,9 @@ plt.show()
 ```
 
 ```{python}
-
 #| fig-cap: "**Figure 3: Nasal swabs vs Oro-pharyngeal swabs.** All data is taken from Leung et al. 2020."
-
-
 # All CT difference data was calculated and is taken from https://docs.google.com/spreadsheets/d/1YP4mxT_vxiFwXU5ZuBM4obq_oscfhe05ODWwHFHEznM/
 
-# turn tsv into dataframe. Ignore first row. Second row is column names.
 df = pd.read_csv('data/leung_genome_copy_differences.tsv', sep='\t', skiprows=1)
 
 df = df.melt(var_name='Study & Comparison', value_name='Genome Copy Number Difference')
@@ -369,6 +367,7 @@ plt.gca().spines['left'].set_visible(False)
 
 plt.show()
 ```
+
 In qPCR measurements, nasal swabs contain more virus copies than throat swabs. In (Goodall et al. 2022), nasal swabs are slightly superior to throat swabs and combined/nasal throat swabs, and come out about even when compared to combined nasal/OP swabs. In (Leung et al. 2020), researchers ran multiplex-PCR on both nasal and throat swamples. qPCR differences are plotted in Figure 3 for Human Coronavirus, Influenza, and Rhinovirus.
 
 
@@ -386,81 +385,6 @@ The relative abundance of a target pathogen can be impacted by its microbial bac
 [^3]: See [McClaren et al. 2019](https://elifesciences.org/articles/46923) for further discussion.
 
 We identified two studies that performed paired metagenomic sequencing and SARS-CoV-2 qPCR on swab samples Lu et al. 2021, Babiker et al. 2020. We've reached out to the authors of two further studies that didn't have publicly available data.
-```{python}
-#| warning: false
-#| fig-cap: "**Figure 4: SARS-CoV-2 qPCR CT vs SARS-CoV-2 RA.**\nTop Figure: Throat Swabs. Data from Lu et al. 2021. Middle Figure: NP Swabs. Data from Babiker et al. 2020. Bottom Figure: Nasal Swabs. Data from Mostafa et al. 2020."
-
-
-df_op_lu = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
-df_op_lu.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
-df_np_babiker = pd.read_csv('data/babiker_np_ct_mgs.tsv', sep='\t', skiprows=1)
-df_np_babiker.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Inpatient/ED vs. Outpatient': 'patient_status'}, inplace=True)
-df_np_mostafa = pd.read_csv('data/mostafa_np_scv2_ct_mgs.tsv', sep='\t', skiprows=1)
-
-severity_dict = {
-    1: "Required ventilator",
-    2: "ICU",
-    3: "Admitted",
-    4: "Not admitted",
-    0: "Unknown"
-}
-
-df_np_mostafa.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra'}, inplace=True)
-
-
-df_np_mostafa['Severity Index'] = df_np_mostafa['Severity Index'].astype(int).replace(severity_dict)
-
-
-df_np_babiker['scv2_ct'] = df_np_babiker['scv2_ct'].replace(',', '.', regex=True).astype(float)
-
-fig, axs= plt.subplots(3, 1, figsize=(7.5, 8))
-fig.subplots_adjust(hspace=0.3)
-studies = ["Lu et al. 2021", "Babiker et al. 2020", "Mostafa et al. 2020"]
-for ax, df, study in zip(axs, [df_op_lu, df_np_babiker, df_np_mostafa], studies):
-    sns_default_colors = sns.color_palette()
-    #viridis clor palette with 5 colors
-    viridis_colors = sns.color_palette("CMRmap", 5)
-
-    x_lim = 12.5, 40
-    y_lim = 10**-8, 2
-    if study == "Lu et al. 2021":
-        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', color=sns_default_colors[0], s=70)
-        ax.set_xlabel('')
-        ax.set_xlim(x_lim)
-        y_lim_adjusted = (y_lim[0], y_lim[1] * 1.05)  # Adjust upper limit to ensure top dot is fully displayed
-        ax.set_ylim(y_lim_adjusted)
-        ax.legend(labels=['Inpatient'], loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
-        ax.set_title(study + " - Throat Swabs", x=0.00, y=1.0, ha='left')
-    elif study == "Babiker et al. 2020":
-        order = ["Inpatient", "Outpatient",]
-        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='patient_status', style='patient_status', palette=sns_default_colors, s=70, hue_order=order)
-        ax.set_xlabel('')
-        ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
-        ax.set_xlim(x_lim)
-        ax.set_ylim(y_lim)
-        ax.set_title(study + " - NP Swabs", x=0.00, y=1.0, ha='left')
-    elif study == "Mostafa et al. 2020":
-        sns.scatterplot(ax=ax, data=df, x='scv2_ct', y='scv2_ra', hue='Severity Index', palette=sns_default_colors, s=70, style='Severity Index')
-        ax.set_xlabel('')
-        ax.set_xlim(x_lim)
-        ax.set_ylim(y_lim)
-        ax.legend(title='', loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
-        ax.set_xlabel('SARS-CoV-2 qPCR CT Value')
-        ax.set_title(study + " - Nasal Swabs", x=0.00, y=1.0, ha='left')
-
-
-    ax.set_yscale('log')
-    ax.invert_xaxis()
-    ax.spines['right'].set_visible(False)
-    ax.spines['top'].set_visible(False)
-    ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
-    ax.set_ylabel('Relative Abundance')
-    for x in np.arange(15, 40, 5):
-        ax.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
-    for y in range(-7, 1, 1):
-        log_y = 10**y
-        ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
-```
 
 Some observations:
 
@@ -495,10 +419,11 @@ df_fischer_influenza = pd.read_csv('data/fischer_influenza_ct_mgs.tsv', sep='\t'
 df_fischer_influenza.rename(columns={"FluA CT":"flua_ct", "Relative Abundance": "flua_mgs"}, inplace=True)
 df_fischer_influenza['flua_ct'] = df_fischer_influenza[df_fischer_influenza['flua_ct'] != 'Neg']['flua_ct'].astype(int)
 
+
 fig, ax = plt.subplots(1, 1, figsize=(7.5,3))
 ax.set_xlim(12.5, 40)
 ax.set_ylim(10**-8, 10**0)
-sns.scatterplot(data=df_fischer_influenza, x='flua_ct', y='flua_mgs', hue='Sample Type', style='Sample Type', color=sns_default_colors, s=70)
+sns.scatterplot(data=df_fischer_influenza, x='flua_ct', y='flua_mgs', hue='Sample Type', style='Sample Type', s=70)
 ax.set_xlabel('Influenza A qPCR CT Value')
 ax.set_ylabel('Relative Abundance')
 ax.set_yscale('log')
@@ -532,7 +457,7 @@ fig, ax = plt.subplots(1,1, figsize=(7.5,3))
 ax.set_xlim(12.5, 40)
 ax.set_ylim(10**-8, 10**0)
 
-sns.scatterplot(data=df_huang_various, x='CT', y='relative_abundance', hue='Virus', style='Virus', color=sns_default_colors, s=70)
+sns.scatterplot(data=df_huang_various, x='CT', y='relative_abundance', hue='Virus', style='Virus', s=70)
 ax.set_xlabel('qPCR CT Value')
 ax.set_ylabel('Relative Abundance')
 ax.set_yscale('log')
@@ -592,7 +517,7 @@ df_thorburn_various["relative_abundance"] = df_thorburn_various["% reads mapping
 fig, ax = plt.subplots(1, 1, figsize=(7.5,3))
 ax.set_xlim(12.5, 40)
 ax.set_ylim(10**-8, 10**0)
-sns.scatterplot(data=df_thorburn_various, x='Ct', y='relative_abundance', hue='Taxonomy', style='Taxonomy', color=sns_default_colors, s=70)
+sns.scatterplot(data=df_thorburn_various, x='Ct', y='relative_abundance', hue='Taxonomy', style='Taxonomy', s=70)
 ax.set_xlabel('qPCR CT Value')
 ax.set_ylabel('Relative Abundance')
 ax.set_yscale('log')
@@ -653,7 +578,7 @@ df_graf_various["virus"] = df_graf_various["virus"].str.replace(r'Parainfluenzav
 
 fig, ax = plt.subplots(1,1, figsize=(7.5,3))
 
-sns.scatterplot(data = df_graf_various, x='viral_copies_ml', y='relative_abundance', hue='virus', style='virus', color=sns_default_colors, s=70)
+sns.scatterplot(data = df_graf_various, x='viral_copies_ml', y='relative_abundance', hue='virus', style='virus', s=70)
 ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
 
 ax.set_yscale('log')

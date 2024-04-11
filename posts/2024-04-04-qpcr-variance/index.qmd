@@ -11,7 +11,8 @@ format:
     code-link: true
     df-print: paged
 jupyter: venv
-
+execute:
+  freeze: auto
 cap-location: bottom
 ---
 # Introduction
