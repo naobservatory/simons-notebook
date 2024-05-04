@@ -1,0 +1,227 @@
+---
+title: "Air sampling figure (size distribution)"
+author: "Simon Grimm"
+date: 2024-04-19
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-link: true
+    df-print: paged
+editor: visual
+toc: true
+jupyter: venv
+filters:
+    - black-formatter
+---
+
+```{python}
+#| label: load-packages
+#| include: false
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from collections import defaultdict
+import random
+import math
+from scipy.stats import gmean
+import matplotlib.ticker as ticker
+from scipy.stats import linregress
+import argparse
+from typing import List
+
+
+```
+
+```{python}
+def get_cunningham_corr_factor(diameter):
+    λ = 6.4e-8
+    d = diameter
+    A1 = 1.257
+    A2 = 0.400
+    A3 = 0.55
+    Cc = 1 + ((2*λ)/d) * ( A1 + A2*np.exp((-A3*d)/λ) )
+    return Cc
+
+g = 9.81 # m/s^2, G
+p = 997 # kg/m^3, density of water (aerosol)
+e = 1.825e-5 # dynamic viscosity of air
+
+times = defaultdict(int)
+for d in np.logspace(-3, -8, num=30):
+    print(d)
+    Cc = get_cunningham_corr_factor(d)
+    term_velocity = (d**2 * g * p * Cc) / (18 * e)
+    time_at_1_5_m = 1 / term_velocity
+    hours = time_at_1_5_m / 3600
+    d_um = d * 1e6
+    times[d_um] = hours
+
+settling_df = pd.DataFrame(list(times.items()), columns=['Aerosol diameter (um)', 'Residence time in hours'])
+```
+
+
+```{python}
+speaking_df = pd.read_csv("data/breathing_2023_bagheri.csv")
+breathing_df = pd.read_csv("data/breathing_2023_bagheri.csv")
+
+
+def get_cunningham_corr_factor(diameter):
+    λ = 6.4e-8
+    d = diameter
+    A1 = 1.257
+    A2 = 0.400
+    A3 = 0.55
+    Cc = 1 + ((2*λ)/d) * ( A1 + A2*np.exp((-A3*d)/λ) )
+    return Cc
+
+g = 9.81 # m/s^2, G
+p = 997 # kg/m^3, density of water (aerosol)
+e = 1.825e-5 # dynamic viscosity of air
+
+times = defaultdict(int)
+for d in np.logspace(-3.4, -7.3, num=30):
+    Cc = get_cunningham_corr_factor(d)
+    term_velocity = (d**2 * g * p * Cc) / (18 * e)
+    travel_time_at_1_5_m = 1 / term_velocity # seconds
+
+    d_um = d * 1e6
+    times[d_um] = travel_time_at_1_5_m
+
+settling_df = pd.DataFrame(list(times.items()), columns=['Aerosol diameter (um)', 'Residence time in hours'])
+
+
+
+
+df_breathing = pd.read_csv("data/breathing_2023_bagheri.csv")
+median_df_breathing = df_breathing[df_breathing['point_type'] == 'Median_breathing']
+
+df_pivot_breathing = df_breathing.pivot(index='point_group', columns='point_type', values=['density', 'diameter_um'])
+df_pivot_breathing.columns = ['_'.join(col).strip() for col in df_pivot_breathing.columns.values]
+df_pivot_breathing = pd.merge(df_pivot_breathing, median_df_breathing[['point_group', 'diameter_um']], on='point_group')
+
+df_speaking = pd.read_csv("data/speaking_2023_bagheri.csv")
+median_df_speaking = df_speaking[df_speaking['point_type'] == 'Median_speaking']
+
+df_pivot_speaking = df_speaking.pivot(index='point_group', columns='point_type', values=['density', 'diameter_um'])
+df_pivot_speaking.columns = ['_'.join(col).strip() for col in df_pivot_speaking.columns.values]
+df_pivot_speaking = pd.merge(df_pivot_speaking, median_df_speaking[['point_group', 'diameter_um']], on='point_group')
+
+
+
+```
+
+
+```{python}
+fig, axs = plt.subplots(2, 1, figsize=(8, 5.8), height_ratios=[2, 2], dpi=600, sharex=True)
+
+
+tab_colors = sns.color_palette()
+
+
+axs[0].errorbar(df_pivot_breathing['diameter_um_Median_breathing'], df_pivot_breathing['density_Median_breathing'],
+                yerr=[df_pivot_breathing['density_Median_breathing'] - df_pivot_breathing['density_Lower_CI_breathing'], df_pivot_breathing['density_Upper_CI_breathing'] - df_pivot_breathing['density_Median_breathing']],
+                fmt='o', color=tab_colors[0], label='Median with CI', markersize=4)
+axs[0].text(0.48, 0.3, 'Breathing', transform=axs[0].transAxes, ha='left', va='bottom', fontsize=10, color=tab_colors[0])
+
+
+axs[0].errorbar(df_pivot_speaking['diameter_um_Median_speaking'], df_pivot_speaking['density_Median_speaking'],
+                yerr=[df_pivot_speaking['density_Median_speaking'] - df_pivot_speaking['density_Lower_CI_speaking'], df_pivot_speaking['density_Upper_CI_speaking'] - df_pivot_speaking['density_Median_speaking']],
+                fmt='o', color=tab_colors[1], label='Median with CI', markersize=4)
+axs[0].text(0.69, 0.75, 'Speaking', transform=axs[0].transAxes, ha='left', va='bottom', fontsize=10, color=tab_colors[1])
+
+axs[0].set_yscale('log')
+axs[0].set_xscale('log')
+axs[0].set_xlabel('Aerosol diameter (μm)', fontsize=9)
+axs[0].xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: '{:.2f}'.format(x)))
+axs[0].tick_params(axis='x', which='major', labelbottom=True, labelsize=8)
+axs[0].tick_params(axis='y', which='major', labelsize=8)
+axs[0].set_ylabel(r'Particle concentration(log) / $\mathregular{cm^{-3}}$', fontsize=9)
+axs[0].set_title("") # Aerosol size distribution when breathing and speaking", fontsize=10)
+axs[0].legend()
+axs[0].legend(loc='lower center', bbox_to_anchor=(0.5, -0.4), title=None, ncol=2, frameon=False, fontsize=10)
+
+
+
+
+settling_df_sorted = settling_df.sort_values(by="Aerosol diameter (um)")
+sns_colors = sns.color_palette()
+sns.lineplot(data=settling_df_sorted, x='Aerosol diameter (um)', y='Residence time in hours', ax=axs[1], color=sns_colors[4])
+
+#axs[1].set_xscale('log')
+axs[1].set_yscale('log')
+axs[1].xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: '{:.2f}'.format(x)))
+
+axs[1].set_xlabel('Aerosol diameter (μm)', fontsize=9)
+axs[1].set_ylabel('Residence time', fontsize=9)
+import matplotlib.ticker as ticker
+
+# Define the tick values and their corresponding labels
+tick_values = [1, 60, 3600, 86400]  # Values in seconds for 1 second, 1 minute, 1 hour, and 1 day
+tick_labels = ['1s', '1m', '1h', '24h']
+
+# Set the y-axis ticks and labels
+axs[1].set_yticks(tick_values)
+axs[1].set_yticklabels(tick_labels)
+
+
+axs[1].set_title("") #Aerosol residence time in hours", fontsize=10)
+axs[1].tick_params(axis='x', which='major', bottom=False, labelsize=8)
+axs[1].tick_params(axis='y', which='major', labelsize=8)
+
+for ax in axs:
+    ax.tick_params(axis='both', which='minor', left=False, right=False, top=False, bottom=False)
+    ax.grid(True, which='major', color='gray', linewidth=0.2)
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+
+
+plt.savefig("figures/aerosol_size_distribution.png", dpi=600)
+```
+
+Instantiating the Stokes' law for small particles.
+
+```{python}
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Load your data
+df = pd.read_csv("data/breathing_2023_bagheri.csv")
+median_df = df[df['point_type'] == 'Median_breathing']
+
+df_pivot = df.pivot(index='point_group', columns='point_type', values=['density', 'diameter_um'])
+df_pivot.columns = ['_'.join(col).strip() for col in df_pivot.columns.values]
+df_pivot = pd.merge(df_pivot, median_df[['point_group', 'diameter_um']], on='point_group')
+
+
+fig, axs = plt.subplots(2, 1, figsize=(6, 6), height_ratios=[2, 3], dpi=600, sharex=True)
+# insert hspace
+plt.subplots_adjust(hspace=0.5)
+axs[0].set_yscale('log')
+axs[0].set_xscale('log')
+print(df_pivot.columns)
+
+tab_colors = sns.color_palette()
+axs[0].errorbar(df_pivot['diameter_um_Median_breathing'], df_pivot['density_Median_breathing'],
+                yerr=[df_pivot['density_Median_breathing'] - df_pivot['density_Lower_CI_breathing'], df_pivot['density_Upper_CI_breathing'] - df_pivot['density_Median_breathing']],
+                fmt='o', color=tab_colors[0], label='Median with CI')
+
+
+#
+## Smooth curve through the median points
+#sns.lineplot(data=median_df, x='diameter_um', y='density', ax=axs[0], color='red', label='Smoothed curve')
+#
+## Set log scale for better visualization
+#axs[0].set_yscale('log')
+#axs[0].set_xscale('log')
+#
+## Adding labels and legend
+#axs[0].set_xlabel('Diameter (um)')
+#axs[0].set_ylabel('Density')
+#axs[0].legend()
+#
+plt.show()
+#
+```
