@@ -1,0 +1,1662 @@
+---
+title: "Figures for swab sampling post"
+subtitle: ""
+author: "Simon Grimm"
+date: 2024-05-08
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-link: true
+    df-print: paged
+editor: visual
+toc: true
+jupyter: venv
+filters:
+    - black-formatter
+---
+
+```{python}
+#| label: load-packages
+#| include: false
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from collections import defaultdict
+import random
+import math
+from scipy.stats import gmean
+import matplotlib.ticker as ticker
+from scipy.stats import linregress
+import argparse
+from typing import List
+
+```
+
+```{python}
+#| label: define-functions
+
+
+def simulate_many_p2ra(shedding_values: List[float] = [0.01],
+                     sample_populations: List[int] = [100],
+                     n_simulations: int = 1000) -> pd.DataFrame:
+
+    results = defaultdict(list)
+    for sample_pop in sample_populations:
+        for _ in range(n_simulations):
+            results[sample_pop].append(simulate_p2ra(sample_pop, shedding_values))
+    for key, values in results.items():
+        results[key] = sorted(values)
+    df = pd.DataFrame(results)
+    return df
+
+
+
+def simulate_many_cum_inc(shedding_values: List[float] = [0.01],
+                     sample_populations: List[int] = [100],
+                     n_simulations: int = 1000) -> pd.DataFrame:
+
+    results = defaultdict(list)
+    for sample_pop in sample_populations:
+        for _ in range(n_simulations):
+            results[sample_pop].append(simulate_cum_inc(sample_pop, shedding_values))
+    for key, values in results.items():
+        results[key] = sorted(values)
+    df = pd.DataFrame(results)
+    return df
+
+def simulate_cum_inc(sample_pop=100, shedding_values=[0.01]):
+    day = 0
+    population = 1e10
+    processing_delay = 4
+    n_sites = 1
+    n_min_observations = 2 # check what this means.
+    epsilon = 0.000001
+    genome_length_covid = 30_000
+    sequencing_depth = 8e5
+    read_length_usable = 10000 # Nanopore MinION
+
+    sigma_shedding_values = 0.05
+
+    doubling_time = 3
+    cv_doubling_time = 0.1
+    shedding_duration = 5
+    sigma_shedding_duration = 0.05
+
+
+    should_sample = {
+        0: True,
+        1: True,
+        2: True,
+        3: True,
+        4: True,
+        5: False,
+        6: False,
+
+    }
+
+    should_sequence = {
+        0: True,
+        1: True,
+        2: True,
+        3: True,
+        4: True,
+        5: False,
+        6: False,
+    }
+
+    r = math.log(2) / get_input_cv(doubling_time, cv_doubling_time, epsilon)
+    growth_factor = math.exp(r)
+    cumulative_incidence = 1 / population
+
+    detectable_days = get_input_sigma(shedding_duration,sigma_shedding_duration, epsilon)
+
+    ra_sicks = get_inputs_biased(shedding_values, sigma_shedding_values, epsilon)
+
+    observations = 0
+
+    site_infos = []
+    for site in range(n_sites):
+        site_infos.append({
+            "sample_sick": 0,
+            "sample_total": 0,
+            "day_offset": random.randint(0, 6)  # Random day of the week
+        })
+
+
+    read_length_usable = min(read_length_usable, genome_length_covid) # not needed because we assume Illumina, but let's keep it for now
+
+    #if low_quality_checked():
+    #    read_length_usable = min(read_length_usable, 120)
+    # CHECK, is this a condition I want to drop?
+    fraction_useful_reads = read_length_usable / genome_length_covid
+
+    v_processing_delay_factor = pow(growth_factor, processing_delay)
+    n_reads = sequencing_depth
+
+
+    while True:
+        day += 1
+        cumulative_incidence *= growth_factor
+
+
+        for site_info in site_infos:
+            day_of_week = (day + site_info["day_offset"]) % 7
+            if should_sample[day_of_week]:
+                daily_incidence = cumulative_incidence * r
+                individual_probability_sick = 0
+                effective_incidence = daily_incidence
+                for _ in range(int(detectable_days)):
+                    individual_probability_sick += effective_incidence
+                    effective_incidence /= growth_factor
+                n_sick = np.random.poisson(sample_pop * individual_probability_sick)
+                site_info["sample_sick"] += n_sick
+                site_info["sample_total"] += sample_pop
+
+            if should_sequence[day_of_week]:
+                ra_sick = 0
+                if site_info["sample_sick"] == 0:
+                    ra_sick = 0
+                elif len(ra_sicks) == 1: # If there's only one option, no need to simulate.
+                    ra_sick = ra_sicks[0]
+                else:
+                    for _ in range(site_info["sample_sick"]):
+                        ra_sick += ra_sicks[random.randint(0, len(ra_sicks) - 1)]
+                    ra_sick = ra_sick / site_info["sample_sick"]
+
+                probability_read_is_useful = (
+                    site_info["sample_sick"] /
+                    site_info["sample_total"] *
+                    ra_sick * fraction_useful_reads # TODO: this assumes an engineered virus.
+                )
+                #if 0.009 <= cumulative_incidence <= 0.011:
+                #    p2ra1 = site_info["sample_sick"] / site_info["sample_total"] * ra_sick
+                #    print(f"incidence:{cumulative_incidence}, p2ra1:{p2ra1}")
+
+
+                site_info["sample_sick"] = 0
+                site_info["sample_total"] = 0
+
+                # If this is zero it means that we didn't have any sick
+                # people in our sample, so we don't need to check if we
+                # observed any useful reads.
+                if probability_read_is_useful > 0:
+                    observations += np.random.poisson(n_reads * probability_read_is_useful)
+                    if observations >= n_min_observations:
+                        return cumulative_incidence * v_processing_delay_factor
+
+        if cumulative_incidence > 1 or day > 365 * 10:
+            return 1
+
+
+def simulate_p2ra_new_many(shedding_values=[0.01], sample_populations=[100],  n_simulations=1000) -> pd.DataFrame:
+    results = defaultdict(list)
+    for sample_pop in sample_populations:
+        for _ in range(n_simulations):
+            results[sample_pop].append(simulate_p2ra_new(sample_pop, shedding_values))
+    for key, values in results.items():
+        results[key] = sorted(values)
+    df = pd.DataFrame(results)
+    return df
+
+
+def simulate_p2ra_new(sample_pop=100, shedding_values=[0.01]):
+    target_incidence_p_w = 0.01
+    shedding_duration_w = 2
+    sigma_shedding_values = 0.05
+    epsilon = 0.000001
+    prevalence = target_incidence_p_w * shedding_duration_w
+    n_sick = np.random.poisson(sample_pop * prevalence)
+    ra_sicks = get_inputs_biased(shedding_values, sigma_shedding_values, epsilon)
+
+    ra_sick = 0
+    for _ in range(n_sick):
+        ra_sick += ra_sicks[random.randint(0, len(ra_sicks) - 1)]
+
+    relative_abundance = n_sick / sample_pop * ra_sick
+    return relative_abundance
+
+
+
+
+def simulate_p2ra(sample_pop=100, shedding_values=[0.01]):
+    day = 0
+    population = 1e10
+    processing_delay = 4
+    n_sites = 1
+    n_min_observations = 2 # check what this means.
+    epsilon = 0.000001
+    genome_length_covid = 30_000
+    sequencing_depth = 8e5
+    read_length_usable = 10000 # Nanopore MinION
+
+    sigma_shedding_values = 0.05
+
+    doubling_time = 3
+    cv_doubling_time = 0.1
+    shedding_duration = 5
+    sigma_shedding_duration = 0.05
+
+
+    should_sample = {
+        0: True,
+        1: True,
+        2: True,
+        3: True,
+        4: True,
+        5: False,
+        6: False,
+
+    }
+
+    should_sequence = {
+        0: True,
+        1: True,
+        2: True,
+        3: True,
+        4: True,
+        5: False,
+        6: False,
+    }
+
+    r = math.log(2) / get_input_cv(doubling_time, cv_doubling_time, epsilon)
+    growth_factor = math.exp(r)
+    cumulative_incidence = 1 / population
+
+    detectable_days = get_input_sigma(shedding_duration,sigma_shedding_duration, epsilon)
+
+    ra_sicks = get_inputs_biased(shedding_values, sigma_shedding_values, epsilon)
+
+    observations = 0
+
+    site_infos = []
+    for site in range(n_sites):
+        site_infos.append({
+            "sample_sick": 0,
+            "sample_total": 0,
+            "day_offset": random.randint(0, 6)  # Random day of the week
+        })
+
+
+    read_length_usable = min(read_length_usable, genome_length_covid) # not needed because we assume Illumina, but let's keep it for now
+
+    #if low_quality_checked():
+    #    read_length_usable = min(read_length_usable, 120)
+    # CHECK, is this a condition I want to drop?
+    fraction_useful_reads = read_length_usable / genome_length_covid
+
+    v_processing_delay_factor = pow(growth_factor, processing_delay)
+    n_reads = sequencing_depth
+
+
+    while True:
+        day += 1
+        cumulative_incidence *= growth_factor
+
+        for site_info in site_infos:
+            day_of_week = (day + site_info["day_offset"]) % 7
+            if should_sample[day_of_week]:
+                daily_incidence = cumulative_incidence * r
+
+                individual_probability_sick = 0 # prevalence
+                effective_incidence = daily_incidence
+                for _ in range(int(detectable_days)):
+                    individual_probability_sick += effective_incidence
+                    effective_incidence /= growth_factor
+                n_sick = np.random.poisson(sample_pop * individual_probability_sick)
+                site_info["sample_sick"] += n_sick
+                site_info["sample_total"] += sample_pop
+
+            if should_sequence[day_of_week]:
+                ra_sick = 0
+
+                if site_info["sample_sick"] == 0:
+                    ra_sick = 0  # not technically true, but unused in this case.
+                else:
+                    for _ in range(site_info["sample_sick"]):
+                        ra_sick += ra_sicks[random.randint(0, len(ra_sicks) - 1)]
+                    ra_sick = ra_sick / site_info["sample_sick"]
+                relative_abundance = site_info["sample_sick"] / site_info["sample_total"] * ra_sick
+
+                if daily_incidence >= 0.01:
+                    return relative_abundance
+
+
+def get_input_sigma(geom_mean, sigma, epsilon):
+
+    if sigma < epsilon:
+        return geom_mean
+
+    return np.random.lognormal(math.log(geom_mean), sigma)
+
+def get_input_cv(doubling_time, cv_doubling_time, epsilon):
+    mean = doubling_time
+    cv = cv_doubling_time
+
+    if cv < epsilon:
+        return mean
+
+    stdev = cv * mean
+    return np.random.normal(mean, stdev)
+
+
+def get_inputs_biased(shedding_values, sigma_shedding_values, epsilon):
+    empirical_values = shedding_values
+    sigma = sigma_shedding_values
+    if sigma < epsilon:
+        return empirical_values
+
+    # Don't want to bias each mean independently, bias all of them
+    # together with log-normally distributed noise. The geometric mean
+    # (and median) of the noise is zero, and the standard deviation is
+    # provided by the user.
+
+    bias = np.random.lognormal(0, sigma)
+
+    adjusted_values = [empirical_value * bias for empirical_value in empirical_values]
+    return adjusted_values
+
+def format_func(value, tick_number):
+    return r'$10^{{{}}}$'.format(int(value))
+
+def return_studies():
+    df_op_lu = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
+    df_op_lu.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
+    df_op_lu['patient_status'] = 'Inpatient'
+    df_np_babiker = pd.read_csv('data/babiker_np_ct_mgs.tsv', sep='\t', skiprows=1)
+    df_np_babiker.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra', 'Inpatient/ED vs. Outpatient': 'patient_status'}, inplace=True)
+    df_np_mostafa = pd.read_csv('data/mostafa_np_scv2_ct_mgs.tsv', sep='\t', skiprows=1)
+    df_np_rodriguez = pd.read_csv('data/rodriguez_np_ct_mgs.csv', sep=';')
+
+    mostafa_severity_dict = {
+        1: "Required\nventilator",
+        2: "ICU",
+        3: "Inpatient",
+        4: "Outpatient",
+        0: "Unknown"
+    }
+
+    df_np_mostafa.rename(columns={'SARS-CoV-2 RT-PCR Ct': 'scv2_ct', 'SARS-CoV-2 RA': 'scv2_ra'}, inplace=True)
+    df_np_mostafa['patient_status'] = df_np_mostafa['Severity Index'].astype(int).replace(mostafa_severity_dict)
+
+    rodriguez_patient_status_dict = {
+        "Hospit": "Inpatient",
+        "Out_Patient": "Outpatient",
+        "Intensive_Care": "ICU"
+    }
+
+    df_np_rodriguez['patient_status'] = df_np_rodriguez['Group'].replace(rodriguez_patient_status_dict)
+    df_np_rodriguez["scv2_ra"] = df_np_rodriguez["Reads_2019_CoV"] / df_np_rodriguez["Reads_Post_trimming"]
+    df_np_rodriguez = df_np_rodriguez[df_np_rodriguez["scv2_ra"] != 0] # Dropping Patient_066 because 0 ra breaks gmean
+
+    df_np_rodriguez.rename(columns={"CoV_Ct_number": "scv2_ct"}, inplace=True)
+
+    df_np_babiker['scv2_ct'] = df_np_babiker['scv2_ct'].replace(',', '.', regex=True).astype(float)
+
+    df_op_lu['patient_status'] = 'Inpatient'  # All inpatients for Lu et al.
+    df_np_babiker['patient_status'] = df_np_babiker['patient_status'].apply(lambda x: x if x in ['Inpatient', 'Outpatient'] else 'Unknown')
+
+    df_op_lu["swab_type"] = "op"
+    df_np_babiker["swab_type"] = "np"
+    df_np_rodriguez["swab_type"] = "np"
+    df_np_mostafa["swab_type"] = "np"
+    df_np_babiker['Study'] = 'Babiker et al. 2020'
+    df_np_rodriguez['Study'] = 'Rodriguez et al. 2021'
+    df_op_lu['Study'] = 'Lu et al. 2021'
+    df_np_mostafa['Study'] = 'Mostafa et al. 2020'
+    return [df_np_babiker, df_np_rodriguez, df_op_lu, df_np_mostafa]
+
+def rpkm_to_ra(df):
+    genome_lengths_in_kb = {
+        "Influenza A": 13.5,
+        "Influenza B": 14.5,
+        "Metapneumovirus": 13.3,
+        "Rhinovirus": 7.2,
+        "Parainfluenzavirus 1": 15.5,
+        "Parainfluenzavirus 3": 15.5,
+        "Parainfluenzavirus 4": 17.4,
+        "Respiratory Syncytial Virus": 15.2
+    }
+
+
+
+    for virus, virus_length in genome_lengths_in_kb.items():
+        df.loc[df["virus"] == virus, "relative_abundance"] = df.loc[df["virus"] == virus, "RPKM"] * virus_length / 1e6
+
+    return df
+
+```
+
+
+#### Version with several studies per plot
+```{python}
+#| warning: false
+#| fig-cap: "**Figure 4: SARS-CoV-2 qPCR CT vs SARS-CoV-2 RA.**\nFirst subplot: Data from all studies with study-based styling. Second subplot: Data from all studies with patient status-based styling."
+df_np_babiker, df_np_rodriguez, df_op_lu, df_np_mostafa = return_studies()
+
+fig, axs = plt.subplots(2, 1, figsize=(9, 8), dpi=600)
+fig.subplots_adjust(hspace=0.2)
+
+
+df_op_lu['study'] = "Lu et al. 2021"
+df_np_babiker['study'] = "Babiker et al. 2020"
+df_np_mostafa['study'] = "Mostafa et al. 2020"
+df_np_rodriguez['study'] = "Rodriguez et al. 2021"
+combined_df = pd.concat([df_op_lu, df_np_babiker, df_np_mostafa, df_np_rodriguez])
+
+# First subplot: Data points styled by study
+palette = sns.color_palette("viridis", n_colors=combined_df['study'].nunique())
+scatter = sns.scatterplot(ax=axs[0], data=combined_df, x='scv2_ct', y='scv2_ra', hue='study', style='study', palette=palette)
+axs[0].set_title("a", x=-0.08, y=1.0, ha='left', fontsize=10, fontweight='bold')
+axs[0].set_xlabel('')
+axs[0].set_ylabel('')
+axs[0].set_yscale('log')
+
+
+handles, labels = axs[0].get_legend_handles_labels()
+order = [labels.index('Lu et al. 2021'), labels.index('Rodriguez et al. 2021'), labels.index('Babiker et al. 2020'), labels.index('Mostafa et al. 2020')]
+
+legend_0 = axs[0].legend([handles[idx] for idx in order], [labels[idx] for idx in order], title='', loc='upper center', bbox_to_anchor=(0.5, -0.15), frameon=True, ncol=4, fontsize=9, edgecolor='black')
+
+
+legend_0.get_frame().set_linewidth(0.2)
+
+
+# Second subplot: Data points styled by patient status
+sns.scatterplot(ax=axs[1], data=combined_df, x='scv2_ct', y='scv2_ra', hue='patient_status', style='patient_status')
+axs[1].set_title("b", x=-0.08, y=1.0, ha='left', fontsize=10, fontweight='bold')
+
+axs[1].set_yscale('log')
+
+
+handles, labels = axs[1].get_legend_handles_labels()
+labels = [label.replace('Required\nventilator', 'Required ventilator') for label in labels]
+order = [labels.index('Outpatient'), labels.index('Inpatient'), labels.index('Required ventilator'), labels.index('ICU'), labels.index('Unknown')]
+legend_1 = axs[1].legend([handles[idx] for idx in order], [labels[idx] for idx in order], title='', loc="upper center", bbox_to_anchor=(0.5, -0.15), frameon=True, ncol=5, fontsize=9, edgecolor='black')
+legend_1.get_frame().set_linewidth(0.2)
+
+for ax in axs:
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+    ax.set_xlabel('qPCR cycle threshold value', fontsize=10)
+    ax.set_ylabel('Relative Abundance', fontsize=10)
+
+
+    #current_yticks = ax.get_yticks()
+    #ax.set_yticklabels([y if y != 1 else '1' for y in current_yticks])
+
+    x_lim = 12.5, 40
+    y_lim = 10**-8, 2
+    ax.set_xlim(x_lim)
+    y_lim_adjusted = (y_lim[0], y_lim[1] * 1.05)  # Adjust upper limit to ensure top dot is fully displayed
+    ax.set_ylim(y_lim_adjusted)
+    for x in np.arange(15, 40, 5):
+        ax.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5, zorder=-1)
+    for y in range(-7, 1, 1):
+        log_y = 10**y
+        ax.axhline(y=log_y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5, zorder=-1)
+    ax.invert_xaxis()
+plt.tight_layout()
+plt.savefig('fig/ct_ras.png', dpi=600)
+```
+
+```{python}
+#| warning: false
+#| fig-cap: "**Figure 4: SARS-CoV-2 Relative Abundance Histograms.**\nFirst subplot: Histogram colored by study. Second subplot: Histogram colored by patient status."
+df_np_babiker, df_np_rodriguez, df_op_lu, df_np_mostafa = return_studies()
+
+fig, axs = plt.subplots(2, 1, figsize=(9, 8), dpi=600)
+fig.subplots_adjust(hspace=0.4)
+
+df_op_lu['study'] = "Lu et al. 2021"
+df_np_babiker['study'] = "Babiker et al. 2020"
+df_np_mostafa['study'] = "Mostafa et al. 2020"
+df_np_rodriguez['study'] = "Rodriguez et al. 2021"
+combined_df = pd.concat([df_op_lu, df_np_babiker, df_np_mostafa, df_np_rodriguez])
+
+# First subplot: Histogram colored by study
+viridis_palette = sns.color_palette("viridis", n_colors=combined_df['study'].nunique())
+
+sns.histplot(ax=axs[0], data=combined_df, x='scv2_ra', hue='study', palette=viridis_palette, bins=30, log_scale=True,element="bars", linewidth=0, multiple="stack", legend=True)
+
+axs[0].set_title("a", x=-0.03, y=1.0, ha='left', fontsize=10, fontweight='bold')
+axs[0].set_ylabel('')
+axs[0].set_xlabel('Relative Abundance')
+axs[0].tick_params(axis='x', which='minor', bottom=False)
+
+axs[0].set_xscale('log')
+xmin, xmax = axs[0].get_xlim()
+
+
+labels_0 = combined_df['study'].unique()
+legend_0 = axs[0].get_legend()
+
+legend_0.set_title("")
+#legend_0.set_bbox_to_anchor((0.5, -0.3))
+legend_0.set_ncols(4)
+#legend_0.set_frame_on(True)
+#legend_0.get_frame().set_linewidth(0.2)
+
+
+
+
+
+mako_palette = sns.color_palette("mako", n_colors=combined_df['patient_status'].nunique())
+
+# Second subplot: Histogram colored by patient status
+sns.histplot(ax=axs[1], data=combined_df, x='scv2_ra', hue='patient_status', palette=mako_palette, bins=30, log_scale=True, element="bars", linewidth=0, multiple="stack")
+axs[1].set_title("b", x=-0.03, y=1.0, ha='left', fontsize=10, fontweight='bold')
+axs[1].set_xlabel('Relative Abundance')
+axs[1].set_ylabel('')
+axs[1].set_xscale('log')
+axs[1].tick_params(axis='x', which='minor', bottom=False)
+
+#labels_1 = combined_df['patient_status'].unique()
+#labels_1 = [label.replace('Required\nventilator', 'Required ventilator') for label in labels_1]
+legend_1 = axs[1].get_legend()
+legend_1.set_title("")
+#legend_1.set_bbox_to_anchor((0.5, -0.3))
+legend_1.set_ncols(5)
+
+
+
+
+for ax in axs:
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+plt.tight_layout()
+plt.savefig('fig/hist_ras.png')
+```
+
+
+
+
+
+```{python}
+
+df_op_lu['study'] = "Lu et al. 2021"
+df_np_babiker['study'] = "Babiker et al. 2020"
+df_np_mostafa['study'] = "Mostafa et al. 2020"
+df_np_rodriguez['study'] = "Rodriguez et al. 2021"
+combined_df = pd.concat([df_op_lu, df_np_babiker, df_np_mostafa, df_np_rodriguez])
+combined_df["scv2_ra"] = np.log10(combined_df["scv2_ra"])
+plt.figure(figsize=(10, 6))
+plt.hist(combined_df['scv2_ra'].dropna(), bins=30, color='skyblue', edgecolor='black')
+plt.title('Histogram of scv2_ra values')
+plt.xlabel('scv2_ra')
+plt.ylabel('Frequency')
+plt.grid(True)
+plt.show()
+
+
+```
+
+
+### WW and swab p2ra
+
+
+```{python}
+df_np_babiker, df_np_rodriguez, df_op_lu, df_np_mostafa = return_studies()
+df_wastewater = pd.read_csv('data/2024-05-07-fits.tsv', sep='\t')
+
+
+
+df_op_lu_ras = df_op_lu['scv2_ra'].dropna().tolist()
+df_np_babiker_ras = df_np_babiker['scv2_ra'].dropna().tolist()
+df_np_mostafa_ras = df_np_mostafa['scv2_ra'].dropna().tolist()
+df_np_rodriguez_ras = df_np_rodriguez['scv2_ra'].dropna().tolist()
+combined_swab_ras = df_op_lu_ras + df_np_babiker_ras + df_np_mostafa_ras + df_np_rodriguez_ras
+df_rothman_ras = df_wastewater[(df_wastewater['study'] == 'rothman') & (df_wastewater['location'] == 'Overall') & (df_wastewater['pathogen'] == 'sars_cov_2')]['ra_at_1in100'].tolist()
+df_crits_christoph_ras = df_wastewater[(df_wastewater['study'] == 'crits_christoph') & (df_wastewater['location'] == 'Overall') & (df_wastewater['pathogen'] == 'sars_cov_2')]['ra_at_1in100'].tolist()
+
+
+
+swab_studies = ["Lu et al. 2021", "Babiker et al. 2020", "Mostafa et al. 2020", "Rodriguez et al. 2021", "Combined"]
+ww_studies = ["Rothman et al. 2021", "Crits-Christoph et al. 2021"]
+
+n_swabs = [50, 100, 200]
+
+
+swab_df = pd.DataFrame()
+
+for study, positive_ras in zip(swab_studies, [df_op_lu_ras, df_np_babiker_ras, df_np_mostafa_ras, df_np_rodriguez_ras, combined_swab_ras]):
+    df = simulate_p2ra_new_many(positive_ras, n_swabs, n_simulations=2000)
+
+    df["Study"] = study
+
+    swab_df = pd.concat([swab_df, df.melt(id_vars=["Study"], value_vars=n_swabs, var_name="Sample Size",
+    value_name="Relative Abundance")])
+
+df_ww = pd.DataFrame({
+    'Relative Abundance': df_rothman_ras + df_crits_christoph_ras,
+    'Study': ['Rothman et al. 2021'] * len(df_rothman_ras) + ['Crits-Christoph et al. 2021'] * len(df_crits_christoph_ras)
+})
+
+
+
+swab_df.reset_index(drop=True, inplace=True)
+
+
+
+```
+
+```{python}
+for study in swab_studies:
+    median = swab_df[(swab_df['Study'] == study) & (swab_df['Sample Size'] == 100)]['Relative Abundance'].median()
+    zero_count = swab_df[swab_df['Relative Abundance'] == 0]
+
+    print(len(zero_count))
+
+for study in ww_studies:
+    median = df_ww[(df_ww['Study'] == study)]['Relative Abundance'].median()
+    print(study, median)
+
+```
+
+
+
+```{python}
+#| warning: false
+#| echo: false
+#| fig-cap: "**Figure Y: Simulated RA(1%) for Lu et al. 2021, Babiker et al. 2020, Mostafa et al. 2020, and Rodriguez et al. 2021.**"
+print(swab_df)
+plot_df_ww = df_ww.copy()
+plot_df_ww['Relative Abundance'] = np.log10(plot_df_ww['Relative Abundance'])
+
+plot_df_swab = swab_df.copy()
+plot_df_swab['Relative Abundance'] = np.log10(plot_df_swab['Relative Abundance'])
+
+fig, axs = plt.subplots(2, 1, figsize=(8, 6), dpi=600, gridspec_kw={'height_ratios': [3, 1]})
+
+fig.subplots_adjust(hspace=0.4)
+colors = sns.color_palette("viridis", 3)
+
+sns.violinplot(x='Relative Abundance', y='Study', ax=axs[0], hue='Sample Size', palette=colors, data=plot_df_swab, inner=None, linewidth=0, bw_adjust=0.3)
+sns.violinplot(x='Relative Abundance', y='Study', ax=axs[1], color='#aedc31', data=plot_df_ww, inner=None, linewidth=0, bw_adjust=0.3, width=0.5)
+
+
+#for study in swab_studies:
+#    for sample_size in n_swabs:
+#        zero_share = len(swab_df[(swab_df['Study'] == study) & (swab_df['Sample Size'] == sample_size) & (swab_df['Relative Abundance'] == 0)]) / len(swab_df[(swab_df['Study'] == study) & (swab_df['Sample Size'] == sample_size)])
+#        print(study, sample_size, zero_share)
+
+
+# Adding titles to the subplots
+axs[0].set_title('A', x=-0.29, y=0.9)
+axs[1].set_title('B', x=-0.29, y=0.9)
+
+for ax in axs:
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.set_ylabel('')
+
+    # Adjusting y labels to have a newline before the year
+    y_labels = [label.get_text().rsplit(' ', 1)[0] + '\n' + label.get_text().rsplit(' ', 1)[1] if ' ' in label.get_text() else label.get_text() for label in ax.get_yticklabels()]
+    ax.set_yticklabels(y_labels)
+
+    ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+
+# Retrieve current x-ticks from the first axis to apply to both
+xmin, xmax = axs[0].get_xlim()
+print(xmin, xmax)
+
+for x in np.arange(math.ceil(xmin), 1, 1):
+    axs[0].axvline(x=x, color='black', linestyle='--', linewidth=0.3, alpha=0.2, zorder=-1)
+    axs[1].axvline(x=x, color='black', linestyle='--', linewidth=0.3, alpha=0.2, zorder=-1)
+
+current_xticks = axs[1].get_xticks()
+for ax in axs:
+    ax.set_xlim(xmin, 1)
+    ax.set_xticklabels(['$10^{{{}}}$'.format(int(x)) if x != 0 else '1' for x in current_xticks])
+
+print(current_xticks)
+axs[0].legend(title='Number of swabs', loc='center left', bbox_to_anchor=(0.9, 0.5), ncol=1, labels=['50', '100', '200'], frameon=False)
+plt.tight_layout()
+plt.savefig('fig/swab-ww-ra_1.png', dpi=600)
+plt.show()
+
+
+```
+
+
+
+### Lu cumulaitve incidence
+
+```{python}
+#| warning: false
+#| fig-cap: "**Figure 2: Simulated cumulative incidence at time of detection for Lu et al. 2021.**\n Assuming swab sample sizes ranging from 50-800."
+df_op_lu = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
+df_op_lu.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
+
+
+df_op_lu_ras = df_op_lu['scv2_ra'].dropna().to_list()
+fig, ax = plt.subplots(figsize=(10,6),dpi=600)
+n_swab_range = [50, 100, 200, 400, 800]
+studies = ["Lu"]
+for i, (study, positive_ras) in enumerate(zip(studies, [df_op_lu_ras])):
+    df = simulate_many_cum_inc(positive_ras, n_swab_range)
+    ax.set_ylim(-5, -0.3)
+
+    for n_swabs in n_swab_range:
+        df[n_swabs] = np.log10(df[n_swabs])
+        ax.plot(df.index/10, df[n_swabs], label=f'{n_swabs} swabs')
+    ax.set_xlabel('Percentile')
+    ax.set_ylabel('Cumulative incidence')
+    #ax.set_yscale('log')
+    ax.yaxis.set_tick_params(labelleft=True)
+    ax.axvline(x=50, color='red', linestyle='--', alpha=0.5)
+    ax.axvline(x=10, color='red', linestyle='--', alpha=0.5)
+    ax.axvline(x=90, color='red', linestyle='--', alpha=0.5)
+
+    ymin, ymax = ax.get_ylim()
+    ax.text(x=51, y=ymax, s='Median', color='black', fontsize=10, ha='left')
+    ax.text(x=11, y=ymax, s='10%', color='black', fontsize=10, ha='left')
+    ax.text(x=91, y=ymax, s='90%', color='black', fontsize=10, ha='left')
+
+    for y in range(0, int(ymax*100), 1):
+        y = y/100
+        ax.axhline(y=y, color='black', linestyle='--', linewidth=0.3, alpha=0.2)
+
+    for x in range(0, 100, 10):
+        ax.axvline(x=x, color='black', linestyle='--', linewidth=0.3, alpha=0.2)
+
+    ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+    ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=True)
+    ax.set_xticks(range(0, 100, 10))
+
+    ax.set_xticklabels(['{}%'.format(x) for x in range(0, 100, 10)])
+
+    #ax.set_ylim(10**-10, 10**-1)
+
+    ax.set_xlabel('')
+
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+
+    ax.legend(title='', loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=5, frameon=False)
+plt.tight_layout()
+plt.savefig('fig/lu_cum_inc.png', dpi=600)
+plt.show()
+
+```
+
+
+### Violin
+
+```{python}
+#| warning: false
+#| fig-cap: "**Figure 2: Simulated cumulative incidence at time of detection for Lu et al. 2021.**\n Assuming swab sample sizes ranging from 50-800."
+df_op_lu = pd.read_csv('data/lu_throat_ct_mgs.tsv', sep='\t', skiprows=1)
+df_op_lu.rename(columns={'SCV-2 Relative Abundance': 'scv2_ra', 'Ct value': 'scv2_ct'}, inplace=True)
+
+df_op_lu_ras = df_op_lu['scv2_ra'].dropna().to_list()
+fig, ax = plt.subplots(figsize=(5,5),dpi=300)
+n_swab_range = [50, 100, 200, 400, 800]
+studies = ["Lu"]
+all_data = []
+
+for i, (study, positive_ras) in enumerate(zip(studies, [df_op_lu_ras])):
+    df = simulate_many_cum_inc(positive_ras, n_swab_range, n_simulations=1000)
+    for n_swabs in n_swab_range:
+        df[n_swabs] = np.log10(df[n_swabs])
+        all_data.append(pd.DataFrame({'Swab Size': n_swabs, 'Cumulative Incidence': df[n_swabs]}))
+
+combined_data = pd.concat(all_data)
+
+
+# Apply the custom formatter to the y-axis
+
+
+viridis = sns.color_palette("viridis", 5)
+
+sns.violinplot(x='Swab Size', y='Cumulative Incidence', orient="x", data=combined_data, inner=None, palette=viridis, linewidth=0, bw_adjust=1.4, width=0.5)
+
+ymin, ymax = ax.get_ylim()
+ymin = math.ceil(ymin)
+ymax = math.ceil(ymax)
+print(ymin, ymax)
+
+# Custom function to format y-axis labels
+def custom_ytick_format(val, pos):
+    if val == -5:
+        return '0.001%'
+    elif val == -6:
+        return '0.0001%'
+    else:
+        return '{:.2f}%'.format(10**val * 100)
+
+ax.yaxis.set_major_formatter(ticker.FuncFormatter(custom_ytick_format))
+
+
+for y in np.arange(ymin, ymax, 1):
+    ax.axhline(y=y, color='black', linestyle='--', linewidth=0.3, alpha=0.2, zorder=-1)
+
+for swabs in n_swab_range:
+    print(swabs, 10**combined_data[combined_data['Swab Size'] == swabs]['Cumulative Incidence'].median()*100, "median")
+    print(swabs, 10**combined_data[combined_data['Swab Size'] == swabs]['Cumulative Incidence'].quantile(0.1)*100, "10th percentile")
+    print(swabs, 10**combined_data[combined_data['Swab Size'] == swabs]['Cumulative Incidence'].quantile(0.9)*100, "90th percentile")
+
+ax.set_xlabel('Swab Sample Size')
+ax.set_ylabel('Cumulative Incidence upon detection')
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+plt.tight_layout()
+plt.savefig('fig/lu_cum_inc_violin.png', dpi=600)
+plt.show()
+
+
+```
+
+
+### all studies cum inc
+
+
+```{python}
+df_op_lu, df_np_babiker, df_np_mostafa, df_np_rodriguez = return_studies()
+studies = ["Lu et al. 2021", "Babiker et al. 2020", "Mostafa et al. 2020", "Rodriguez et al. 2021"]
+
+dfs = []
+
+df_op_lu_ras = df_op_lu['scv2_ra'].dropna().tolist()
+df_np_babiker_ras = df_np_babiker['scv2_ra'].dropna().tolist()
+df_np_mostafa_ras = df_np_mostafa['scv2_ra'].dropna().tolist()
+df_np_rodriguez_ras = df_np_rodriguez['scv2_ra'].dropna().tolist()
+
+
+n_swab_range = range(50, 800, 1)
+
+
+for study, positive_ras in zip(studies, [df_op_lu_ras, df_np_babiker_ras, df_np_mostafa_ras, df_np_rodriguez_ras]):
+    df = simulate_many_cum_inc(positive_ras, n_swab_range, n_simulations=1000)
+    dfs.append(df)
+
+```
+
+
+
+```{python}
+
+
+fig, axs = plt.subplots(len(studies), 1, figsize=(8, 2 * len(studies)), dpi=600)
+fig.subplots_adjust(hspace=0.4)
+Y_LENGTH = 161
+for ax, (study, df) in zip(axs, zip(studies, dfs)):
+    bins = np.linspace(0, 0.04, Y_LENGTH)
+
+
+    bin_labels = [f'{round(bins[i]*100, 2)}%' for i in range(len(bins)-1)]
+
+    df_binned = df.apply(lambda x: pd.cut(x, bins=bins, labels=bin_labels, right=False))
+
+    heatmap_data = df_binned.apply(pd.Series.value_counts).fillna(0).astype(int)
+    sns.heatmap(heatmap_data, cmap='viridis', cbar_kws={'label': 'Number of Simulations'}, ax=ax)
+    ax.set_xticks(np.array([800, 700, 600, 500, 400, 300, 200, 100, 50])-50)
+    ax.set_xticklabels([800, 700, 600, 500, 400, 300, 200, 100, 50], rotation=0)
+
+
+
+
+
+    ax.invert_xaxis()
+    ax.set_title(study)
+#plt.ylabel('Cumulative Incidence')
+plt.xlabel('Number of Swabs')
+plt.tight_layout()
+plt.savefig('fig/cum_inc_heatmap.png', dpi=600)
+plt.show()
+```
+
+
+
+```{python}
+for df, study in zip(dfs, studies):
+    #print(df)
+    lower_decile = pd.DataFrame(df.quantile(0.1))
+    upper_decile = pd.DataFrame(df.quantile(0.9))
+    median = pd.DataFrame(df.median())
+    for df, decile in zip([median], ['50th']):
+            df.columns = ['cumulative_incidence']
+            df.index.name = 'n_swabs'
+            print(df['cumulative_incidence'].iloc[200], 200, study, decile)
+            print(df['cumulative_incidence'].iloc[400], 400, study, decile)
+            print(df['cumulative_incidence'].iloc[600], 600, study, decile)
+
+```
+
+
+
+
+
+```{python}
+#| warning: false
+#| echo: false
+#| fig-cap: "**Figure 5: Simulated cumulative incidence for Lu et al. 2021, Babiker et al. 2020, Mostafa et al. 2020, and Rodriguez et al. 2021.**\n Assuming swab sample sizes between 100 and 800."
+
+fig, ax= plt.subplots(figsize=(7, 2.5), dpi=600)
+fig.subplots_adjust(hspace=0.4)
+for study, df in zip(studies, dfs):
+
+    median_df = pd.DataFrame(df.median())
+
+    median_df.columns = ['cumulative_incidence']
+    median_df.index.name = 'n_swabs'
+
+
+    median_df['cumulative_incidence'] = median_df['cumulative_incidence'].rolling(50  ).mean()
+    ax.plot(median_df.index, median_df['cumulative_incidence'], label=study)
+    ax.set_xlabel('Swab sample size')
+    #ax.set_ylabel('Cumulative incidence')
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    x_min, x_max = ax.get_xlim()
+    y_min, y_max = ax.get_ylim()
+    for y in np.arange(0.01, y_max, 0.01):
+        ax.axhline(y=y, color='black', linestyle='--', linewidth=0.3, alpha=0.2, zorder=-1)
+    #for x in np.arange(100, y, 100):
+    #       ax.axvline(x=x, color='black', linestyle='--', linewidth=0.3, alpha=0.2, zorder=-1)
+
+
+
+
+ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+#axs[1].yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+#axs[2].yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+
+
+ax.legend(title='', loc='center left', bbox_to_anchor=(1, 0.5), ncol=1, frameon=False)
+ax.set_title("Cumulative incidence upon detection", x=-0.1, y=1.05,   fontsize=10, ha='left')
+#axs[0].set_ylim(0,0.01)
+#axs[1].set_title("B) Median", x=-0.1, y=1.05, fontsize=10, ha='left')
+#axs[1].set_ylim(0,0.05)
+#axs[2].set_title("C) 90th percentile", x=-0.1, y=1.05, fontsize=10, ha='left')
+#axs[2].set_ylim(0,0.1)
+
+
+plt.tight_layout()
+
+plt.savefig('fig/cum_inc_line_50.png', dpi=600)
+plt.show()
+```
+
+
+
+```{python}
+#| warning: false
+#| echo: false
+#| fig-cap: "**Figure 5: Simulated cumulative incidence for Lu et al. 2021, Babiker et al. 2020, Mostafa et al. 2020, and Rodriguez et al. 2021.**\n Assuming swab sample sizes between 100 and 800."
+
+fig, axs= plt.subplots(3,1, figsize=(8, 8), dpi=600)
+fig.subplots_adjust(hspace=0.4)
+for study, df in zip(studies, dfs):
+    lower_decile = pd.DataFrame(df.quantile(0.1))
+    upper_decile = pd.DataFrame(df.quantile(0.9))
+    median = pd.DataFrame(df.median())
+    for df, ax in zip([lower_decile, median, upper_decile], axs):
+        df.columns = ['cumulative_incidence']
+        df.index.name = 'n_swabs'
+
+
+        df['cumulative_incidence'] = df['cumulative_incidence'].rolling(50, min_periods=5).mean()
+        ax.plot(df.index, df['cumulative_incidence'], label=study)
+        ax.set_xlabel('Swab sample size')
+        ax.set_ylabel('Cumulative incidence')
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        x_min, x_max = ax.get_xlim()
+        y_min, y_max = ax.get_ylim()
+
+        for x in np.arange(100, x_max, 100):
+            ax.axvline(x=x, color='black', linestyle='--', linewidth=0.3, alpha=0.2)
+
+
+for y in np.arange(0, 0.01, 0.001):
+    axs[0].axhline(y=y, color='black', linestyle='--', linewidth=0.3, alpha=0.2)
+    axs[1].axhline(y=y*10, color='black', linestyle='--', linewidth=0.3, alpha=0.2)
+    axs[2].axhline(y=y*10, color='black', linestyle='--', linewidth=0.3, alpha=0.2)
+
+
+
+
+axs[0].yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+axs[1].yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+axs[2].yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+
+
+axs[2].legend(title='', loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=4, frameon=False)
+
+axs[0].set_title("A) 10th percentile", x=-0.1, y=1.05,   fontsize=10, ha='left')
+axs[0].set_ylim(0,0.01)
+axs[1].set_title("B) Median", x=-0.1, y=1.05, fontsize=10, ha='left')
+axs[1].set_ylim(0,0.05)
+axs[2].set_title("C) 90th percentile", x=-0.1, y=1.05, fontsize=10, ha='left')
+axs[2].set_ylim(0,0.1)
+
+
+
+plt.savefig('fig/cum_inc_10_50_90.png', dpi=600)
+plt.show()
+```
+
+
+
+```{python}
+fig, axs = plt.subplots(len(studies), 1, figsize=(8, 8 * len(studies)), dpi=600)
+fig.subplots_adjust(hspace=0.4)
+
+for ax, (study, df) in zip(axs, zip(studies, dfs)):
+
+plt.show()
+
+```
+
+
+### Nasal vs np CT
+
+
+
+```{python}
+#| label: np_nasal_ct_plot
+#| fig-cap: "**Figure 6: Nasal swabs vs nasopharyngeal swabs.** Data from Patriquin et al. 2022, McCulloch et al. 2020, Pere et al. 2020, Kojima et al. 2020, and Tu et al. 2020."
+
+df = pd.read_csv('data/2024-05-08-np-nasal-ct.tsv', sep='\t', skiprows=1)
+
+df = df.melt(var_name='Study', value_name='CT Difference')
+
+print(df["Study"].unique())
+
+pretty_study_names = {
+    "Patriquin2022": "Patriquin et al. 2022",
+    "McCulloch2020": "McCulloch et al. 2020",
+    "Pere2020": "Pere et al. 2020",
+    "Kojima2020": "Kojima et al. 2020",
+    "Tu2020": "Tu et al. 2020",
+    "Pere2020": "Pere et al. 2020"
+}
+
+df['Study'] = df['Study'].map(pretty_study_names).values
+
+mean_ct_diff = df.groupby('Study', as_index=False)['CT Difference'].mean()
+print(mean_ct_diff)
+print(mean_ct_diff["CT Difference"].mean())
+fig = plt.figure(figsize=(8, 4),dpi=600)
+
+
+
+sns.stripplot(data=df, y='Study', x='CT Difference', hue='Study', jitter=True,zorder=-1)
+sns.pointplot(data=mean_ct_diff, y='Study', x='CT Difference', linestyles='none', markers='D', color='#36454F', markersize=5, errorbar=None,zorder=1)
+
+plt.legend([],[], frameon=False)
+plt.ylabel('')
+plt.xlabel('SARS-CoV-2 qPCR CT Δ (NP - Nasal)')
+plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+
+
+
+x_min, x_max = plt.xlim()
+#round up xmin and xmax to the nearest 5
+x_min = math.ceil(x_min / 5) * 5
+x_max = math.ceil(x_max / 5) * 5
+
+x_marks = np.arange(x_min, x_max, 2.5)
+for x in x_marks:
+    plt.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+
+
+plt.axvline(x=0, color='red', linestyle='--', alpha=0.5)
+
+#plt.xticks(x_marks)
+
+
+min_x, max_x = plt.xlim()
+
+plt.text(max_x/2,-0.6, 'Favors Nasal', fontsize=10, color='black', ha='center')
+plt.text(min_x/2,-0.6, 'Favors Nasopharyngeal', fontsize=10, color='black', ha='center')
+
+plt.gca().spines['right'].set_visible(False)
+plt.gca().spines['top'].set_visible(False)
+plt.gca().spines['left'].set_visible(False)
+
+```
+
+
+
+### Nasal vs OP
+
+
+```{python}
+#| fig-cap: "**Figure 7: Nasal swabs vs Oro-pharyngeal swabs.** Data is taken from Goodall et al. 2022 and Leung et al 2020."
+
+df = pd.read_csv('data/goodall-op-nasal-ct.tsv', sep='\t', skiprows=1)
+pretty_study_names = {
+    "Goodall2022": "SARS-CoV-2",
+    "Leung2022": "Leung et al. 2020",
+}
+df = df.melt(var_name='Study', value_name='CT Difference')
+df['Study'] = df['Study'].map(pretty_study_names).values
+mean_ct_diff = df.groupby('Study', as_index=False)['CT Difference'].mean()
+
+fig, axs = plt.subplots(2, 1, figsize=(8,4),  dpi=600, gridspec_kw={'height_ratios': [1.5, 3]})
+
+
+fig.subplots_adjust(hspace=0.6)
+
+sns.stripplot(data=df, y='Study', x='CT Difference', hue='Study', jitter=True, zorder=-1, ax=axs[0])
+sns.pointplot(data=mean_ct_diff, y='Study', x='CT Difference', linestyles='none', markers='D', color='#36454F', markersize=5, errorbar=None, zorder=1, ax=axs[0])
+axs[0].legend([],[], frameon=False)
+
+
+axs[0].set_ylabel('')
+axs[0].set_xlabel(u'SARS-CoV-2 qPCR CT Δ (OP - Nasal)')
+axs[0].tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+axs[0].text(-0.25, 1.4, 'Fig. 7A: Goodall et al. 2022', transform=axs[0].transAxes, fontsize=10, verticalalignment='top', horizontalalignment='left')
+x_min, x_max = axs[0].get_xlim()
+#round up xmin and xmax to the nearest 5
+x_min = math.ceil(x_min / 5) * 5
+x_max = math.ceil(x_max / 5) * 5
+
+x_marks = np.arange(x_min, x_max, 2.5)
+for x in x_marks:
+    axs[0].axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+axs[0].axvline(x=0, color='red', linestyle='--', alpha=0.5)
+
+axs[0].axhline(y=0.5, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+min_x, max_x = axs[0].get_xlim()
+
+axs[0].text(max_x/2,-0.6, 'Favors Nasal Swab', fontsize=9, color='black', ha='center')
+axs[0].text(min_x/2,-0.6, 'Favors Oro-pharyngeal', fontsize=9, color='black', ha='center')
+
+
+axs[0].spines['right'].set_visible(False)
+axs[0].spines['top'].set_visible(False)
+axs[0].spines['left'].set_visible(False)
+
+df = pd.read_csv('data/leung_genome_copy_differences.tsv', sep='\t', skiprows=1)
+
+df = df.melt(var_name='Study & Comparison', value_name='Genome Copy Number Difference')
+df['Study & Comparison'] = df['Study & Comparison'].str.split(',').str[-1]
+mean_ct_diff = df.groupby('Study & Comparison')['Genome Copy Number Difference'].mean().reset_index()
+
+sns.stripplot(data=df, y='Study & Comparison', x='Genome Copy Number Difference', hue='Study & Comparison', jitter=True, alpha=0.6, zorder=1, ax=axs[1])
+sns.pointplot(data=mean_ct_diff, y='Study & Comparison', x='Genome Copy Number Difference', linestyles='none', markers='D', color='#36454F', markersize=5, errorbar=None, zorder=1, ax=axs[1])
+plt.legend([],[], frameon=False)
+# drop y axis label
+axs[1].set_ylabel('')
+axs[1].set_xlabel(u'Genome Copy Number Δ (Nasal - OP), Logged')
+axs[1].text(-0.25, 1.1, 'Fig. 7B: Leung et al. 2020', transform=axs[1].transAxes, fontsize=10, verticalalignment='top', horizontalalignment='left')
+
+# flip x axis
+axs[1].tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+for x in -2, 0, 2, 4, 6:
+    if x == 0:
+        axs[1].axvline(x=x, color='red', linestyle='--', alpha=0.5)
+        continue
+    axs[1].axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+for y in 0.5, 1.5:
+    axs[1].axhline(y=y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+min_x, max_x = axs[1].get_xlim()
+
+
+axs[1].spines['right'].set_visible(False)
+axs[1].spines['top'].set_visible(False)
+axs[1].spines['left'].set_visible(False)
+
+plt.show()
+
+
+```
+
+Meaan CT values for Berenger. Based on this text:
+
+median 25.5 (10th  to -90th percentile: 20.5-29.5) for NP, 27.6 (24.7-32.4) for nasal and 28.7 (23.5-34.2) for throat; median
+Ct values for the RdRp gene were 27.9 (23.5-32.4), 30.5 (27.5-35.0), and 31.3 (26.5-35.5), for the same sites, respectively (p>0.09).
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Given data
+data = {
+    "E_NP": {"median": 25.5, "10th": 20.5, "90th": 29.5},
+    "E_Nasal": {"median": 27.6, "10th": 24.7, "90th": 32.4},
+    "E_Throat": {"median": 28.7, "10th": 23.5, "90th": 34.2},
+    "RdRp_NP": {"median": 27.9, "10th": 23.5, "90th": 32.4},
+    "RdRp_Nasal": {"median": 30.5, "10th": 27.5, "90th": 35.0},
+    "RdRp_Throat": {"median": 31.3, "10th": 26.5, "90th": 35.5},
+}
+
+# Function to calculate mean and standard deviation from percentiles
+def calculate_mean_std(median, p10, p90):
+    mean = median
+    std = (p90 - p10) / (2 * norm.ppf(0.9))
+    return mean, std
+#print(norm.ppf(0.1))
+# Generate normal distributions
+x = np.linspace(10, 40, 1000)
+#print(x)
+distributions = []
+
+for key, values in data.items():
+    mean, std = calculate_mean_std(values["median"], values["10th"], values["90th"])
+    #print(mean, std)
+    distribution = np.random.normal(mean, std, 10000)
+    print(np.mean(distribution), key)
+    distributions.append(distribution)
+
+mean_of_means = {}
+swab_types = ["NP", "Nasal", "Throat"]
+
+for swab in swab_types:
+    swab_means = [np.mean(distribution) for key, distribution in zip(data.keys(), distributions) if swab in key]
+    mean_of_means[swab] = np.mean(swab_means)
+
+print(mean_of_means)
+
+
+# Average the distributions
+#average_distribution = np.mean(distributions, axis=0)
+
+
+# Plot the distributions
+plt.figure(figsize=(10, 6))
+for i, key in enumerate(data.keys()):
+    sns.kdeplot(distributions[i], label=key, fill=False)
+plt.xlabel("Ct Value")
+plt.ylabel("Density")
+plt.title("Kernel Density Estimates of Distributions")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+```
+
+
+### Inpatient vs Outpatient
+
+```{python}
+#| label: target-studies-patient-composition
+#| warning: false
+#| fig-cap: "**Figure 8: Patient composition of Lu et al. 2021, Babiker et al. 2020, Mostafa et al. 2020, and Rodriguez et al. 2021.**"
+
+df_np_babiker, df_np_rodriguez, df_op_lu, df_np_mostafa = return_studies()
+order = ['Outpatient', 'Inpatient', 'Required\nventilator', 'ICU', 'Unknown']
+
+lu_counts = df_op_lu['patient_status'].value_counts().reindex(order)
+babiker_counts = df_np_babiker['patient_status'].value_counts().reindex(order)
+mostafa_counts = df_np_mostafa['patient_status'].value_counts().reindex(order)
+rodriguez_counts = df_np_rodriguez['patient_status'].value_counts().reindex(order).dropna()
+
+print(lu_counts, babiker_counts, mostafa_counts, rodriguez_counts)
+
+
+
+
+fig, axs = plt.subplots(1, 4, figsize=(12, 4), width_ratios=[0.7, 1.5, 4, 2.4], sharey=True, dpi=800)
+
+colors = sns.color_palette()
+color_dict = {
+   'Inpatient': colors[0],
+    'Outpatient': colors[1],
+    'Required\nventilator': colors[2],
+    'ICU': colors[3],
+    'Unknown': colors[4]
+}
+
+axs[0].bar(lu_counts.index, lu_counts.values, color=color_dict['Inpatient'], width=0.5)
+axs[0].set_title('Lu et al. 2021')
+axs[0].set_ylabel('Count')
+#axs[0].set_ylim(0, max(lu_counts.values) + 5)
+
+axs[1].bar(babiker_counts.index, babiker_counts.values, color=[color_dict[x] for x in babiker_counts.index], width=0.8)
+axs[1].set_title('Babiker et al. 2020')
+axs[1].set_ylim(0, max(babiker_counts.values) + 5)
+
+axs[2].bar(mostafa_counts.index, mostafa_counts.values, color=[color_dict[x] for x in mostafa_counts.index])
+axs[2].set_title('Mostafa et al. 2020')
+axs[2].set_ylim(0, max(mostafa_counts.values) + 10)
+axs[2].set_yticks(np.arange(0, max(mostafa_counts.values) + 30, 10))
+
+axs[3].bar(rodriguez_counts.index, rodriguez_counts.values, color=[color_dict[x] for x in rodriguez_counts.index])
+axs[3].set_title('Rodriguez et al. 2021')
+axs[3].set_ylim(0, max(rodriguez_counts.values) + 5)
+axs[3].set_yticks(np.arange(0, max(rodriguez_counts.values) + 10, 5))
+
+for ax in axs:
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+    ax.tick_params(axis='x', which='both', top=False, bottom=False, labeltop=False, labelbottom=True)
+    ax.set_ylabel('')
+    for x in np.arange(0, 40, 10):
+        ax.axhline(y=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5, zorder=-1)
+
+plt.tight_layout()
+plt.savefig('fig/patient_composition.png', dpi=800)
+plt.show()
+```
+
+### compute share of outpatients.
+```{python}
+df_np_babiker, df_np_rodriguez, df_op_lu, df_np_mostafa = return_studies()
+order = ['Outpatient', 'Inpatient', 'Required\nventilator', 'ICU', 'Unknown']
+
+lu_counts = df_op_lu['patient_status'].value_counts().reindex(order)
+babiker_counts = df_np_babiker['patient_status'].value_counts().reindex(order)
+mostafa_counts = df_np_mostafa['patient_status'].value_counts().reindex(order)
+rodriguez_counts = df_np_rodriguez['patient_status'].value_counts().reindex(order).dropna()
+
+# Combine the count data from all studies into a single DataFrame
+combined_counts = pd.DataFrame({
+    'Lu': lu_counts,
+    'Babiker': babiker_counts,
+    'Mostafa': mostafa_counts,
+    'Rodriguez': rodriguez_counts
+})
+
+# Compute the total counts for each category across all studies
+total_counts_across_studies = combined_counts.sum(axis=1)
+
+# Calculate the share of outpatients out of all patients across all studies
+share_outpatients_across_studies = total_counts_across_studies['Outpatient'] / total_counts_across_studies.sum()
+
+print(total_counts_across_studies, total_counts_across_studies.sum())
+
+# Print the share of outpatients across all studies
+print(f"Share of Outpatients across all studies: {share_outpatients_across_studies:.2%}")
+
+
+```
+
+
+
+```{python}
+#| warning: false
+#| fig-cap: "**Figure 9: qPCR CT Value vs Days since symptom onset** Data is taken from Knudtzen et al. 2021, Bullard et al. 2020, and He et al. 2020."
+
+df_knudtzen_ct_days = pd.read_csv('data/knudtzen2021_ct_days.tsv', sep='\t', skiprows=1)
+df_bullard_ct_days = pd.read_csv('data/bullard2021_ct_days.tsv', sep='\t', skiprows=1)
+df_he_ct_days = pd.read_csv('data/he2020_ct_days.tsv', sep='\t', skiprows=1)
+
+df_knudtzen_outpatients = df_knudtzen_ct_days[df_knudtzen_ct_days['Patient Status'] == 'Outpatient']
+df_knudtzen_inpatients =  df_knudtzen_ct_days[df_knudtzen_ct_days['Patient Status'] == 'Inpatient']
+
+# Round "Day" column to nearest full number for all dataframes
+df_knudtzen_outpatients['Day'] = df_knudtzen_outpatients['Day'].round()
+df_knudtzen_inpatients['Day'] = df_knudtzen_inpatients['Day'].round()
+df_bullard_ct_days['Day'] = df_bullard_ct_days['Day'].round()
+df_he_ct_days['Day'] = df_he_ct_days['Day'].round()
+
+# For each dataframe, reset CT to be the average CT for each Day.
+# For each dataframe, reset CT to be the average CT for each Day.
+df_knudtzen_outpatients = df_knudtzen_outpatients.groupby('Day', as_index=False).agg({'CT': 'mean'})
+df_knudtzen_inpatients = df_knudtzen_inpatients.groupby('Day', as_index=False).agg({'CT': 'mean'})
+df_bullard_ct_days = df_bullard_ct_days.groupby('Day', as_index=False).agg({'Median CT': 'mean'}).rename(columns={'Median CT': 'CT'})
+df_he_ct_days = df_he_ct_days.groupby('Day', as_index=False).agg({'CT': 'mean'})
+
+df_knudtzen_outpatients['CT_rolling_mean'] = df_knudtzen_outpatients.groupby('Day')['CT'].rolling(window=5, min_periods=1, center=True).mean().reset_index(drop=True)
+df_knudtzen_inpatients['CT_rolling_mean'] = df_knudtzen_inpatients.groupby('Day')['CT'].rolling(window=5, min_periods=1, center=True).mean().reset_index(drop=True)
+df_bullard_ct_days['CT_rolling_mean'] = df_bullard_ct_days.groupby('Day')['CT'].rolling(window=5, min_periods=1, center=True).mean().reset_index(drop=True)
+df_he_ct_days['CT_rolling_mean'] = df_he_ct_days.groupby('Day')['CT'].rolling(window=5, min_periods=1, center=True).mean().reset_index(drop=True)
+
+combined_df = pd.concat([
+    df_knudtzen_inpatients.assign(Study='Knudtzen et al. 2021 | Inpatients'),
+    df_knudtzen_outpatients.assign(Study='Knudtzen et al. 2021 | Outpatients'),
+    df_bullard_ct_days.assign(Study='Bullard et al. 2020'),
+    df_he_ct_days.assign(Study='He et al. 2020')
+])
+
+fig, ax = plt.subplots(figsize=(10, 6),dpi=600)
+sns.lineplot(data=combined_df, x='Day', y='CT_rolling_mean', hue='Study', ax=ax)
+
+ax.set_xlabel('Days since symptom onset')
+ax.set_ylabel('qPCR CT Value (3-day rolling average)')
+
+ax.legend(title='', loc='lower center', bbox_to_anchor=(0.5, -0.3), ncol=2)
+
+```
+
+
+### Asymptomatic individuals
+
+Finally, a further difference between our target studies and the ultimate sampling program we are considering is that sampled individuals would be asymptomatic. We identified four studies that researched this questions. Information on these papers can be found in Appendix 2.
+
+| Study | Sample size | Sample type | Symptomatic CT Value (median, IQR) | Asymptomatic CT Value (median, IQR) |
+|----------------------|----------------------------|----------------------|-------------------------------|-------------------------------|
+| [Hall et al. 2022](https://doi.org/10.1371/journal.pone.0270694) | 357 asymptomatic, 1276 symptomatic or pre-symptomatic | Anterior nasal swab | N1: 21.8 (17.2-29.4), N2: 21.4 (17.3-28.9) | N1: 29.9 (23.6-35.5), N2: 30.0 (23.1-35.7) |
+| [Long et al. 2020](https://doi.org/10.1038/s41591-020-0965-6) | 37 asymptomatic, 37 symptomatic | NP | ORF1ab: 31.7 (30.3-35.1), N: 33.5 (31.3-37.2) | ORF1ab: 32.8 (30.9-35.8), N: 32.6 (29.5-34.6) |
+| [Lee et al. 2022](https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/2769235) | 89 asymptomatic, 214 symptomatic | NP, OP, sputum | no raw data | no raw data |
+| [Zhou et al. 2020](https://doi.org/10.1016/j.ijid.2020.05.030) | 9 asymptomatic, 22 pre-symptomatic | NP | 34.5 (32.2-37.0) | 39.0 (37.5-39.5) |
+: Table 2: Viral load in symptomatic and asymptomatic individuals. Lee et al 2022 provides no raw data but noted that there was no significant difference between symptomatic and asympatomic individuals.
+
+### A BOTEC for the sensitivity pooled swab sampling program
+
+We can use the factors above to adjust the data in our target datasets. Note that this very much has the status of a BOTEC and would require more sophisticated modelling for us to put much faith in it. Anyway, let's for now:
+
+1. Drop all samples that are from ICU or ventilator patients.
+2. Adjust nasopharyngeal and oropharyngeal swabs by the adjustment factors discussed earlier (+1.82 for NP, -1 for OP samples)
+3. Adjust inpatient samples by the observed difference to outpatient samples (-2.1) #TODISCUSS, this is clearly wrong.
+4. Adjust all samples to resemble asymptomatics (+4.3)
+5. #TODO Adjust for days.
+
+```{python}
+df_np_babiker, df_np_rodriguez, df_op_lu, df_np_mostafa = return_studies()
+composite_df = pd.concat([df_np_babiker, df_np_rodriguez, df_op_lu, df_np_mostafa], ignore_index=True)
+
+
+# Drop samples that are not inpatients or outpatients (i.e, that are ICU or ventilator patients)
+composite_df = composite_df[composite_df['patient_status'].isin(['Inpatient', 'Outpatient'])]
+print(composite_df.columns)
+def make_qpcr_adjustments(composite_df):
+    asymptomatic_adjustment_factor = 4.3
+    np_adjustment_factor = 1.82
+    op_adjustment_factor = -1
+
+    composite_df["adjusted_scv2_ct"] = composite_df["scv2_ct"]
+
+    # Adjust for swab type
+    composite_df.loc[composite_df['swab_type'] == 'NP', 'adjusted_scv2_ct'] += np_adjustment_factor
+    composite_df.loc[composite_df['swab_type'] == 'OP', 'adjusted_scv2_ct'] += op_adjustment_factor
+
+    random_half = composite_df.sample(frac=0.5, random_state=42).index
+
+    composite_df.loc[random_half, "adjusted_scv2_ct"] += asymptomatic_adjustment_factor
+    return composite_df
+composite_df = make_qpcr_adjustments(composite_df)
+
+print(composite_df['adjusted_scv2_ct'].mean())
+print(composite_df['scv2_ct'].mean())
+
+def return_ct_hist():
+    fig, axs = plt.subplots(2, 1, figsize=(9, 8), dpi=600)
+    fig.subplots_adjust(hspace=0.4)
+
+    # First subplot: Histogram colored by study using composite_df
+    viridis_palette = sns.color_palette("viridis", n_colors=composite_df['Study'].nunique())
+    sns.histplot(ax=axs[0], data=composite_df, x='scv2_ct', hue='Study', palette=viridis_palette, bins=45, element="bars", linewidth=0, multiple="stack", legend=True)
+    axs[0].set_title("a", x=-0.03, y=1.0, ha='left', fontsize=10, fontweight='bold')
+    axs[0].set_ylabel('')
+    axs[0].set_xlabel('CT Value')
+    axs[0].tick_params(axis='x', which='minor', bottom=False)
+
+    labels_0 = composite_df['Study'].unique()
+    legend_0 = axs[0].get_legend()
+    legend_0.set_title("")
+    legend_0.set_ncols(4)
+
+    # Second subplot: Histogram colored by patient status using new_df
+
+    sns.histplot(ax=axs[1], data=composite_df, x='adjusted_scv2_ct', hue='Study', palette=viridis_palette, bins=45, element="bars", linewidth=0, multiple="stack")
+    axs[1].set_title("b", x=-0.03, y=1.0, ha='left', fontsize=10, fontweight='bold')
+    axs[1].set_xlabel('Adjusted CT Value')
+    axs[1].set_ylabel('')
+    axs[1].tick_params(axis='x', which='minor', bottom=False)
+
+    legend_1 = axs[1].get_legend()
+    legend_1.set_title("")
+    legend_1.set_ncols(5)
+
+    for ax in axs:
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+    plt.tight_layout()
+    plt.savefig('fig/ct_hist.png', dpi=600)
+
+return_ct_hist()
+
+
+```
+
+
+
+```{python}
+#| warning: false
+#| fig-cap: "**Figure 10: Data extrapolated to asymptomatic individuals, sampled with anterior nasal swabs**"
+
+composite_df["scv2_ra_logged"] = composite_df["scv2_ra"].apply(np.log10)
+
+result = linregress(composite_df['scv2_ct'], composite_df['scv2_ra_logged'])
+
+
+composite_df["adjusted_scv2_ra_logged"] = result.intercept + result.slope * composite_df["adjusted_scv2_ct"]
+
+print(result)
+
+composite_df["adjusted_scv2_ra_logged"] = result.intercept + result.slope * composite_df["adjusted_scv2_ct"]
+composite_df["adjusted_scv2_ra_logged_stderr"] = np.sqrt(
+    result.intercept_stderr**2 + (result.stderr * composite_df["adjusted_scv2_ct"])**2
+)
+
+np.random.seed(42)  # Set a random seed for reproducibility
+noise_factor = 1.5
+noise = np.random.normal(loc=0, scale=composite_df["adjusted_scv2_ra_logged_stderr"] * noise_factor)
+
+
+
+composite_df["adjusted_scv2_ra_logged_with_noise"] = composite_df["adjusted_scv2_ra_logged"] + noise
+
+
+print(noise)
+# Create a histogram of the noise
+fig, ax = plt.subplots(figsize=(9, 4), dpi=600)
+
+sns.histplot(noise, bins=30, kde=True, color='blue', ax=ax)
+ax.set_title("Histogram of Noise", fontsize=10, fontweight='bold')
+ax.set_xlabel('Noise Value')
+ax.set_ylabel('Frequency')
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+
+plt.tight_layout()
+plt.savefig('fig/noise_hist.png', dpi=600)
+plt.show()
+
+
+```
+
+
+```{python}
+#| warning: false
+
+fig, axs = plt.subplots(2, 1, figsize=(9, 8), dpi=600)
+fig.subplots_adjust(hspace=0.4)
+
+# First subplot: Histogram for scv2_ra_logged colored by study
+viridis_palette = sns.color_palette("viridis", n_colors=composite_df['Study'].nunique())
+
+sns.histplot(ax=axs[0], data=composite_df, x='scv2_ra_logged', palette=viridis_palette, bins=30,  element="bars", linewidth=0, multiple="stack", legend=True, hue='Study')
+
+axs[0].set_title("a", x=-0.03, y=1.0, ha='left', fontsize=10, fontweight='bold')
+axs[0].set_ylabel('')
+axs[0].set_xlabel('Logged Relative Abundance')
+axs[0].tick_params(axis='x', which='minor', bottom=False)
+
+
+xmin, xmax = axs[0].get_xlim()
+
+legend_0 = axs[0].get_legend()
+legend_0.set_title("")
+legend_0.set_ncols(4)
+
+# Second subplot: Histogram for adjusted_scv2_ra_logged_with_noise colored by study
+sns.histplot(ax=axs[1], data=composite_df, x='adjusted_scv2_ra_logged_with_noise', palette=viridis_palette, bins=30,  element="bars", linewidth=0, multiple="stack", hue='Study')
+axs[1].set_title("b", x=-0.03, y=1.0, ha='left', fontsize=10, fontweight='bold')
+axs[1].set_xlabel('Logged Relative Abundance with Noise')
+axs[1].set_ylabel('')
+
+
+legend_1 = axs[1].get_legend()
+legend_1.set_title("")
+legend_1.set_ncols(4)
+
+for ax in axs:
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+plt.tight_layout()
+axs[1].tick_params(axis='x', which='minor', bottom=False)
+
+#labels_1 = combined_df['patient_status'].unique()
+#labels_1 = [label.replace('Required\nventilator', 'Required ventilator') for label in labels_1]
+#legend_1 = axs[1].get_legend()
+#legend_1.set_title("")
+#legend_1.set_bbox_to_anchor((0.5, -0.3))
+#legend_1.set_ncols(5)
+
+
+
+
+for ax in axs:
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True)
+plt.tight_layout()
+
+plt.savefig("adjusted_ras.png", dpi=600)
+
+```
+
+
+```{python}
+sns_default_colors = sns.color_palette()
+fig, axs = plt.subplots(2,1,figsize=(8,6), sharey=True, dpi=600)
+fig.subplots_adjust(hspace=0.5)  # Add vertical space between axs
+# Create scatter plots
+sns.scatterplot(data=composite_df, y='scv2_ra_logged', x='scv2_ct', palette=sns_default_colors, s=70, hue='Study', style='Study', ax=axs[0])
+sns.scatterplot(data=composite_df, y='adjusted_scv2_ra_logged_with_noise', x='adjusted_scv2_ct', palette=sns_default_colors, s=70, hue='Study', style='Study', ax=axs[1])
+titles = ["Original values", "Adjusted CT and extrapolated RA value"]
+for ax, title in zip(axs, titles):
+    #ax.set_yscale('log')
+    ax.set_xlabel('')
+    ax.set_title(title)
+    ax.legend([], [], frameon=False)
+    #ax.set_xlim(x_lim)
+    #y_lim_adjusted = (y_lim[0], y_lim[1] * 1.05)  # Adjust upper limit to ensure top dot is fully displayed
+    #ax.set_ylim(y_lim_adjusted)
+    ax.invert_xaxis()
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.tick_params(axis='y', which='minor', left=False, right=False, labelleft=True)
+    ax.set_ylabel('Relative Abundance')
+    ax.set_xlim(40,15)
+    for x in np.arange(15, 40, 5):
+        ax.axvline(x=x, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+    for y in range(-7, 1, 1):
+
+        ax.axhline(y=y, color='grey', linestyle='--', alpha=0.5, linewidth=0.5)
+
+axs[1].legend(title='', loc='lower center', bbox_to_anchor=(0.5, -0.6), ncol=2, frameon=False)
+plt.tight_layout()
+plt.savefig('extrapolated.png', dpi=600)
+
+
+```
