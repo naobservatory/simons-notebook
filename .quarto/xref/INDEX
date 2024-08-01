@@ -77,5 +77,20 @@
   },
   "posts/2024-07-25-mbta-ridership/index.qmd": {
     "index.html": "189b2a16"
+  },
+  "posts/2024-07-30-swab-cost-estimate/index.qmd": {
+    "index.html": "33d2a089"
+  },
+  "blog_test/posts/post-with-code/index.qmd": {
+    "index.html": "2d0f924c"
+  },
+  "blog_test/posts/welcome/index.qmd": {
+    "index.html": "c0620c0a"
+  },
+  "blog_test/index.qmd": {
+    "index.html": "6319af86"
+  },
+  "blog_test/about.qmd": {
+    "about.html": "4beabddd"
   }
 }

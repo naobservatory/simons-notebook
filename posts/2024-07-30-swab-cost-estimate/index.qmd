@@ -1,0 +1,224 @@
+---
+title: "Costing out a Pooled Swab Sampling Program."
+subtitle: "How much would it cost to build and run a pooled swab sampling program?"
+author: "Simon Grimm"
+date: 2024-07-30
+categories:
+  - Swab sampling
+  - Modeling
+toc: true
+draft: true
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-link: true
+    df-print: paged
+    fig-format: png
+    fig-dpi: 600
+jupyter: venv
+# execute:
+#   cache: true
+cap-location: bottom
+---
+# Introduction
+
+```{python}
+#| echo: false
+#| results: hide
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+swab_ras = pd.read_csv("data/adjusted_composite_ras.tsv", sep="\t")
+mean_ra = round(swab_ras.mean(), 2)
+mean_ra = mean_ra.values[0]
+
+```
+
+
+As part of our [swab sampling pilot](https://naobservatory.org/blog/investigating-the-sensitivity-of-pooled-swab-sampling-for-pathogen-early-detection) project, we want to better understand the performance of a swab sampling program at different price points. Let's say we want to check the cost of two different programs, one costing $1M a year, the other costing $5M a year.
+
+
+### Pathogen Properties
+
+We assume we want to identify a pathogen like SARS-CoV-2, with a shedding duration of about 15 days, a doubling time of 3 days, and a genome length of 30,000 bp.
+
+
+
+### Detection System
+Given the high mean relative abundance in swab samples (mean = `{python} mean_ra`) we can use a Nanopore MinION which is fairly cheap ($450) with low sequencing depth (8e5). We assume it takes four days to get from sample to sequencing, and we sequence Monday, Wednesday, and Friday. Finally, for our bioinformatics analysis we use chimera detection, i.e., we aim to identify [one specific location](https://naobservatory.org/blog/detecting-genetically-engineered-viruses) in the genome that shows hallmarks of genetic engineering.
+
+
+# Performance at $500,000/year
+
+Let's say we sample at two sites, with two people per site, for four hours each, paying $30/hour. We pay each participant $2/sample. In our [pilot runs](https://data.securebio.org/sampling-metadata/) we've collected samples at a rate of 13-43 samples/hour. I expect us to get better at sampling over time, making collection of 50 swabs over one morning in a public space a realistic goal. Assume we collect 100 samples a day (50 samples per site). Sampling each weekday this gives $176,800/year[^1].
+
+[^1]: 4 x 4 x \$30 + 100 x \$2 x 260 = \$176800
+
+
+Sequencing costs $450 a day; let's double that to account for additional overhead. Over one year that gives $140,400/year. This leaves us around $180,000 to pay for i) a bioinformatician, ii) compute costs, and iii) expenses such as sampling equipment.
+
+## Results at $500,000/year
+
+Here we get a median cumulative incidence of 1.6%, with 0.73% at the 25th percentile, and 3% at the 75th percentile. This is ~ok, but ideally we have a system that reliably detects something at under 1% cumulative incidence.
+
+![Cumulative incidence upon detection when spending $500k](img/500k-100swabs-minion.png)
+
+
+# Performance at $2M/year
+
+Let's pick another scenario with $2M/year. Now, we scale the program to cover three cities. In each city we again sample at 2 locations. Additionally, we now perform sampling in the morning and evenings, again with 2 people at each site, doubling overall labor per person to 8h/day, still paying $30/hour. In turn, each site collects 100 swabs per day, totalling 200 swabs per city. Participants still get $2/sample. This gives a sampling cost of $353,600/year, per city[^2].
+
+Sequencing takes place in each city separately. We use the same sequencing setup as before (Nanopore MinION), costing $900 per day, again giving yearly sequencing costs $140,400. We still only sequence on Monday, Wednesday, and Friday. Sampling and sequencing together thus costs approximately $1.5M, leaving around $500,000 to pay for operating expenses and salaries.
+
+[^2]: 8 x 4 x \$30 + 200 x \$2 x 260 = $353,600
+
+## Results at $2M/year
+
+Here we see a substantial improvement over the first scenario, with the improvement corresponding approximately to the increase in investment. Median cumulative incidence drops from 1.6% to 0.5%, when compared with the $500k scenario. At the 25th percentile, cumulative incidence would be 0.26%, whereas at the 75th percentile it is 0.86%.
+
+![Cumulative incidence upon detection when spending $2M](img/500k-100swabs-minion.png)
+
+# Conclusion
+
+Plugging swab sampling relative abundance numbers computed in [Investigating the Sensitivity of Pooled Swab Sampling for Pathogen Early Detection](https://naobservatory.org/blog/investigating-the-sensitivity-of-pooled-swab-sampling-for-pathogen-early-detection)
+ into the simulator gives fairly good results, with a median cumulative incidence upon detection of 0.5% when spending $2M a year (median cumulative incidence increases to 1.6% when spending $500k). These results come after after me not spending a lot of time on thinking about where money buys the most detection time at the margin. There are a couple of further things I want to do here. For instance, right now multiple sites all use their own sequencing machine. This seems unneccessary, given that samples could be shipped to one location for centralized processing. Also, epidemic spread is homogenous across sampling sites. Accounting for uneven spread might be important as it could allow us to detect an epidemic while local cumulative incidence is still [higher than global cumulative incidence](https://data.securebio.org/jefftk-notebook/sample-vs-global-prevalence). Finally, we could do a bunch of additional work in better understanding which variables improve detection the most at low cost. This will most likely involve porting over the simulator into Python, where I can iterate faster.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{python}
+from dataclasses import dataclass
+from decimal import Decimal
+from typing import Optional, List
+
+population_size = 1e6
+doubling_time = 3
+cost = 0
+
+@dataclass
+class SamplingSite:
+    name: str
+    cost_per_sample: Decimal
+    capital_cost: Decimal
+    num_samples: int
+    staff_cost: Decimal
+    staff_hours: Decimal
+    num_staff: int
+    city: str
+    area: Optional[float] = None
+
+    def daily_cost(self):
+        sample_costs = self.cost_per_sample * self.num_samples
+        staff_costs = self.staff_cost * self.staff_hours * self.num_staff
+        return sample_costs + staff_costs
+
+    def __repr__(self) -> str:
+        return (f"SamplingSite(name='{self.name}', cost_per_sample={self.cost_per_sample}, "
+                f"num_samples={self.num_samples}, staff_cost={self.staff_cost}, "
+                f"staff_hours={self.staff_hours}, num_staff={self.num_staff}, "
+                f"city='{self.city}', area={self.area})")
+
+
+class PathogenProperties:
+    name: str
+    relative_abundance_distribution: List[float]
+    doubling_time: int
+    genome_length: int
+
+class Sequencer:
+    name: str
+    cost_per_run: Decimal
+    capital_cost: Decimal
+    sequencing_depth: int
+    read_length: int
+    processing_delay: int
+
+def simulate_one(pathogen, sampling_sites, sequencer):
+    day = 0
+    population_size = population_size
+    cumulative_incidence = 1 / population_size
+
+    junction_observations = 0
+
+    while True:
+        day += 1
+        cumulative_incidence *= growth_factor
+
+        for site in range(n_sites):
+            day_of_week = (day + site_infos[site]["day_offset"]) % 7
+            if should_sample[day_of_week]:
+                daily_incidence = cumulative_incidence * r
+                individual_probability_sick = 0
+                effective_incidence = daily_incidence
+                for i in range(int(detectable_days)):
+                    individual_probability_sick += effective_incidence
+                    effective_incidence /= growth_factor
+                n_sick = poisson(n_sample_population * individual_probability_sick)
+                site_infos[site]["sample_sick"] += n_sick
+                site_infos[site]["sample_total"] += n_sample_population
+
+            if should_sequence[day_of_week]:
+                ra_sick = 0
+                if site_infos[site]["sample_sick"] == 0:
+                    ra_sick = 0
+                elif len(ra_sicks) == 1:
+                    ra_sick = ra_sicks[0]
+                elif site_infos[site]["sample_sick"] > len(ra_sicks) * 3:
+                    ra_sick = sum(ra_sicks) / len(ra_sicks)
+                else:
+                    ra_sick = sum(random.choice(ra_sicks) for _ in range(site_infos[site]["sample_sick"])) / site_infos[site]["sample_sick"]
+
+                probability_read_is_useful = (
+                    site_infos[site]["sample_sick"] /
+                    site_infos[site]["sample_total"] *
+                    ra_sick * fraction_useful_reads
+                )
+
+                site_infos[site]["sample_sick"] = 0
+                site_infos[site]["sample_total"] = 0
+
+                if probability_read_is_useful > 0:
+                    observations += poisson(n_reads * probability_read_is_useful)
+                    if observations >= n_min_observations:
+                        return cumulative_incidence * v_processing_delay_factor
+
+        if cumulative_incidence > 1 or day > 365 * 10:
+            return 1
+
+
+```
