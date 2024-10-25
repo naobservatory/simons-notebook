@@ -92,5 +92,23 @@
   },
   "blog_test/about.qmd": {
     "about.html": "4beabddd"
+  },
+  "posts/2024-07-30-swab-cost-estimate/back_up.qmd": {
+    "back_up.html": "b5b59c8d"
+  },
+  "posts/2024-07-30-swab-cost-estimate/check_simulator.qmd": {
+    "check_simulator.html": "77b6d88b"
+  },
+  "posts/2024-08-12-pandemic-speed/index.qmd": {
+    "index.html": "d9a8c0f8"
+  },
+  "posts/2024-10-24-mgs-single-read-eval/single-v-paired.ipynb": {
+    "single-v-paired.html": "92fd55a4"
+  },
+  "posts/2024-10-24-mgs-single-read-eval/index.qmd": {
+    "index.html": "b67a2554"
+  },
+  "single-v-paired.ipynb": {
+    "single-v-paired.html": "1a67b8cc"
   }
 }

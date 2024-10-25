@@ -1,0 +1,319 @@
+---
+title: "Checking if single-read version of mgs-workflow works"
+author: "Simon Grimm"
+date: 2024-10-23
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-link: true
+    df-print: paged
+    toc: true
+    toc-depth: 2
+
+    fig-format: svg
+    crossref:
+      fig-title: Figure
+      fig-prefix: Figure
+      chapters: true
+jupyter: venv
+title-block-banner: black
+---
+
+I'm adapting mgs-workflow to take in single-read data. Here I'm checking if i) the output of the single-read version looks as expected, and if ii) the output of the paired-end version is the same as the original version.
+
+The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the full test dataset, run on the `single-read-raw` pipeline with read_type set to `paired_end`, and the full output of running the usual test dataset with the `dev` branch of `mgs-workflow`.
+```{python}
+#| label: load-packages
+#| include: false
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+
+
+```{python}
+#| label: data-paths
+
+single_read_dir = "mgs-results/test_single_read"
+paired_read_dir = "mgs-results/test_paired_end"
+test_dir = "mgs-results/test"
+full_test_dir = "mgs-results/test-full"
+
+se_output_dir = os.path.join(single_read_dir, "output")
+pe_output_dir = os.path.join(paired_read_dir, "output")
+test_output_dir = os.path.join(test_dir, "output")
+full_test_output_dir = os.path.join(full_test_dir, "output")
+
+se_results_dir = os.path.join(se_output_dir, "results")
+pe_results_dir = os.path.join(pe_output_dir, "results")
+test_results_dir = os.path.join(test_output_dir, "results")
+full_test_results_dir = os.path.join(full_test_output_dir, "results")
+
+se_qc_dir = os.path.join(se_results_dir, "qc")
+pe_qc_dir = os.path.join(pe_results_dir, "qc")
+test_qc_dir = os.path.join(test_results_dir, "qc")
+full_test_qc_dir = os.path.join(full_test_results_dir, "qc")
+
+se_basic_stats_path = os.path.join(se_qc_dir, "qc_basic_stats.tsv.gz")
+se_adapter_stats_path = os.path.join(se_qc_dir, "qc_adapter_stats.tsv.gz")
+se_quality_base_stats_path = os.path.join(se_qc_dir, "qc_quality_base_stats.tsv.gz")
+se_quality_seq_stats_path = os.path.join(se_qc_dir, "qc_quality_sequence_stats.tsv.gz")
+
+
+
+pe_basic_stats_path = os.path.join(pe_qc_dir, "qc_basic_stats.tsv.gz")
+pe_adapter_stats_path = os.path.join(pe_qc_dir, "qc_adapter_stats.tsv.gz")
+pe_quality_base_stats_path = os.path.join(pe_qc_dir, "qc_quality_base_stats.tsv.gz")
+pe_quality_seq_stats_path = os.path.join(pe_qc_dir, "qc_quality_sequence_stats.tsv.gz")
+
+
+test_basic_stats_path = os.path.join(test_qc_dir, "qc_basic_stats.tsv.gz")
+test_adapter_stats_path = os.path.join(test_qc_dir, "qc_adapter_stats.tsv.gz")
+test_quality_base_stats_path = os.path.join(test_qc_dir, "qc_quality_base_stats.tsv.gz")
+test_quality_seq_stats_path = os.path.join(test_qc_dir, "qc_quality_sequence_stats.tsv.gz")
+
+full_test_basic_stats_path = os.path.join(full_test_qc_dir, "qc_basic_stats.tsv.gz")
+full_test_adapter_stats_path = os.path.join(full_test_qc_dir, "qc_adapter_stats.tsv.gz")
+full_test_quality_base_stats_path = os.path.join(full_test_qc_dir, "qc_quality_base_stats.tsv.gz")
+full_test_quality_seq_stats_path = os.path.join(full_test_qc_dir, "qc_quality_sequence_stats.tsv.gz")
+```
+
+# Assessing basic stats for both raw and cleaned reads
+
+First, we can check if the paired-end version of `single-read-raw` is identical to the original paired-end version. It is.
+
+```{python}
+#| label: load-basic-stats
+se_basic_stats = pd.read_csv(se_basic_stats_path, sep='\t')
+pe_basic_stats = pd.read_csv(pe_basic_stats_path, sep='\t')
+test_basic_stats = pd.read_csv(test_basic_stats_path, sep='\t')
+full_test_basic_stats = pd.read_csv(full_test_basic_stats_path, sep='\t')
+```
+
+```{python}
+#| label: check-equivalence-of-paired-read-data
+#| echo: true
+#| code-fold: false
+
+pe_basic_stats.equals(full_test_basic_stats)
+
+```
+
+
+Now, let's compare the basic stats of the single-read version to the paired-end version. What we see in @tbl-compare-base-pairs is that the the paired-end cleaned samples loses more base pairs than the single-read cleaned samples during cleaning. This is partly explained by the loss of substantially more reads in the paired-end version, as shown in @tbl-compare-read-pairs.
+
+My current hypothesis is that the reverse reads are very low quality, where FASTP drops them, and thus also drops the forward reads.
+
+```{python}
+#| label: tbl-compare-base-pairs
+#| tbl-cap: Comparison of n_bases_approx between single-read and paired-end versions
+
+
+se_basic_stats["sample"] = se_basic_stats["sample"].str.replace("230926EsvD23", "230926Esv_D23")
+
+
+# print(pe_basic_stats)
+
+combined_df = se_basic_stats[["sample", "n_bases_approx", "stage", "n_read_pairs"]].merge(
+    pe_basic_stats[["sample", "n_bases_approx", "stage", "n_read_pairs"]],
+    on=["sample", "stage"],
+    suffixes=["_single", "_paired"]
+)
+
+combined_df["ratio_bases"] = round((combined_df["n_bases_approx_paired"] / combined_df["n_bases_approx_single"]) , 2)
+combined_df["ratio_read_pairs"] = round(combined_df["n_read_pairs_paired"] / combined_df["n_read_pairs_single"], 2)
+
+# Order columns
+combined_df_base_pairs = combined_df[["sample", "stage", "n_bases_approx_single", "n_bases_approx_paired", "ratio_bases"]]
+# Display the result
+combined_df_base_pairs
+
+```
+
+
+```{python}
+#| label: tbl-compare-read-pairs
+#| tbl-cap: Comparison of n_read_pairs between single-read and paired-end versions
+
+combined_df_read_pairs = combined_df[["sample", "stage", "n_read_pairs_single", "n_read_pairs_paired", "ratio_read_pairs"]]
+
+
+combined_df_read_pairs
+```
+
+
+
+# Comparing output of adapter stats
+
+```{python}
+#| label: load-adapter-stats
+#| echo: false
+test_adapter_stats = pd.read_csv(test_adapter_stats_path, sep='\t')
+se_adapter_stats = pd.read_csv(se_adapter_stats_path, sep='\t')
+pe_adapter_stats = pd.read_csv(pe_adapter_stats_path, sep='\t')
+full_test_adapter_stats = pd.read_csv(full_test_adapter_stats_path, sep='\t')
+
+```
+
+Again, the paired-end output of `single-read-raw` is identical to the original paired-end output of `qc_adapter_stats.tsv`.
+
+```{python}
+#| label: check-equivalence-of-adapter-stats
+#| echo: true
+#| code-fold: false
+pe_adapter_stats.equals(full_test_adapter_stats)
+```
+
+Comparing adapter contamination, the raw_concat percentages are equivalent (though the paired-end version sees more of a step-wise curve).
+
+```{python}
+#| label: fig-adapter-stats-comparison
+#| echo: false
+
+fig, axs = plt.subplots(2, 1, dpi=300, figsize=(10, 8))
+sns.lineplot(data=se_adapter_stats, x='position', y='pc_adapters', hue='stage', ax=axs[0],units="sample", estimator=None, legend=True)
+sns.lineplot(data=pe_adapter_stats, x='position', y='pc_adapters', hue='stage', style="read_pair", ax=axs[1],units="sample", estimator=None, legend=True)
+
+# Set common properties for both subplots
+for ax in axs:
+    ax.set_xlabel('Position')
+    ax.set_ylabel('% Adapters')
+    ax.grid(True, linestyle='--', alpha=0.7)
+
+# Set titles for each subplot
+axs[0].set_title('Single-End Adapter Stats')
+axs[1].set_title('Paired-End Adapter Stats')
+# Remove top and right spines for both subplots
+for ax in axs:
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+
+# Add a main title to the figure
+
+
+fig.tight_layout()
+```
+
+# Comparing output of quality base stats
+
+```{python}
+#| label: load-quality-base-stats
+#| echo: false
+test_quality_base_stats = pd.read_csv(test_quality_base_stats_path, sep='\t')
+se_quality_base_stats = pd.read_csv(se_quality_base_stats_path, sep='\t')
+pe_quality_base_stats = pd.read_csv(pe_quality_base_stats_path, sep='\t')
+full_test_quality_base_stats = pd.read_csv(full_test_quality_base_stats_path, sep='\t')
+```
+
+Again, the paired-end output of `single-read-raw` is identical to the original paired-end output of `qc_quality_base_stats.tsv`.
+
+```{python}
+#| label: equivalence-of-quality-base-stats
+#| echo: true
+#| code-fold: false
+#|
+pe_quality_base_stats.equals(full_test_quality_base_stats)
+```
+
+As expected, the single-read version looks very similar to the first read pair of the paired-end version.
+
+```{python}
+#| label: fig-quality-base-stats-comparison
+#| echo: false
+fig, axs = plt.subplots(2, 1, dpi=300, figsize=(10, 8))
+
+sns.lineplot(data=se_quality_base_stats, x='position', y='mean_phred_score', hue='stage', style="read_pair", units="sample", ax=axs[0],estimator=None, legend=True)
+
+sns.lineplot(data=pe_quality_base_stats, x='position', y='mean_phred_score', hue='stage', style="read_pair", units="sample", ax=axs[1],estimator=None, legend=True)
+
+for ax in axs:
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+plt.subplots_adjust(hspace=0.3)
+
+
+axs[0].set_title('Single-End Quality Base Stats')
+axs[1].set_title('Paired-End Quality Base Stats')
+
+```
+
+
+# Comparing output of quality sequence stats
+
+```{python}
+#| label: load-quality-sequence-stats
+#| echo: false
+test_quality_seq_stats = pd.read_csv(test_quality_seq_stats_path, sep='\t')
+se_quality_seq_stats = pd.read_csv(se_quality_seq_stats_path, sep='\t')
+pe_quality_seq_stats = pd.read_csv(pe_quality_seq_stats_path, sep='\t')
+full_test_quality_seq_stats = pd.read_csv(full_test_quality_seq_stats_path, sep='\t')
+```
+
+Again, the paired-end output of `single-read-raw` is identical to `qc_quality_sequence_stats.tsv`, as created by the `dev` branch of mgs-workflow.
+
+```{python}
+#| label: equivalence-of-quality-sequence-stats
+#| echo: true
+#| code-fold: false
+pe_quality_seq_stats.equals(full_test_quality_seq_stats)
+```
+
+
+Plotting the mean phred score (@fig-quality-sequence-stats-comparison), the single-read output looks similar to the fwd reads of the paired-end output. But they don't look exactly the same!
+```{python}
+#| label: fig-quality-sequence-stats-comparison
+#| echo: false
+
+fig, axs = plt.subplots(2, 1, dpi=300, figsize=(10, 8))
+sns.lineplot(data=se_quality_seq_stats, x='mean_phred_score', y='n_sequences', hue='stage', ax=axs[0],units="sample", estimator=None, legend=True)
+
+plt.subplots_adjust(hspace=0.3)
+
+
+sns.lineplot(data=pe_quality_seq_stats, x='mean_phred_score', y='n_sequences', hue='stage', ax=axs[1], style="read_pair", units="sample", estimator=None, legend=True)
+
+axs[0].set_title('Single-End Quality Sequence Stats')
+axs[1].set_title('Paired-End Quality Sequence Stats')
+
+for ax in axs:
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.set_xlim(0, 40)
+    ax.set_ylim(0, 7000)
+```
+
+The difference lies in there being more cleaned reads in the single-read run, vs cleaned reads in the forward-reads of the paired-end run. This matches with what we've seen under "Assessing basic stats for both raw and cleaned reads".
+
+
+```{python}
+#| label: fig-quality-cleaned-single-vs-forward
+#| echo: false
+#|
+
+pe_cleaned_fwd = pe_quality_seq_stats[(pe_quality_seq_stats['read_pair'] == 1) & (pe_quality_seq_stats['stage'] == 'cleaned')]
+
+se_cleaned = se_quality_seq_stats[se_quality_seq_stats['stage'] == 'cleaned']
+
+se_cleaned = se_cleaned.copy()
+pe_cleaned_fwd = pe_cleaned_fwd.copy()
+
+se_cleaned['read_type'] = 'single'
+pe_cleaned_fwd['read_type'] = 'paired'
+merged_cleaned = pd.concat([se_cleaned, pe_cleaned_fwd], ignore_index=True)
+
+mean_phred_paired = merged_cleaned[merged_cleaned['read_type'] == 'paired']['mean_phred_score'].mean()
+mean_phred_single = merged_cleaned[merged_cleaned['read_type'] == 'single']['mean_phred_score'].mean()
+
+
+fig, ax = plt.subplots(dpi=300, figsize=(10, 4))
+sns.lineplot(data=merged_cleaned, x='mean_phred_score', y='n_sequences', hue='read_type', ax=ax,units="sample", estimator=None, legend=True, color='blue')
+
+
+
+
+
+```
