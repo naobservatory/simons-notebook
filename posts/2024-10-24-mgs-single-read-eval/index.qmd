@@ -1,5 +1,5 @@
 ---
-title: "Testing single-read version of RAW and CLEAN workflows"
+title: "Testing single-read versions of RAW and CLEAN"
 author: "Simon Grimm"
 date: 2024-10-23
 format:
@@ -18,12 +18,12 @@ format:
       fig-prefix: Figure
       chapters: true
 jupyter: venv
-title-block-banner: black
+title-block-banner: "#5cb2a0"
 ---
 
-I'm adapting mgs-workflow to take in single-read sequencing data. Here I'm checking if i) the output of the single-read RAW and CLEAN workflows look as expected, and if ii) the output of the paired-end version is the same as the output of the test run on `dev`.
+I'm adapting mgs-workflow to take in single-read sequencing data. Here I'm checking if: i) the output of the single-read RAW and CLEAN workflows look as expected, and ii) ifthe output of the paired-end version is the same as the output of the test run on `dev`.
 
-I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to the QC measures of the forward reads of the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through FASTP, and thus affecting the paired-end QC measures. This suggests we should possibly use a different test dataset going forward.
+I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to those of the forward reads in the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through fastp, and thus affecting the paired-end QC measures. This suggests we should possibly use a different test dataset going forward.
 
 I will amend the TAXONOMY workflow of mgs-workflow next.
 
