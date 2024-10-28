@@ -16,6 +16,7 @@ format:
     df-print: paged
     fig-format: png
     fig-dpi: 600
+    
 jupyter: venv
 cap-location: bottom
 ---
