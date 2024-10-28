@@ -171,9 +171,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#assessing-basic-stats-for-both-raw-and-cleaned-reads" id="toc-assessing-basic-stats-for-both-raw-and-cleaned-reads" class="nav-link" data-scroll-target="#assessing-basic-stats-for-both-raw-and-cleaned-reads">Assessing basic stats for both raw and cleaned reads</a></li>
-  <li><a href="#comparing-output-of-adapter-stats" id="toc-comparing-output-of-adapter-stats" class="nav-link" data-scroll-target="#comparing-output-of-adapter-stats">Comparing output of adapter stats</a></li>
-  <li><a href="#comparing-output-of-quality-base-stats" id="toc-comparing-output-of-quality-base-stats" class="nav-link" data-scroll-target="#comparing-output-of-quality-base-stats">Comparing output of quality base stats</a></li>
-  <li><a href="#comparing-output-of-quality-sequence-stats" id="toc-comparing-output-of-quality-sequence-stats" class="nav-link" data-scroll-target="#comparing-output-of-quality-sequence-stats">Comparing output of quality sequence stats</a></li>
+  <li><a href="#comparing-adapter-contamination-stats" id="toc-comparing-adapter-contamination-stats" class="nav-link" data-scroll-target="#comparing-adapter-contamination-stats">Comparing adapter contamination stats</a></li>
+  <li><a href="#comparing-base-quality-stats" id="toc-comparing-base-quality-stats" class="nav-link" data-scroll-target="#comparing-base-quality-stats">Comparing base quality stats</a></li>
+  <li><a href="#comparing-sequence-quality-stats" id="toc-comparing-sequence-quality-stats" class="nav-link" data-scroll-target="#comparing-sequence-quality-stats">Comparing sequence quality stats</a></li>
   </ul>
 </nav>
     </div>
@@ -576,8 +576,8 @@ Table&nbsp;2.2: Comparison of the number of reads between single-read and paired
 </div>
 </div>
 </section>
-<section id="comparing-output-of-adapter-stats" class="level1">
-<h1>Comparing output of adapter stats</h1>
+<section id="comparing-adapter-contamination-stats" class="level1">
+<h1>Comparing adapter contamination stats</h1>
 <p>Comparing adapter contamination (<a href="#fig-adapter-stats-comparison" class="quarto-xref">Figure&nbsp;3.1</a>), the raw_concat percentages are equivalent. MULTIQC running on the paired-end data returned no adapter contamination stats for cleaned reads, suggesting that FASTP did its job well.</p>
 <div id="cell-fig-adapter-stats-comparison" class="cell" data-execution_count="11">
 <details class="code-fold">
@@ -616,8 +616,8 @@ Figure&nbsp;3.1: Adapter contamination along reads
 </div>
 </div>
 </section>
-<section id="comparing-output-of-quality-base-stats" class="level1">
-<h1>Comparing output of quality base stats</h1>
+<section id="comparing-base-quality-stats" class="level1">
+<h1>Comparing base quality stats</h1>
 <p>As expected, the single-read run looks very similar to the forward reads of the paired-end run (<a href="#fig-quality-base-stats-comparison" class="quarto-xref">Figure&nbsp;4.1</a>). The Phred scores of the reverse reads are quite bad, with scores consistently under 30 after position 20.</p>
 <div id="cell-fig-quality-base-stats-comparison" class="cell" data-execution_count="14">
 <details class="code-fold">
@@ -651,8 +651,8 @@ Figure&nbsp;4.1: Phred scores along the read
 </div>
 </div>
 </section>
-<section id="comparing-output-of-quality-sequence-stats" class="level1">
-<h1>Comparing output of quality sequence stats</h1>
+<section id="comparing-sequence-quality-stats" class="level1">
+<h1>Comparing sequence quality stats</h1>
 <p>Plotting the mean phred score (<a href="#fig-quality-sequence-stats-comparison" class="quarto-xref">Figure&nbsp;5.1</a>), the average Phred scores of the single-read output looks similar to the forward reads of the paired-end run. Notably, there are fewer sequences in the cleaned paired-end forward reads. Again, this is explained by FASTP dropping read pairs where the reverse read was low quality.</p>
 <div id="cell-fig-quality-sequence-stats-comparison" class="cell" data-execution_count="17">
 <details class="code-fold">
@@ -1348,7 +1348,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-197"><a href="#cb8-197" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-198"><a href="#cb8-198" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-199"><a href="#cb8-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-200"><a href="#cb8-200" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing output of adapter stats</span></span>
+<span id="cb8-200"><a href="#cb8-200" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing adapter contamination stats</span></span>
 <span id="cb8-201"><a href="#cb8-201" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-204"><a href="#cb8-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
 <span id="cb8-205"><a href="#cb8-205" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-adapter-stats</span></span>
@@ -1395,7 +1395,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-250"><a href="#cb8-250" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
 <span id="cb8-251"><a href="#cb8-251" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-252"><a href="#cb8-252" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-253"><a href="#cb8-253" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing output of quality base stats</span></span>
+<span id="cb8-253"><a href="#cb8-253" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing base quality stats</span></span>
 <span id="cb8-254"><a href="#cb8-254" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-257"><a href="#cb8-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
 <span id="cb8-258"><a href="#cb8-258" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-base-stats</span></span>
@@ -1440,7 +1440,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-301"><a href="#cb8-301" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-302"><a href="#cb8-302" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-303"><a href="#cb8-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-304"><a href="#cb8-304" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing output of quality sequence stats</span></span>
+<span id="cb8-304"><a href="#cb8-304" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing sequence quality stats</span></span>
 <span id="cb8-305"><a href="#cb8-305" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-308"><a href="#cb8-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
 <span id="cb8-309"><a href="#cb8-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-sequence-stats</span></span>

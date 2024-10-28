@@ -181,7 +181,7 @@ combination = se_basic_stats_fwd_cat_columns.astype(str) == pe_basic_stats_fwd_c
 ```
 
 
-# Comparing output of adapter stats
+# Comparing adapter contamination stats
 
 ```{python}
 #| label: load-adapter-stats
@@ -228,7 +228,7 @@ for ax in axs:
 fig.tight_layout()
 ```
 
-# Comparing output of quality base stats
+# Comparing base quality stats
 
 ```{python}
 #| label: load-quality-base-stats
@@ -273,7 +273,7 @@ plt.subplots_adjust(hspace=0.3)
 ```
 
 
-# Comparing output of quality sequence stats
+# Comparing sequence quality stats
 
 ```{python}
 #| label: load-quality-sequence-stats
