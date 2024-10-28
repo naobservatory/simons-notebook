@@ -10,6 +10,7 @@ format:
     df-print: paged
     toc: true
     toc-depth: 2
+    cap-location: bottom
 
     fig-format: svg
     crossref:
@@ -22,7 +23,15 @@ title-block-banner: black
 
 I'm adapting mgs-workflow to take in single-read sequencing data. Here I'm checking if i) the output of the single-read RAW and CLEAN workflows look as expected, and if ii) the output of the paired-end version is the same as the output of the test run on `dev`.
 
-The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset, run on the `single-read-raw` pipeline with `read_type == paired_end`, and the same dataset run with the `dev` branch of `mgs-workflow`. I compared the `qc` output of the two paired-end runs, and they are identical, suggesting that the addition of single-read functionality doesn't impede mgs-workflow runs on paired-end data.
+I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to the QC measures of the forward reads of the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through FASTP, and thus affecting the paired-end QC measures. This suggests we should possibly use a different test dataset going forward.
+
+I will amend the TAXONOMY workflow of mgs-workflow next.
+
+# Introduction
+
+The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset, run on the `single-read-raw` pipeline with `read_type == paired_end`, and the same dataset run with the `dev` branch of `mgs-workflow`.
+
+I compared the `qc` output of the two paired-end runs, and they are identical, suggesting that the addition of single-read functionality doesn't impede mgs-workflow runs on paired-end data.
 ```{python}
 #| label: load-packages
 #| include: false
@@ -103,7 +112,7 @@ pe_basic_stats.equals(full_test_basic_stats)
 
 ```
 
-Let's compare the basic stats of the single-read version to the paired-end version. Most notable is that paired-end data loses more bases and reads through FASTP cleaning. Accounting for paired-end reads containing twice as many base pairs, cleaned paired-end read files contain 16.4% fewer bases than single-end read files. This is largely due to FASTP dropping low-quality read pairs, with the number of cleaned paired-end reads 18.5% lower than the number of cleaned single-end reads. See @tbl-compare-base-pairs and @tbl-compare-read-pairs for sample level values.
+Comparing the basic stats of the single-read version to the paired-end version, the most notable difference is paired-end data losing more bases and reads through FASTP cleaning. Accounting for paired-end reads containing twice as many base pairs, cleaned paired-end read files contain 16.4% fewer bases than cleaned single-end read files. This is largely due to FASTP dropping low-quality read pairs, with the number of cleaned paired-end reads 18.5% lower than the number of cleaned single-end reads. See @tbl-compare-base-pairs and @tbl-compare-read-pairs for per-sample statistics.
 
 My current hypothesis for this pattern is that the reverse reads are very low quality, as seen in @fig-quality-base-stats-comparison, leading FASTP to drop many of the read pairs with a low-quality reverse read. I won't investigate this further for now, but it suggests we should use a new test dataset that has high-quality forward and reverse reads.
 
@@ -131,7 +140,9 @@ combined_df_base_pairs.set_index(["sample"])
 ```
 
 ```{python}
-
+#| label: calculate-ratio-base-read-loss
+#| include: false
+#| echo: false
 combined_df["ratio_bases"] = round((combined_df["n_bases_approx_paired"] / combined_df["n_bases_approx_single"]) , 2)
 combined_df["ratio_read_pairs"] = round(combined_df["n_read_pairs_paired"] / combined_df["n_read_pairs_single"], 2)
 ```
@@ -182,8 +193,6 @@ full_test_adapter_stats = pd.read_csv(full_test_adapter_stats_path, sep='\t')
 
 ```
 
-Again, the paired-end output of `single-read-raw` is identical to the original paired-end output of `qc_adapter_stats.tsv`.
-
 ```{python}
 #| label: check-equivalence-of-adapter-stats
 #| echo: false
@@ -231,7 +240,6 @@ pe_quality_base_stats = pd.read_csv(pe_quality_base_stats_path, sep='\t')
 full_test_quality_base_stats = pd.read_csv(full_test_quality_base_stats_path, sep='\t')
 ```
 
-Again, the paired-end output of `single-read-raw` is identical to the original paired-end output of `qc_quality_base_stats.tsv`.
 
 ```{python}
 #| label: equivalence-of-quality-base-stats
@@ -242,7 +250,7 @@ pe_quality_base_stats.equals(full_test_quality_base_stats)
 
 ```
 
-As expected, the single-read run looks very similar to the forward read of the paired-end run (@fig-quality-base-stats-comparison). However, the Phred scores of the reverse reads are quite bad, with scores consistently under 30 after position 20.
+As expected, the single-read run looks very similar to the forward reads of the paired-end run (@fig-quality-base-stats-comparison). The Phred scores of the reverse reads are quite bad, with scores consistently under 30 after position 20.
 
 ```{python}
 #| label: fig-quality-base-stats-comparison
@@ -277,7 +285,6 @@ pe_quality_seq_stats = pd.read_csv(pe_quality_seq_stats_path, sep='\t')
 full_test_quality_seq_stats = pd.read_csv(full_test_quality_seq_stats_path, sep='\t')
 ```
 
-Again, the paired-end output of `single-read-raw` is identical to the original paired-end output of `qc_quality_sequence_stats.tsv`.
 
 ```{python}
 #| label: equivalence-of-quality-sequence-stats
@@ -288,7 +295,7 @@ pe_quality_seq_stats.equals(full_test_quality_seq_stats)
 ```
 
 
-Plotting the mean phred score (@fig-quality-sequence-stats-comparison), the average Phred scores of the single-read output looks similar to the forward reads of the paired-end run. Notable there are fewer sequences in the cleaned paired-end forward read. Again, this can be explained by FASTP dropping read pairs where the reverse read was low quality (@fig-quality-cleaned-single-vs-forward).
+Plotting the mean phred score (@fig-quality-sequence-stats-comparison), the average Phred scores of the single-read output looks similar to the forward reads of the paired-end run. Notably, there are fewer sequences in the cleaned paired-end forward reads. Again, this is explained by FASTP dropping read pairs where the reverse read was low quality.
 
 
 ```{python}
@@ -314,30 +321,3 @@ for ax in axs:
 ```
 
 
-
-
-```{python}
-#| label: fig-quality-cleaned-single-vs-forward
-#| fig-cap: Average phred scores of the paired-end run forward reads,\ncompared to single-read phred scores
-
-pe_cleaned_fwd = pe_quality_seq_stats[(pe_quality_seq_stats['read_pair'] == 1) & (pe_quality_seq_stats['stage'] == 'cleaned')]
-
-se_cleaned = se_quality_seq_stats[se_quality_seq_stats['stage'] == 'cleaned']
-
-se_cleaned = se_cleaned.copy()
-pe_cleaned_fwd = pe_cleaned_fwd.copy()
-
-se_cleaned['read_type'] = 'single'
-pe_cleaned_fwd['read_type'] = 'paired'
-merged_cleaned = pd.concat([se_cleaned, pe_cleaned_fwd], ignore_index=True)
-
-mean_phred_paired = merged_cleaned[merged_cleaned['read_type'] == 'paired']['mean_phred_score'].mean()
-mean_phred_single = merged_cleaned[merged_cleaned['read_type'] == 'single']['mean_phred_score'].mean()
-
-fig, ax = plt.subplots(dpi=300, figsize=(10, 4))
-sns.lineplot(data=merged_cleaned, x='mean_phred_score', y='n_sequences', hue='read_type', ax=ax,units="sample", estimator=None, legend=True, color='blue')
-ax.set_title("")
-
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-```
