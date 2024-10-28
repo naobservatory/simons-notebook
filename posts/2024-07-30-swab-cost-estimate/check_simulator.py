@@ -1,31 +1,3 @@
----
-title: "Costing out a Pooled Swab Sampling Program."
-subtitle: "How much would it cost to build and run a pooled swab sampling program?"
-author: "Simon Grimm"
-date: 2024-07-30
-categories:
-  - Swab sampling
-  - Modeling
-toc: true
-draft: true
-format:
-  html:
-    code-fold: true
-    code-tools: true
-    code-link: true
-    df-print: paged
-    fig-format: png
-    fig-dpi: 600
-jupyter: venv
-# execute:
-#   cache: true
-cap-location: bottom
----
-# Introduction
-
-```{python}
-#| echo: false
-#| results: hide
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -40,14 +12,6 @@ from decimal import Decimal
 from typing import Optional, List
 from dataclasses import field
 
-```
-
-
-
-
-
-```{python}
-swab_ras = pd.read_csv("data/adjusted_composite_ras.tsv", sep="\t")["relative_abundance"].tolist()
 EPSILON = 0.000001
 
 
@@ -62,7 +26,26 @@ class PathogenProperties:
 @dataclass(kw_only=True, eq=True)
 class SamplingParameters:
     """Parameters for sampling in pathogen detection"""
-    shedding_values: List[float] = field(default_factory=lambda: swab_ras)
+
+    shedding_values: List[float] = field(
+        default_factory=lambda: [
+            5e-06,
+            1e-04,
+            2e-04,
+            3e-04,
+            7e-04,
+            8e-04,
+            1e-03,
+            6e-03,
+            8e-03,
+            1e-02,
+            2e-02,
+            3e-02,
+            7e-02,
+            4e-01,
+            8e-01,
+        ]
+    )
     sigma_shedding_values: float = 0.05
     shedding_duration: int = 7
     sigma_shedding_duration: float = 0.05
@@ -71,12 +54,14 @@ class SamplingParameters:
     low_quality: bool = False
     direct_flaggable: bool = False
 
+
 @dataclass(kw_only=True, eq=True)
 class SequencingParameters:
     read_length: int = 10000
     sample_depth: int = int(8e5)
     run_cost: float = 450
     processing_delay: int = 4
+
 
 @dataclass(kw_only=True, eq=True)
 class SamplingSequencingSchedule:
@@ -96,12 +81,14 @@ class SamplingSequencingSchedule:
     sequencing_s: bool = False
     sequencing_u: bool = False
 
+
 @dataclass(kw_only=True, eq=True)
 class GlobalSettings:
     min_observations: int = 2
     sites: int = 1
-    population_size: int = 1000000
+    population_size: int = 1e10
     overhead: float = 50.0
+
 
 number_of_simulations = 1000
 
@@ -122,16 +109,10 @@ class Inputs:
             sampling_params=SamplingParameters(),
             sequencing_params=SequencingParameters(),
             schedule=SamplingSequencingSchedule(),
-            global_settings=GlobalSettings()
+            global_settings=GlobalSettings(),
+            number_of_simulations=number_of_simulations,
         )
 
-```
-
-
-
-
-
-```{python}
 
 def get_input_cv(input_value, input_cv):
     mean = float(input_value)
@@ -165,17 +146,13 @@ def get_inputs_biased(input_values, input_sigma):
     return [empirical_value * bias for empirical_value in empirical_values]
 
 
-def simulate_one(
-    inputs: Inputs
-):
+def simulate_one(inputs: Inputs):
     pathogen_props = inputs.pathogen_props
     sampling_params = inputs.sampling_params
     sequencing_params = inputs.sequencing_params
     schedule = inputs.schedule
     global_settings = inputs.global_settings
     number_of_simulations = inputs.number_of_simulations
-
-
 
     day = 0
     population = global_settings.population_size
@@ -222,8 +199,8 @@ def simulate_one(
     )
     n_reads = int(sequencing_params.sample_depth)
 
-    should_sample = [getattr(schedule, f'sampling_{day}') for day in "mtwrfsu"]
-    should_sequence = [getattr(schedule, f'sequencing_{day}') for day in "mtwrfsu"]
+    should_sample = [getattr(schedule, f"sampling_{day}") for day in "mtwrfsu"]
+    should_sequence = [getattr(schedule, f"sequencing_{day}") for day in "mtwrfsu"]
 
     while True:
         day += 1
@@ -286,22 +263,22 @@ def calculate_cost(inputs: Inputs):
     sequencing_params = inputs.sequencing_params
     schedule = inputs.schedule
     global_settings = inputs.global_settings
-    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-
-    # Calculate number of weekly samples and sequences
-    n_samples_weekly = sum(getattr(schedule, f'sampling_{day}') for day in "mtwrfsu")
-    n_sequences_weekly = sum(getattr(schedule, f'sequencing_{day}') for day in "mtwrfsu")
-
-    # Calculate total cost
-    total_cost = (
-        global_settings.sites *
-        (1 + (global_settings.overhead / 100)) *
-        52 *
-        (n_samples_weekly * sampling_params.sample_cost +
-         n_sequences_weekly * sequencing_params.run_cost)
+    locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
+    n_samples_weekly = sum(getattr(schedule, f"sampling_{day}") for day in "mtwrfsu")
+    n_sequences_weekly = sum(
+        getattr(schedule, f"sequencing_{day}") for day in "mtwrfsu"
     )
 
-    # Return formatted csot
+    total_cost = (
+        global_settings.sites
+        * (1 + (global_settings.overhead / 100))
+        * 52
+        * (
+            n_samples_weekly * sampling_params.sample_cost
+            + n_sequences_weekly * sequencing_params.run_cost
+        )
+    )
+
     formatted_cost = locale.currency(total_cost, grouping=True)
     return formatted_cost
 
@@ -314,140 +291,54 @@ def simulate_many(inputs: Inputs, n_simulations: int):
 
 
 def plot_simulation(results: List[float], label: str):
-    index = np.arange(len(results))/10
+    index = np.arange(len(results)) / 10
     cumulative_incidence = sorted(results)
     median = np.median(cumulative_incidence)
     plt.plot(index, cumulative_incidence, label=label)
 
+
 def run_simulation(inputs: Inputs):
     costs = calculate_cost(inputs)
-    n_simulations = 1000
+    n_simulations = inputs.number_of_simulations
     doubling_time = inputs.pathogen_props.doubling_time
     sample_size = inputs.sampling_params.sample_population
     sites = inputs.global_settings.sites
     label = f"Doubling time: {doubling_time}, Sample size: {sample_size}, Sites: {sites}, Annual Cost: {costs}"
     results = simulate_many(inputs, n_simulations)
     plot_simulation(results, label)
-    median = np.median(results)
-    print(f"Doubling time: {doubling_time}, Sample size: {sample_size}, Sites: {sites}")
-    print(f"Cost: {costs}, Median cumulative incidence: {median}")
-```
+    median = str(round(float(np.median(results)) * 100, 1)) + "%"
+    # print(f"Doubling time: {doubling_time}, Sample size: {sample_size}, Sites: {sites}")
+    # print(f"Cost: {costs}, Median cumulative incidence: {median}")
+    return median
 
 
-```{python}
+inputs = Inputs.create_default()
 
-plt.figure(figsize=(10, 6), dpi=600)
+
+swab_ras = pd.read_csv("data/adjusted_composite_ras.tsv", sep="\t")[
+    "relative_abundance"
+].tolist()
+inputs.sampling_params.shedding_values = swab_ras
+
+
+plt.figure(figsize=(10, 6))
 plt.xlabel("%")
 plt.ylabel("Cumulative Incidence")
 plt.ylim(0, 0.08)
-plt.yticks(np.arange(0, 0.09, 0.01), [f'{x*100:.0f}%' for x in np.arange(0, 0.09, 0.01)])
+plt.yticks(
+    np.arange(0, 0.09, 0.01), [f"{x*100:.0f}%" for x in np.arange(0, 0.09, 0.01)]
+)
 plt.title(f"Cumulative Incidence across 1000 simulations")
 plt.grid(True, linestyle="--", alpha=0.7)
-plt.gca().spines['right'].set_visible(False)
-plt.gca().spines['top'].set_visible(False)
+plt.gca().spines["right"].set_visible(False)
+plt.gca().spines["top"].set_visible(False)
 
-sample_sizes = [
-    100, 200, 400
-]
+medians = []
+for _ in range(10):
+    median = run_simulation(inputs)
+    medians.append(median)
 
-for sample_size in sample_sizes:
-    cost_per_swab = 5
-    max_swabs_per_site = 50
-    within_city_sampling_sites = math.ceil(sample_size / max_swabs_per_site)
-    labor_cost_per_50_swabs = 4 * 2 * 30 # 4 hours, 2 people, $30/hour
-    sample_cost = within_city_sampling_sites * labor_cost_per_50_swabs + cost_per_swab * sample_size
-    inputs = Inputs.create_default()
-    inputs.sampling_params.sample_population = sample_size
-    inputs.sampling_params.sample_cost = sample_cost
-    run_simulation(inputs)
-
-plt.legend()
-plt.show()
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- ```{python}
-#Unneeded stuff
-
-
-
-@dataclass
-class SamplingSite:
-    name: str
-    cost_per_sample: Decimal
-    capital_cost: Decimal
-    num_samples: int
-    staff_cost: Decimal
-    staff_hours: Decimal
-    num_staff: int
-    city: str
-    area: Optional[float] = None
-
-    def daily_cost(self):
-        sample_costs = self.cost_per_sample * self.num_samples
-        staff_costs = self.staff_cost * self.staff_hours * self.num_staff
-        return sample_costs + staff_costs
-
-    def __repr__(self) -> str:
-        return (f"SamplingSite(name='{self.name}', cost_per_sample={self.cost_per_sample}, "
-                f"num_samples={self.num_samples}, staff_cost={self.staff_cost}, "
-                f"staff_hours={self.staff_hours}, num_staff={self.num_staff}, "
-                f"city='{self.city}', area={self.area})")
-
-
-class PathogenProperties:
-    name: str
-    relative_abundance_distribution: List[float]
-    doubling_time: int
-    genome_length: int
-
-class Sequencer:
-    name: str
-    cost_per_run: Decimal
-    capital_cost: Decimal
-    sequencing_depth: int
-    read_length: int
-    processing_delay: int
-
-``` -->
+# plt.legend()
+# plt.show()
+print(medians)
+ 1.5% ,  1.4% ,  1.4% ,  1.6% ,  1.4% ,  1.4% ,  1.5% ,  1.5% ,  1.4% ,  1.4% 

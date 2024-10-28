@@ -52,3 +52,6 @@ _site
 _freeze
 **/.DS_Store
 **/work/
+
+.quarto
+/.quarto/

@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.stats import norm, linregress
 from typing import List
 from collections import namedtuple
@@ -191,9 +192,6 @@ def adjust_cts(df):
         header=None,
     )
     OP_ADJUSTMENT_FACTOR = goodall_data[0].mean()
-    if DEBUG:
-        print(f"Goodall mean (OP): {op_goodall_mean}")
-        print(f"NP mean: {NP_ADJUSTMENT_FACTOR}")
 
     df["adjusted_scv2_ct"] = df["scv2_ct"]
     # Subtract the adjustment factors from the CT values (NP_ADJUSTMENT_FACTOR is negative, so it increases the CT values)
@@ -240,28 +238,52 @@ def adjust_rel_abun(composite_df):
     return composite_df
 
 
-def get_logit_normal_samples(ras):
+def get_logit_normal_samples(ras, n_samples):
     ra_values = np.array(ras)
     zero_share = (ra_values == 0).mean()
+
     ra_values = ra_values[ra_values != 0]
     logit_ra_values = logit(ra_values)
     mean, std = np.mean(logit_ra_values), np.std(logit_ra_values)
     norm_dist = norm(loc=mean, scale=std)
-    logit_samples = norm_dist.rvs(size=int(100000 * (1 - zero_share)))
+    logit_samples = norm_dist.rvs(size=int(n_samples * (1 - zero_share)))
     samples = logistic(logit_samples)
-    samples = np.append(samples, np.zeros(int(100000 * zero_share)))
+    samples = np.append(samples, np.zeros(int(n_samples * zero_share)))
     np.random.shuffle(samples)
     return samples
 
 
 def get_adjusted_composite_ras():
     symptom_status_ras = get_adjusted_symp_and_asymp_composite_ras()
+    # Drop zeros and apply log transformation to raw_ras
+    if DEBUG:
+        raw_ras = (  # This is a rough calculation, the actual number of asymptomatics is 0.35 not 0.33.
+            symptom_status_ras["Asymptomatic"]
+            + symptom_status_ras["Symptomatic"]
+            + symptom_status_ras["Symptomatic"]
+        )
+        raw_ras = np.array(raw_ras)
 
-    asymptomatic_samples = get_logit_normal_samples(symptom_status_ras["Asymptomatic"])
-    symptomatic_samples = get_logit_normal_samples(symptom_status_ras["Symptomatic"])
+        non_zero_raw_ras = raw_ras[raw_ras > 0]
+        log_raw_ras = np.log10(non_zero_raw_ras)
+        plt.hist(
+            log_raw_ras,
+            bins=100,
+            edgecolor="black",
+            label="Raw RAs",
+            alpha=0.5,
+            density=True,
+        )
 
+    asymptomatic_samples = get_logit_normal_samples(
+        symptom_status_ras["Asymptomatic"], n_samples=300
+    )
+    symptomatic_samples = get_logit_normal_samples(
+        symptom_status_ras["Symptomatic"], n_samples=300
+    )
     adjusted_composite_ras = np.random.choice(
-        asymptomatic_samples, round(len(asymptomatic_samples) * ASYMPTOMATIC_SHARE)
+        asymptomatic_samples,
+        round(len(asymptomatic_samples) * ASYMPTOMATIC_SHARE),
     )
 
     adjusted_composite_ras = np.append(
@@ -271,7 +293,28 @@ def get_adjusted_composite_ras():
             round(len(symptomatic_samples) * (1 - ASYMPTOMATIC_SHARE)),
         ),
     )
+    if DEBUG:
+        # Apply log transformation to non-zero values
+        non_zero_ras = adjusted_composite_ras[adjusted_composite_ras > 0]
+        log_ras = np.log10(non_zero_ras)
 
+        # Plot histogram of log-transformed relative abundances
+        plt.hist(
+            log_ras,
+            bins=100,
+            edgecolor="black",
+            label="logit-normal",
+            alpha=0.5,
+            density=True,
+        )
+        plt.xlabel("Relative Abundance")
+        plt.ylabel("Frequency")
+        plt.title("Distribution of Relative Abundances")
+        plt.legend()
+
+        print(f"Mean of raw adjusted ras: {np.mean(raw_ras)}")
+        print(f"Mean of logit-normal distribution: {np.mean(adjusted_composite_ras)}")
+        plt.show()
     return adjusted_composite_ras
 
 

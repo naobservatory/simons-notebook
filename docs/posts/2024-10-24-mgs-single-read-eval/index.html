@@ -9,7 +9,7 @@
 <meta name="author" content="Simon Grimm">
 <meta name="dcterms.date" content="2024-10-23">
 
-<title>Checking if single-read version of mgs-workflow works – Simon’s Public NAO Notebook</title>
+<title>Testing single-read version of RAW and CLEAN workflows – Simon’s Public NAO Notebook</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -136,7 +136,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <div class="quarto-title-block"><div><h1 class="title">Checking if single-read version of mgs-workflow works</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+      <div class="quarto-title-block"><div><h1 class="title">Testing single-read version of RAW and CLEAN workflows</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
                       </div>
   </div>
     
@@ -183,8 +183,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>I’m adapting mgs-workflow to take in single-read data. Here I’m checking if i) the output of the single-read version looks as expected, and if ii) the output of the paired-end version is the same as the original version.</p>
-<p>The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the full test dataset, run on the <code>single-read-raw</code> pipeline with read_type set to <code>paired_end</code>, and the full output of running the usual test dataset with the <code>dev</code> branch of <code>mgs-workflow</code>.</p>
+<p>I’m adapting mgs-workflow to take in single-read sequencing data. Here I’m checking if i) the output of the single-read RAW and CLEAN workflows look as expected, and if ii) the output of the paired-end version is the same as the output of the test run on <code>dev</code>.</p>
+<p>The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset, run on the <code>single-read-raw</code> pipeline with <code>read_type == paired_end</code>, and the same dataset run with the <code>dev</code> branch of <code>mgs-workflow</code>. I compared the <code>qc</code> output of the two paired-end runs, and they are identical, suggesting that the addition of single-read functionality doesn’t impede mgs-workflow runs on paired-end data.</p>
 <div id="data-paths" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
@@ -234,7 +234,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="assessing-basic-stats-for-both-raw-and-cleaned-reads" class="level1">
 <h1>Assessing basic stats for both raw and cleaned reads</h1>
-<p>First, we can check if the paired-end version of <code>single-read-raw</code> is identical to the original paired-end version. It is.</p>
 <div id="load-basic-stats" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
@@ -244,40 +243,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>full_test_basic_stats <span class="op">=</span> pd.read_csv(full_test_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-check-equivalence-of-paired-read-data" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pe_basic_stats.equals(full_test_basic_stats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="check-equivalence-of-paired-read-data" class="cell-output cell-output-display" data-execution_count="4">
-<pre><code>True</code></pre>
-</div>
-</div>
-<p>Now, let’s compare the basic stats of the single-read version to the paired-end version. What we see in <a href="#tbl-compare-base-pairs" class="quarto-xref">Table&nbsp;1.1</a> is that the the paired-end cleaned samples loses more base pairs than the single-read cleaned samples during cleaning. This is partly explained by the loss of substantially more reads in the paired-end version, as shown in <a href="#tbl-compare-read-pairs" class="quarto-xref">Table&nbsp;1.2</a>.</p>
-<p>My current hypothesis is that the reverse reads are very low quality, where FASTP drops them, and thus also drops the forward reads.</p>
+<p>Let’s compare the basic stats of the single-read version to the paired-end version. Most notable is that paired-end data loses more bases and reads through FASTP cleaning. Accounting for paired-end reads containing twice as many base pairs, cleaned paired-end read files contain 16.4% fewer bases than single-end read files. This is largely due to FASTP dropping low-quality read pairs, with the number of cleaned paired-end reads 18.5% lower than the number of cleaned single-end reads. See <a href="#tbl-compare-base-pairs" class="quarto-xref">Table&nbsp;1.1</a> and <a href="#tbl-compare-read-pairs" class="quarto-xref">Table&nbsp;1.2</a> for sample level values.</p>
+<p>My current hypothesis for this pattern is that the reverse reads are very low quality, as seen in <a href="#fig-quality-base-stats-comparison" class="quarto-xref">Figure&nbsp;3.1</a>, leading FASTP to drop many of the read pairs with a low-quality reverse read. I won’t investigate this further for now, but it suggests we should use a new test dataset that has high-quality forward and reverse reads.</p>
 <div class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>se_basic_stats[<span class="st">"sample"</span>] <span class="op">=</span> se_basic_stats[<span class="st">"sample"</span>].<span class="bu">str</span>.replace(<span class="st">"230926EsvD23"</span>, <span class="st">"230926Esv_D23"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># print(pe_basic_stats)</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>combined_df <span class="op">=</span> se_basic_stats[[<span class="st">"sample"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs"</span>]].merge(</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    pe_basic_stats[[<span class="st">"sample"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs"</span>]],</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span>[<span class="st">"sample"</span>, <span class="st">"stage"</span>],</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    suffixes<span class="op">=</span>[<span class="st">"_single"</span>, <span class="st">"_paired"</span>]</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_bases"</span>] <span class="op">=</span> <span class="bu">round</span>((combined_df[<span class="st">"n_bases_approx_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_bases_approx_single"</span>]) , <span class="dv">2</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_read_pairs"</span>] <span class="op">=</span> <span class="bu">round</span>(combined_df[<span class="st">"n_read_pairs_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_read_pairs_single"</span>], <span class="dv">2</span>)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Order columns</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>combined_df_base_pairs <span class="op">=</span> combined_df[[<span class="st">"sample"</span>, <span class="st">"stage"</span>, <span class="st">"n_bases_approx_single"</span>, <span class="st">"n_bases_approx_paired"</span>, <span class="st">"ratio_bases"</span>]]</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the result</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>combined_df_base_pairs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>combined_df <span class="op">=</span> se_basic_stats[[<span class="st">"sample"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs"</span>]].merge(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pe_basic_stats[[<span class="st">"sample"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs"</span>]],</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span>[<span class="st">"sample"</span>, <span class="st">"stage"</span>],</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    suffixes<span class="op">=</span>[<span class="st">"_single"</span>, <span class="st">"_paired"</span>]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_bases"</span>] <span class="op">=</span> <span class="bu">round</span>((combined_df[<span class="st">"n_bases_approx_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_bases_approx_single"</span>]) , <span class="dv">2</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_read_pairs"</span>] <span class="op">=</span> <span class="bu">round</span>(combined_df[<span class="st">"n_read_pairs_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_read_pairs_single"</span>], <span class="dv">2</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Order columns</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>combined_df_base_pairs <span class="op">=</span> combined_df[[<span class="st">"sample"</span>, <span class="st">"stage"</span>, <span class="st">"n_bases_approx_single"</span>, <span class="st">"n_bases_approx_paired"</span>, <span class="st">"ratio_bases"</span>]]</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the result</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>combined_df_base_pairs.set_index([<span class="st">"sample"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div id="tbl-compare-base-pairs" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="5">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-compare-base-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1.1: Comparison of n_bases_approx between single-read and paired-end versions
+Table&nbsp;1.1: Comparison of the number of bases between single-read and paired-end runs, for both raw and cleaned files
 </figcaption>
 <div aria-describedby="tbl-compare-base-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output cell-output-display" data-execution_count="5">
@@ -288,137 +276,127 @@ Table&nbsp;1.1: Comparison of n_bases_approx between single-read and paired-end 
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">sample</th>
 <th data-quarto-table-cell-role="th">stage</th>
 <th data-quarto-table-cell-role="th">n_bases_approx_single</th>
 <th data-quarto-table-cell-role="th">n_bases_approx_paired</th>
 <th data-quarto-table-cell-role="th">ratio_bases</th>
 </tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">sample</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>230926Esv_D23-14904-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14904-1</td>
 <td>raw_concat</td>
 <td>3700000</td>
 <td>7400000</td>
 <td>2.00</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>230926Esv_D23-14905-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14905-1</td>
 <td>raw_concat</td>
 <td>3700000</td>
 <td>7400000</td>
 <td>2.00</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>230926Esv_D23-14906-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14906-1</td>
 <td>raw_concat</td>
 <td>3700000</td>
 <td>7400000</td>
 <td>2.00</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>230926Esv_D23-14907-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14907-1</td>
 <td>raw_concat</td>
 <td>3700000</td>
 <td>7400000</td>
 <td>2.00</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>230926Esv_D23-14908-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14908-1</td>
 <td>raw_concat</td>
 <td>3700000</td>
 <td>7400000</td>
 <td>2.00</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>230926Esv_D23-14909-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14909-1</td>
 <td>raw_concat</td>
 <td>3700000</td>
 <td>7400000</td>
 <td>2.00</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">6</td>
-<td>230926Esv_D23-14910-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14910-1</td>
 <td>raw_concat</td>
 <td>3700000</td>
 <td>7400000</td>
 <td>2.00</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">7</td>
-<td>230926Esv_D23-14911-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14911-1</td>
 <td>raw_concat</td>
 <td>3700000</td>
 <td>7400000</td>
 <td>2.00</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">8</td>
-<td>230926Esv_D23-14904-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14904-1</td>
 <td>cleaned</td>
 <td>3200000</td>
 <td>5000000</td>
 <td>1.56</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">9</td>
-<td>230926Esv_D23-14905-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14905-1</td>
 <td>cleaned</td>
 <td>3200000</td>
 <td>5200000</td>
 <td>1.62</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">10</td>
-<td>230926Esv_D23-14906-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14906-1</td>
 <td>cleaned</td>
 <td>3200000</td>
 <td>5300000</td>
 <td>1.66</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">11</td>
-<td>230926Esv_D23-14907-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14907-1</td>
 <td>cleaned</td>
 <td>3100000</td>
 <td>5300000</td>
 <td>1.71</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">12</td>
-<td>230926Esv_D23-14908-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14908-1</td>
 <td>cleaned</td>
 <td>3300000</td>
 <td>5500000</td>
 <td>1.67</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">13</td>
-<td>230926Esv_D23-14909-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14909-1</td>
 <td>cleaned</td>
 <td>3100000</td>
 <td>5100000</td>
 <td>1.65</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">14</td>
-<td>230926Esv_D23-14910-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14910-1</td>
 <td>cleaned</td>
 <td>3100000</td>
 <td>5400000</td>
 <td>1.74</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">15</td>
-<td>230926Esv_D23-14911-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14911-1</td>
 <td>cleaned</td>
 <td>3100000</td>
 <td>5500000</td>
@@ -433,21 +411,28 @@ Table&nbsp;1.1: Comparison of n_bases_approx between single-read and paired-end 
 </figure>
 </div>
 </div>
-<div class="cell" data-execution_count="6">
+<div id="c207c4f8" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>combined_df_read_pairs <span class="op">=</span> combined_df[[<span class="st">"sample"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs_single"</span>, <span class="st">"n_read_pairs_paired"</span>, <span class="st">"ratio_read_pairs"</span>]]</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>combined_df_read_pairs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_bases"</span>] <span class="op">=</span> <span class="bu">round</span>((combined_df[<span class="st">"n_bases_approx_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_bases_approx_single"</span>]) , <span class="dv">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_read_pairs"</span>] <span class="op">=</span> <span class="bu">round</span>(combined_df[<span class="st">"n_read_pairs_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_read_pairs_single"</span>], <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div id="tbl-compare-read-pairs" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="6">
+</div>
+<div class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>combined_df_read_pairs <span class="op">=</span> combined_df[[<span class="st">"sample"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs_single"</span>, <span class="st">"n_read_pairs_paired"</span>, <span class="st">"ratio_read_pairs"</span>]]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>combined_df_read_pairs.set_index([<span class="st">"sample"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div id="tbl-compare-read-pairs" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="7">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-compare-read-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1.2: Comparison of n_read_pairs between single-read and paired-end versions
+Table&nbsp;1.2: Comparison of the number of reads between single-read and paired-end runs, for both raw and cleaned files
 </figcaption>
 <div aria-describedby="tbl-compare-read-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 
 
@@ -455,137 +440,127 @@ Table&nbsp;1.2: Comparison of n_read_pairs between single-read and paired-end ve
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">sample</th>
 <th data-quarto-table-cell-role="th">stage</th>
 <th data-quarto-table-cell-role="th">n_read_pairs_single</th>
 <th data-quarto-table-cell-role="th">n_read_pairs_paired</th>
 <th data-quarto-table-cell-role="th">ratio_read_pairs</th>
 </tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">sample</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>230926Esv_D23-14904-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14904-1</td>
 <td>raw_concat</td>
 <td>25000</td>
 <td>25000</td>
 <td>1.00</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>230926Esv_D23-14905-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14905-1</td>
 <td>raw_concat</td>
 <td>25000</td>
 <td>25000</td>
 <td>1.00</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>230926Esv_D23-14906-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14906-1</td>
 <td>raw_concat</td>
 <td>25000</td>
 <td>25000</td>
 <td>1.00</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>230926Esv_D23-14907-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14907-1</td>
 <td>raw_concat</td>
 <td>25000</td>
 <td>25000</td>
 <td>1.00</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>230926Esv_D23-14908-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14908-1</td>
 <td>raw_concat</td>
 <td>25000</td>
 <td>25000</td>
 <td>1.00</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>230926Esv_D23-14909-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14909-1</td>
 <td>raw_concat</td>
 <td>25000</td>
 <td>25000</td>
 <td>1.00</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">6</td>
-<td>230926Esv_D23-14910-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14910-1</td>
 <td>raw_concat</td>
 <td>25000</td>
 <td>25000</td>
 <td>1.00</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">7</td>
-<td>230926Esv_D23-14911-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14911-1</td>
 <td>raw_concat</td>
 <td>25000</td>
 <td>25000</td>
 <td>1.00</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">8</td>
-<td>230926Esv_D23-14904-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14904-1</td>
 <td>cleaned</td>
 <td>24285</td>
 <td>18997</td>
 <td>0.78</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">9</td>
-<td>230926Esv_D23-14905-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14905-1</td>
 <td>cleaned</td>
 <td>24495</td>
 <td>19397</td>
 <td>0.79</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">10</td>
-<td>230926Esv_D23-14906-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14906-1</td>
 <td>cleaned</td>
 <td>24514</td>
 <td>19843</td>
 <td>0.81</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">11</td>
-<td>230926Esv_D23-14907-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14907-1</td>
 <td>cleaned</td>
 <td>24248</td>
 <td>20034</td>
 <td>0.83</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">12</td>
-<td>230926Esv_D23-14908-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14908-1</td>
 <td>cleaned</td>
 <td>24626</td>
 <td>20041</td>
 <td>0.81</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">13</td>
-<td>230926Esv_D23-14909-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14909-1</td>
 <td>cleaned</td>
 <td>24468</td>
 <td>19672</td>
 <td>0.80</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">14</td>
-<td>230926Esv_D23-14910-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14910-1</td>
 <td>cleaned</td>
 <td>24500</td>
 <td>20694</td>
 <td>0.84</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">15</td>
-<td>230926Esv_D23-14911-1</td>
+<td data-quarto-table-cell-role="th">230926Esv_D23-14911-1</td>
 <td>cleaned</td>
 <td>24514</td>
 <td>21143</td>
@@ -604,22 +579,38 @@ Table&nbsp;1.2: Comparison of n_read_pairs between single-read and paired-end ve
 <section id="comparing-output-of-adapter-stats" class="level1">
 <h1>Comparing output of adapter stats</h1>
 <p>Again, the paired-end output of <code>single-read-raw</code> is identical to the original paired-end output of <code>qc_adapter_stats.tsv</code>.</p>
-<div id="cell-check-equivalence-of-adapter-stats" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pe_adapter_stats.equals(full_test_adapter_stats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="check-equivalence-of-adapter-stats" class="cell-output cell-output-display" data-execution_count="8">
-<pre><code>True</code></pre>
-</div>
-</div>
-<p>Comparing adapter contamination, the raw_concat percentages are equivalent (though the paired-end version sees more of a step-wise curve).</p>
-<div id="cell-fig-adapter-stats-comparison" class="cell" data-execution_count="9">
+<p>Comparing adapter contamination (<a href="#fig-adapter-stats-comparison" class="quarto-xref">Figure&nbsp;2.1</a>), the raw_concat percentages are equivalent. MULTIQC running on the paired-end data returned no adapter contamination stats for cleaned reads, suggesting that FASTP did its job well.</p>
+<div id="cell-fig-adapter-stats-comparison" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>se_adapter_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'pc_adapters'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>pe_adapter_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'pc_adapters'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, style<span class="op">=</span><span class="st">"read_pair"</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>],units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Set common properties for both subplots</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'Position'</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'% Adapters'</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Set titles for each subplot</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">'Single-End Adapter Stats'</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">'Paired-End Adapter Stats'</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove top and right spines for both subplots</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <div id="fig-adapter-stats-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-adapter-stats-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-adapter-stats-comparison-output-1.svg" id="fig-adapter-stats-comparison" class="img-fluid figure-img">
+<img src="index_files/figure-html/fig-adapter-stats-comparison-output-1.svg" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-adapter-stats-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.1
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-adapter-stats-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: Adapter contamination along reads
 </figcaption>
 </figure>
 </div>
@@ -629,81 +620,108 @@ Figure&nbsp;2.1
 <section id="comparing-output-of-quality-base-stats" class="level1">
 <h1>Comparing output of quality base stats</h1>
 <p>Again, the paired-end output of <code>single-read-raw</code> is identical to the original paired-end output of <code>qc_quality_base_stats.tsv</code>.</p>
-<div id="cell-equivalence-of-quality-base-stats" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pe_quality_base_stats.equals(full_test_quality_base_stats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="equivalence-of-quality-base-stats" class="cell-output cell-output-display" data-execution_count="11">
-<pre><code>True</code></pre>
-</div>
-</div>
-<p>As expected, the single-read version looks very similar to the first read pair of the paired-end version.</p>
-<div class="cell" data-execution_count="12">
-<div id="fig-quality-base-stats-comparison" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="12">
+<p>As expected, the single-read run looks very similar to the forward read of the paired-end run (<a href="#fig-quality-base-stats-comparison" class="quarto-xref">Figure&nbsp;3.1</a>). However, the Phred scores of the reverse reads are quite bad, with scores consistently under 30 after position 20.</p>
+<div id="cell-fig-quality-base-stats-comparison" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>se_quality_base_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'mean_phred_score'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, style<span class="op">=</span><span class="st">"read_pair"</span>, units<span class="op">=</span><span class="st">"sample"</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>pe_quality_base_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'mean_phred_score'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, style<span class="op">=</span><span class="st">"read_pair"</span>, units<span class="op">=</span><span class="st">"sample"</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>],estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">'Mean phred scores across single-end reads'</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">'Mean phred scores across paired-end reads'</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>plt.subplots_adjust(hspace<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-quality-base-stats-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-quality-base-stats-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="fig-quality-base-stats-comparison-1" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="12">
-<figure class="quarto-float quarto-subfloat-fig figure">
-<div aria-describedby="fig-quality-base-stats-comparison-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<pre id="fig-quality-base-stats-comparison-1" class="cell-output cell-output-display" data-execution_count="12"><code>Text(0.5, 1.0, 'Paired-End Quality Base Stats')</code></pre>
+<img src="index_files/figure-html/fig-quality-base-stats-comparison-output-1.svg" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quality-base-stats-comparison-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(a)
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quality-base-stats-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.1: Phred scores along the read
 </figcaption>
 </figure>
 </div>
-<div class="cell-output cell-output-display">
-<div id="fig-quality-base-stats-comparison-2" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-subfloat-fig figure">
-<div aria-describedby="fig-quality-base-stats-comparison-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-quality-base-stats-comparison-output-2.svg" id="fig-quality-base-stats-comparison-2" class="img-fluid figure-img" data-ref-parent="fig-quality-base-stats-comparison">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quality-base-stats-comparison-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(b)
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-quality-base-stats-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.1
-</figcaption>
-</figure>
 </div>
 </div>
 </section>
 <section id="comparing-output-of-quality-sequence-stats" class="level1">
 <h1>Comparing output of quality sequence stats</h1>
-<p>Again, the paired-end output of <code>single-read-raw</code> is identical to <code>qc_quality_sequence_stats.tsv</code>, as created by the <code>dev</code> branch of mgs-workflow.</p>
-<div id="cell-equivalence-of-quality-sequence-stats" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pe_quality_seq_stats.equals(full_test_quality_seq_stats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="equivalence-of-quality-sequence-stats" class="cell-output cell-output-display" data-execution_count="14">
-<pre><code>True</code></pre>
-</div>
-</div>
-<p>Plotting the mean phred score (<a href="#fig-quality-sequence-stats-comparison" class="quarto-xref">Figure&nbsp;4.1</a>), the single-read output looks similar to the fwd reads of the paired-end output. But they don’t look exactly the same!</p>
-<div id="cell-fig-quality-sequence-stats-comparison" class="cell" data-execution_count="15">
+<p>Again, the paired-end output of <code>single-read-raw</code> is identical to the original paired-end output of <code>qc_quality_sequence_stats.tsv</code>.</p>
+<p>Plotting the mean phred score (<a href="#fig-quality-sequence-stats-comparison" class="quarto-xref">Figure&nbsp;4.1</a>), the average Phred scores of the single-read output looks similar to the forward reads of the paired-end run. Notable there are fewer sequences in the cleaned paired-end forward read. Again, this can be explained by FASTP dropping read pairs where the reverse read was low quality (<a href="#fig-quality-cleaned-single-vs-forward" class="quarto-xref">Figure&nbsp;4.2</a>).</p>
+<div id="cell-fig-quality-sequence-stats-comparison" class="cell" data-execution_count="17">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>se_quality_seq_stats, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.subplots_adjust(hspace<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>pe_quality_seq_stats, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>], style<span class="op">=</span><span class="st">"read_pair"</span>, units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">'Mean phred scores of single-end reads'</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">'Mean phred scores of paired-end reads'</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">0</span>, <span class="dv">40</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="dv">0</span>, <span class="dv">7000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <div id="fig-quality-sequence-stats-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-quality-sequence-stats-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-quality-sequence-stats-comparison-output-1.svg" id="fig-quality-sequence-stats-comparison" class="img-fluid figure-img">
+<img src="index_files/figure-html/fig-quality-sequence-stats-comparison-output-1.svg" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-quality-sequence-stats-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.1
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quality-sequence-stats-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.1: Average Phred scores of sequences
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The difference lies in there being more cleaned reads in the single-read run, vs cleaned reads in the forward-reads of the paired-end run. This matches with what we’ve seen under “Assessing basic stats for both raw and cleaned reads”.</p>
-<div id="cell-fig-quality-cleaned-single-vs-forward" class="cell" data-execution_count="16">
+<div id="cell-fig-quality-cleaned-single-vs-forward" class="cell" data-execution_count="18">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pe_cleaned_fwd <span class="op">=</span> pe_quality_seq_stats[(pe_quality_seq_stats[<span class="st">'read_pair'</span>] <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (pe_quality_seq_stats[<span class="st">'stage'</span>] <span class="op">==</span> <span class="st">'cleaned'</span>)]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>se_cleaned <span class="op">=</span> se_quality_seq_stats[se_quality_seq_stats[<span class="st">'stage'</span>] <span class="op">==</span> <span class="st">'cleaned'</span>]</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>se_cleaned <span class="op">=</span> se_cleaned.copy()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>pe_cleaned_fwd <span class="op">=</span> pe_cleaned_fwd.copy()</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>se_cleaned[<span class="st">'read_type'</span>] <span class="op">=</span> <span class="st">'single'</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>pe_cleaned_fwd[<span class="st">'read_type'</span>] <span class="op">=</span> <span class="st">'paired'</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>merged_cleaned <span class="op">=</span> pd.concat([se_cleaned, pe_cleaned_fwd], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>mean_phred_paired <span class="op">=</span> merged_cleaned[merged_cleaned[<span class="st">'read_type'</span>] <span class="op">==</span> <span class="st">'paired'</span>][<span class="st">'mean_phred_score'</span>].mean()</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>mean_phred_single <span class="op">=</span> merged_cleaned[merged_cleaned[<span class="st">'read_type'</span>] <span class="op">==</span> <span class="st">'single'</span>][<span class="st">'mean_phred_score'</span>].mean()</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>merged_cleaned, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'read_type'</span>, ax<span class="op">=</span>ax,units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">""</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <div id="fig-quality-cleaned-single-vs-forward" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-quality-cleaned-single-vs-forward-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-quality-cleaned-single-vs-forward-output-1.svg" id="fig-quality-cleaned-single-vs-forward" class="img-fluid figure-img">
+<img src="index_files/figure-html/fig-quality-cleaned-single-vs-forward-output-1.svg" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-quality-cleaned-single-vs-forward-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.2
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quality-cleaned-single-vs-forward-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.2: Average phred scores of the paired-end run forward reads,to single-read phred scores
 </figcaption>
 </figure>
 </div>
@@ -1187,325 +1205,348 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb13" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Checking if single-read version of mgs-workflow works"</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Simon Grimm"</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-10-23</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-link: true</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 2</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-format: svg</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">    crossref:</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">      fig-title: Figure</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">      fig-prefix: Figure</span></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">      chapters: true</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> venv</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> black</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>I'm adapting mgs-workflow to take in single-read data. Here I'm checking if i) the output of the single-read version looks as expected, and if ii) the output of the paired-end version is the same as the original version.</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the full test dataset, run on the <span class="in">`single-read-raw`</span> pipeline with read_type set to <span class="in">`paired_end`</span>, and the full output of running the usual test dataset with the <span class="in">`dev`</span> branch of <span class="in">`mgs-workflow`</span>.</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-packages</span></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-paths</span></span>
-<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>single_read_dir <span class="op">=</span> <span class="st">"mgs-results/test_single_read"</span></span>
-<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>paired_read_dir <span class="op">=</span> <span class="st">"mgs-results/test_paired_end"</span></span>
-<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>test_dir <span class="op">=</span> <span class="st">"mgs-results/test"</span></span>
-<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>full_test_dir <span class="op">=</span> <span class="st">"mgs-results/test-full"</span></span>
-<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>se_output_dir <span class="op">=</span> os.path.join(single_read_dir, <span class="st">"output"</span>)</span>
-<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>pe_output_dir <span class="op">=</span> os.path.join(paired_read_dir, <span class="st">"output"</span>)</span>
-<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>test_output_dir <span class="op">=</span> os.path.join(test_dir, <span class="st">"output"</span>)</span>
-<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>full_test_output_dir <span class="op">=</span> os.path.join(full_test_dir, <span class="st">"output"</span>)</span>
-<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>se_results_dir <span class="op">=</span> os.path.join(se_output_dir, <span class="st">"results"</span>)</span>
-<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>pe_results_dir <span class="op">=</span> os.path.join(pe_output_dir, <span class="st">"results"</span>)</span>
-<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>test_results_dir <span class="op">=</span> os.path.join(test_output_dir, <span class="st">"results"</span>)</span>
-<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>full_test_results_dir <span class="op">=</span> os.path.join(full_test_output_dir, <span class="st">"results"</span>)</span>
-<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>se_qc_dir <span class="op">=</span> os.path.join(se_results_dir, <span class="st">"qc"</span>)</span>
-<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>pe_qc_dir <span class="op">=</span> os.path.join(pe_results_dir, <span class="st">"qc"</span>)</span>
-<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>test_qc_dir <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc"</span>)</span>
-<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>full_test_qc_dir <span class="op">=</span> os.path.join(full_test_results_dir, <span class="st">"qc"</span>)</span>
-<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>se_basic_stats_path <span class="op">=</span> os.path.join(se_qc_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
-<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>se_adapter_stats_path <span class="op">=</span> os.path.join(se_qc_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
-<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>se_quality_base_stats_path <span class="op">=</span> os.path.join(se_qc_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
-<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>se_quality_seq_stats_path <span class="op">=</span> os.path.join(se_qc_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
-<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>pe_basic_stats_path <span class="op">=</span> os.path.join(pe_qc_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
-<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>pe_adapter_stats_path <span class="op">=</span> os.path.join(pe_qc_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
-<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a>pe_quality_base_stats_path <span class="op">=</span> os.path.join(pe_qc_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
-<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a>pe_quality_seq_stats_path <span class="op">=</span> os.path.join(pe_qc_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
-<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a>test_basic_stats_path <span class="op">=</span> os.path.join(test_qc_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
-<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a>test_adapter_stats_path <span class="op">=</span> os.path.join(test_qc_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
-<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a>test_quality_base_stats_path <span class="op">=</span> os.path.join(test_qc_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
-<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>test_quality_seq_stats_path <span class="op">=</span> os.path.join(test_qc_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
-<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>full_test_basic_stats_path <span class="op">=</span> os.path.join(full_test_qc_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
-<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a>full_test_adapter_stats_path <span class="op">=</span> os.path.join(full_test_qc_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
-<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a>full_test_quality_base_stats_path <span class="op">=</span> os.path.join(full_test_qc_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
-<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a>full_test_quality_seq_stats_path <span class="op">=</span> os.path.join(full_test_qc_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
-<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a><span class="fu"># Assessing basic stats for both raw and cleaned reads</span></span>
-<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>First, we can check if the paired-end version of <span class="in">`single-read-raw`</span> is identical to the original paired-end version. It is.</span>
-<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-basic-stats</span></span>
-<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a>se_basic_stats <span class="op">=</span> pd.read_csv(se_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-96"><a href="#cb13-96" aria-hidden="true" tabindex="-1"></a>pe_basic_stats <span class="op">=</span> pd.read_csv(pe_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-97"><a href="#cb13-97" aria-hidden="true" tabindex="-1"></a>test_basic_stats <span class="op">=</span> pd.read_csv(test_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a>full_test_basic_stats <span class="op">=</span> pd.read_csv(full_test_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check-equivalence-of-paired-read-data</span></span>
-<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: false</span></span>
-<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a>pe_basic_stats.equals(full_test_basic_stats)</span>
-<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-111"><a href="#cb13-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-112"><a href="#cb13-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-113"><a href="#cb13-113" aria-hidden="true" tabindex="-1"></a>Now, let's compare the basic stats of the single-read version to the paired-end version. What we see in @tbl-compare-base-pairs is that the the paired-end cleaned samples loses more base pairs than the single-read cleaned samples during cleaning. This is partly explained by the loss of substantially more reads in the paired-end version, as shown in @tbl-compare-read-pairs.</span>
-<span id="cb13-114"><a href="#cb13-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-115"><a href="#cb13-115" aria-hidden="true" tabindex="-1"></a>My current hypothesis is that the reverse reads are very low quality, where FASTP drops them, and thus also drops the forward reads.</span>
-<span id="cb13-116"><a href="#cb13-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-119"><a href="#cb13-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-120"><a href="#cb13-120" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-compare-base-pairs</span></span>
-<span id="cb13-121"><a href="#cb13-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Comparison of n_bases_approx between single-read and paired-end versions</span></span>
-<span id="cb13-122"><a href="#cb13-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-123"><a href="#cb13-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-124"><a href="#cb13-124" aria-hidden="true" tabindex="-1"></a>se_basic_stats[<span class="st">"sample"</span>] <span class="op">=</span> se_basic_stats[<span class="st">"sample"</span>].<span class="bu">str</span>.replace(<span class="st">"230926EsvD23"</span>, <span class="st">"230926Esv_D23"</span>)</span>
-<span id="cb13-125"><a href="#cb13-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-126"><a href="#cb13-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-127"><a href="#cb13-127" aria-hidden="true" tabindex="-1"></a><span class="co"># print(pe_basic_stats)</span></span>
-<span id="cb13-128"><a href="#cb13-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-129"><a href="#cb13-129" aria-hidden="true" tabindex="-1"></a>combined_df <span class="op">=</span> se_basic_stats[[<span class="st">"sample"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs"</span>]].merge(</span>
-<span id="cb13-130"><a href="#cb13-130" aria-hidden="true" tabindex="-1"></a>    pe_basic_stats[[<span class="st">"sample"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs"</span>]],</span>
-<span id="cb13-131"><a href="#cb13-131" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span>[<span class="st">"sample"</span>, <span class="st">"stage"</span>],</span>
-<span id="cb13-132"><a href="#cb13-132" aria-hidden="true" tabindex="-1"></a>    suffixes<span class="op">=</span>[<span class="st">"_single"</span>, <span class="st">"_paired"</span>]</span>
-<span id="cb13-133"><a href="#cb13-133" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-134"><a href="#cb13-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-135"><a href="#cb13-135" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_bases"</span>] <span class="op">=</span> <span class="bu">round</span>((combined_df[<span class="st">"n_bases_approx_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_bases_approx_single"</span>]) , <span class="dv">2</span>)</span>
-<span id="cb13-136"><a href="#cb13-136" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_read_pairs"</span>] <span class="op">=</span> <span class="bu">round</span>(combined_df[<span class="st">"n_read_pairs_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_read_pairs_single"</span>], <span class="dv">2</span>)</span>
-<span id="cb13-137"><a href="#cb13-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-138"><a href="#cb13-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Order columns</span></span>
-<span id="cb13-139"><a href="#cb13-139" aria-hidden="true" tabindex="-1"></a>combined_df_base_pairs <span class="op">=</span> combined_df[[<span class="st">"sample"</span>, <span class="st">"stage"</span>, <span class="st">"n_bases_approx_single"</span>, <span class="st">"n_bases_approx_paired"</span>, <span class="st">"ratio_bases"</span>]]</span>
-<span id="cb13-140"><a href="#cb13-140" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the result</span></span>
-<span id="cb13-141"><a href="#cb13-141" aria-hidden="true" tabindex="-1"></a>combined_df_base_pairs</span>
-<span id="cb13-142"><a href="#cb13-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-143"><a href="#cb13-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-144"><a href="#cb13-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-145"><a href="#cb13-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-148"><a href="#cb13-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-149"><a href="#cb13-149" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-compare-read-pairs</span></span>
-<span id="cb13-150"><a href="#cb13-150" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Comparison of n_read_pairs between single-read and paired-end versions</span></span>
-<span id="cb13-151"><a href="#cb13-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-152"><a href="#cb13-152" aria-hidden="true" tabindex="-1"></a>combined_df_read_pairs <span class="op">=</span> combined_df[[<span class="st">"sample"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs_single"</span>, <span class="st">"n_read_pairs_paired"</span>, <span class="st">"ratio_read_pairs"</span>]]</span>
-<span id="cb13-153"><a href="#cb13-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-154"><a href="#cb13-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-155"><a href="#cb13-155" aria-hidden="true" tabindex="-1"></a>combined_df_read_pairs</span>
-<span id="cb13-156"><a href="#cb13-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-157"><a href="#cb13-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-158"><a href="#cb13-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-159"><a href="#cb13-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-160"><a href="#cb13-160" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing output of adapter stats</span></span>
-<span id="cb13-161"><a href="#cb13-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-164"><a href="#cb13-164" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-165"><a href="#cb13-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-adapter-stats</span></span>
-<span id="cb13-166"><a href="#cb13-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb13-167"><a href="#cb13-167" aria-hidden="true" tabindex="-1"></a>test_adapter_stats <span class="op">=</span> pd.read_csv(test_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-168"><a href="#cb13-168" aria-hidden="true" tabindex="-1"></a>se_adapter_stats <span class="op">=</span> pd.read_csv(se_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-169"><a href="#cb13-169" aria-hidden="true" tabindex="-1"></a>pe_adapter_stats <span class="op">=</span> pd.read_csv(pe_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-170"><a href="#cb13-170" aria-hidden="true" tabindex="-1"></a>full_test_adapter_stats <span class="op">=</span> pd.read_csv(full_test_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-171"><a href="#cb13-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-172"><a href="#cb13-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-173"><a href="#cb13-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-174"><a href="#cb13-174" aria-hidden="true" tabindex="-1"></a>Again, the paired-end output of <span class="in">`single-read-raw`</span> is identical to the original paired-end output of <span class="in">`qc_adapter_stats.tsv`</span>.</span>
-<span id="cb13-175"><a href="#cb13-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-178"><a href="#cb13-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-179"><a href="#cb13-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check-equivalence-of-adapter-stats</span></span>
-<span id="cb13-180"><a href="#cb13-180" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-181"><a href="#cb13-181" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: false</span></span>
-<span id="cb13-182"><a href="#cb13-182" aria-hidden="true" tabindex="-1"></a>pe_adapter_stats.equals(full_test_adapter_stats)</span>
-<span id="cb13-183"><a href="#cb13-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-184"><a href="#cb13-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-185"><a href="#cb13-185" aria-hidden="true" tabindex="-1"></a>Comparing adapter contamination, the raw_concat percentages are equivalent (though the paired-end version sees more of a step-wise curve).</span>
-<span id="cb13-186"><a href="#cb13-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-189"><a href="#cb13-189" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-190"><a href="#cb13-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-adapter-stats-comparison</span></span>
-<span id="cb13-191"><a href="#cb13-191" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb13-192"><a href="#cb13-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-193"><a href="#cb13-193" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb13-194"><a href="#cb13-194" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>se_adapter_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'pc_adapters'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb13-195"><a href="#cb13-195" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>pe_adapter_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'pc_adapters'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, style<span class="op">=</span><span class="st">"read_pair"</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>],units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb13-196"><a href="#cb13-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-197"><a href="#cb13-197" aria-hidden="true" tabindex="-1"></a><span class="co"># Set common properties for both subplots</span></span>
-<span id="cb13-198"><a href="#cb13-198" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
-<span id="cb13-199"><a href="#cb13-199" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'Position'</span>)</span>
-<span id="cb13-200"><a href="#cb13-200" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'% Adapters'</span>)</span>
-<span id="cb13-201"><a href="#cb13-201" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb13-202"><a href="#cb13-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-203"><a href="#cb13-203" aria-hidden="true" tabindex="-1"></a><span class="co"># Set titles for each subplot</span></span>
-<span id="cb13-204"><a href="#cb13-204" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">'Single-End Adapter Stats'</span>)</span>
-<span id="cb13-205"><a href="#cb13-205" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">'Paired-End Adapter Stats'</span>)</span>
-<span id="cb13-206"><a href="#cb13-206" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove top and right spines for both subplots</span></span>
-<span id="cb13-207"><a href="#cb13-207" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
-<span id="cb13-208"><a href="#cb13-208" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb13-209"><a href="#cb13-209" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb13-210"><a href="#cb13-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-211"><a href="#cb13-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-212"><a href="#cb13-212" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a main title to the figure</span></span>
-<span id="cb13-213"><a href="#cb13-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-214"><a href="#cb13-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-215"><a href="#cb13-215" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb13-216"><a href="#cb13-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-217"><a href="#cb13-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-218"><a href="#cb13-218" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing output of quality base stats</span></span>
-<span id="cb13-219"><a href="#cb13-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-222"><a href="#cb13-222" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-223"><a href="#cb13-223" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-base-stats</span></span>
-<span id="cb13-224"><a href="#cb13-224" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb13-225"><a href="#cb13-225" aria-hidden="true" tabindex="-1"></a>test_quality_base_stats <span class="op">=</span> pd.read_csv(test_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-226"><a href="#cb13-226" aria-hidden="true" tabindex="-1"></a>se_quality_base_stats <span class="op">=</span> pd.read_csv(se_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-227"><a href="#cb13-227" aria-hidden="true" tabindex="-1"></a>pe_quality_base_stats <span class="op">=</span> pd.read_csv(pe_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-228"><a href="#cb13-228" aria-hidden="true" tabindex="-1"></a>full_test_quality_base_stats <span class="op">=</span> pd.read_csv(full_test_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-229"><a href="#cb13-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-230"><a href="#cb13-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-231"><a href="#cb13-231" aria-hidden="true" tabindex="-1"></a>Again, the paired-end output of <span class="in">`single-read-raw`</span> is identical to the original paired-end output of <span class="in">`qc_quality_base_stats.tsv`</span>.</span>
-<span id="cb13-232"><a href="#cb13-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-235"><a href="#cb13-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-236"><a href="#cb13-236" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: equivalence-of-quality-base-stats</span></span>
-<span id="cb13-237"><a href="#cb13-237" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-238"><a href="#cb13-238" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: false</span></span>
-<span id="cb13-239"><a href="#cb13-239" aria-hidden="true" tabindex="-1"></a><span class="co">#|</span></span>
-<span id="cb13-240"><a href="#cb13-240" aria-hidden="true" tabindex="-1"></a>pe_quality_base_stats.equals(full_test_quality_base_stats)</span>
-<span id="cb13-241"><a href="#cb13-241" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-242"><a href="#cb13-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-243"><a href="#cb13-243" aria-hidden="true" tabindex="-1"></a>As expected, the single-read version looks very similar to the first read pair of the paired-end version.</span>
-<span id="cb13-244"><a href="#cb13-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-base-stats-comparison</span></span>
-<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>se_quality_base_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'mean_phred_score'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, style<span class="op">=</span><span class="st">"read_pair"</span>, units<span class="op">=</span><span class="st">"sample"</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-254"><a href="#cb13-254" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>pe_quality_base_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'mean_phred_score'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, style<span class="op">=</span><span class="st">"read_pair"</span>, units<span class="op">=</span><span class="st">"sample"</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>],estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb13-255"><a href="#cb13-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-256"><a href="#cb13-256" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
-<span id="cb13-257"><a href="#cb13-257" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb13-258"><a href="#cb13-258" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb13-259"><a href="#cb13-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-260"><a href="#cb13-260" aria-hidden="true" tabindex="-1"></a>plt.subplots_adjust(hspace<span class="op">=</span><span class="fl">0.3</span>)</span>
-<span id="cb13-261"><a href="#cb13-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-262"><a href="#cb13-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-263"><a href="#cb13-263" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">'Single-End Quality Base Stats'</span>)</span>
-<span id="cb13-264"><a href="#cb13-264" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">'Paired-End Quality Base Stats'</span>)</span>
-<span id="cb13-265"><a href="#cb13-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-266"><a href="#cb13-266" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-267"><a href="#cb13-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-268"><a href="#cb13-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-269"><a href="#cb13-269" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing output of quality sequence stats</span></span>
-<span id="cb13-270"><a href="#cb13-270" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-273"><a href="#cb13-273" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-274"><a href="#cb13-274" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-sequence-stats</span></span>
-<span id="cb13-275"><a href="#cb13-275" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb13-276"><a href="#cb13-276" aria-hidden="true" tabindex="-1"></a>test_quality_seq_stats <span class="op">=</span> pd.read_csv(test_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-277"><a href="#cb13-277" aria-hidden="true" tabindex="-1"></a>se_quality_seq_stats <span class="op">=</span> pd.read_csv(se_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-278"><a href="#cb13-278" aria-hidden="true" tabindex="-1"></a>pe_quality_seq_stats <span class="op">=</span> pd.read_csv(pe_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-279"><a href="#cb13-279" aria-hidden="true" tabindex="-1"></a>full_test_quality_seq_stats <span class="op">=</span> pd.read_csv(full_test_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb13-280"><a href="#cb13-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-281"><a href="#cb13-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-282"><a href="#cb13-282" aria-hidden="true" tabindex="-1"></a>Again, the paired-end output of <span class="in">`single-read-raw`</span> is identical to <span class="in">`qc_quality_sequence_stats.tsv`</span>, as created by the <span class="in">`dev`</span> branch of mgs-workflow.</span>
-<span id="cb13-283"><a href="#cb13-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-286"><a href="#cb13-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-287"><a href="#cb13-287" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: equivalence-of-quality-sequence-stats</span></span>
-<span id="cb13-288"><a href="#cb13-288" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-289"><a href="#cb13-289" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: false</span></span>
-<span id="cb13-290"><a href="#cb13-290" aria-hidden="true" tabindex="-1"></a>pe_quality_seq_stats.equals(full_test_quality_seq_stats)</span>
-<span id="cb13-291"><a href="#cb13-291" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-292"><a href="#cb13-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-293"><a href="#cb13-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-294"><a href="#cb13-294" aria-hidden="true" tabindex="-1"></a>Plotting the mean phred score (@fig-quality-sequence-stats-comparison), the single-read output looks similar to the fwd reads of the paired-end output. But they don't look exactly the same!</span>
-<span id="cb13-297"><a href="#cb13-297" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-298"><a href="#cb13-298" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-sequence-stats-comparison</span></span>
-<span id="cb13-299"><a href="#cb13-299" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb13-300"><a href="#cb13-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-301"><a href="#cb13-301" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb13-302"><a href="#cb13-302" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>se_quality_seq_stats, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb13-303"><a href="#cb13-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-304"><a href="#cb13-304" aria-hidden="true" tabindex="-1"></a>plt.subplots_adjust(hspace<span class="op">=</span><span class="fl">0.3</span>)</span>
-<span id="cb13-305"><a href="#cb13-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-306"><a href="#cb13-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-307"><a href="#cb13-307" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>pe_quality_seq_stats, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>], style<span class="op">=</span><span class="st">"read_pair"</span>, units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb13-308"><a href="#cb13-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-309"><a href="#cb13-309" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">'Single-End Quality Sequence Stats'</span>)</span>
-<span id="cb13-310"><a href="#cb13-310" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">'Paired-End Quality Sequence Stats'</span>)</span>
-<span id="cb13-311"><a href="#cb13-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-312"><a href="#cb13-312" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
-<span id="cb13-313"><a href="#cb13-313" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb13-314"><a href="#cb13-314" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb13-315"><a href="#cb13-315" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">0</span>, <span class="dv">40</span>)</span>
-<span id="cb13-316"><a href="#cb13-316" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="dv">0</span>, <span class="dv">7000</span>)</span>
-<span id="cb13-317"><a href="#cb13-317" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-318"><a href="#cb13-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-319"><a href="#cb13-319" aria-hidden="true" tabindex="-1"></a>The difference lies in there being more cleaned reads in the single-read run, vs cleaned reads in the forward-reads of the paired-end run. This matches with what we've seen under "Assessing basic stats for both raw and cleaned reads".</span>
-<span id="cb13-320"><a href="#cb13-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-321"><a href="#cb13-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-324"><a href="#cb13-324" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb13-325"><a href="#cb13-325" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-cleaned-single-vs-forward</span></span>
-<span id="cb13-326"><a href="#cb13-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb13-327"><a href="#cb13-327" aria-hidden="true" tabindex="-1"></a><span class="co">#|</span></span>
-<span id="cb13-328"><a href="#cb13-328" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-329"><a href="#cb13-329" aria-hidden="true" tabindex="-1"></a>pe_cleaned_fwd <span class="op">=</span> pe_quality_seq_stats[(pe_quality_seq_stats[<span class="st">'read_pair'</span>] <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (pe_quality_seq_stats[<span class="st">'stage'</span>] <span class="op">==</span> <span class="st">'cleaned'</span>)]</span>
-<span id="cb13-330"><a href="#cb13-330" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-331"><a href="#cb13-331" aria-hidden="true" tabindex="-1"></a>se_cleaned <span class="op">=</span> se_quality_seq_stats[se_quality_seq_stats[<span class="st">'stage'</span>] <span class="op">==</span> <span class="st">'cleaned'</span>]</span>
-<span id="cb13-332"><a href="#cb13-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-333"><a href="#cb13-333" aria-hidden="true" tabindex="-1"></a>se_cleaned <span class="op">=</span> se_cleaned.copy()</span>
-<span id="cb13-334"><a href="#cb13-334" aria-hidden="true" tabindex="-1"></a>pe_cleaned_fwd <span class="op">=</span> pe_cleaned_fwd.copy()</span>
-<span id="cb13-335"><a href="#cb13-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-336"><a href="#cb13-336" aria-hidden="true" tabindex="-1"></a>se_cleaned[<span class="st">'read_type'</span>] <span class="op">=</span> <span class="st">'single'</span></span>
-<span id="cb13-337"><a href="#cb13-337" aria-hidden="true" tabindex="-1"></a>pe_cleaned_fwd[<span class="st">'read_type'</span>] <span class="op">=</span> <span class="st">'paired'</span></span>
-<span id="cb13-338"><a href="#cb13-338" aria-hidden="true" tabindex="-1"></a>merged_cleaned <span class="op">=</span> pd.concat([se_cleaned, pe_cleaned_fwd], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb13-339"><a href="#cb13-339" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-340"><a href="#cb13-340" aria-hidden="true" tabindex="-1"></a>mean_phred_paired <span class="op">=</span> merged_cleaned[merged_cleaned[<span class="st">'read_type'</span>] <span class="op">==</span> <span class="st">'paired'</span>][<span class="st">'mean_phred_score'</span>].mean()</span>
-<span id="cb13-341"><a href="#cb13-341" aria-hidden="true" tabindex="-1"></a>mean_phred_single <span class="op">=</span> merged_cleaned[merged_cleaned[<span class="st">'read_type'</span>] <span class="op">==</span> <span class="st">'single'</span>][<span class="st">'mean_phred_score'</span>].mean()</span>
-<span id="cb13-342"><a href="#cb13-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-343"><a href="#cb13-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-344"><a href="#cb13-344" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb13-345"><a href="#cb13-345" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>merged_cleaned, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'read_type'</span>, ax<span class="op">=</span>ax,units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">'blue'</span>)</span>
-<span id="cb13-346"><a href="#cb13-346" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-347"><a href="#cb13-347" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-348"><a href="#cb13-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-349"><a href="#cb13-349" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-350"><a href="#cb13-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-351"><a href="#cb13-351" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Testing single-read version of RAW and CLEAN workflows"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Simon Grimm"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-10-23</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-link: true</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 2</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-format: svg</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">    crossref:</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">      fig-title: Figure</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">      fig-prefix: Figure</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">      chapters: true</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> venv</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> black</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>I'm adapting mgs-workflow to take in single-read sequencing data. Here I'm checking if i) the output of the single-read RAW and CLEAN workflows look as expected, and if ii) the output of the paired-end version is the same as the output of the test run on <span class="in">`dev`</span>.</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset, run on the <span class="in">`single-read-raw`</span> pipeline with <span class="in">`read_type == paired_end`</span>, and the same dataset run with the <span class="in">`dev`</span> branch of <span class="in">`mgs-workflow`</span>. I compared the <span class="in">`qc`</span> output of the two paired-end runs, and they are identical, suggesting that the addition of single-read functionality doesn't impede mgs-workflow runs on paired-end data.</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-packages</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-paths</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>single_read_dir <span class="op">=</span> <span class="st">"mgs-results/test_single_read"</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>paired_read_dir <span class="op">=</span> <span class="st">"mgs-results/test_paired_end"</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>test_dir <span class="op">=</span> <span class="st">"mgs-results/test"</span></span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>full_test_dir <span class="op">=</span> <span class="st">"mgs-results/test-full"</span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>se_output_dir <span class="op">=</span> os.path.join(single_read_dir, <span class="st">"output"</span>)</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>pe_output_dir <span class="op">=</span> os.path.join(paired_read_dir, <span class="st">"output"</span>)</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>test_output_dir <span class="op">=</span> os.path.join(test_dir, <span class="st">"output"</span>)</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>full_test_output_dir <span class="op">=</span> os.path.join(full_test_dir, <span class="st">"output"</span>)</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>se_results_dir <span class="op">=</span> os.path.join(se_output_dir, <span class="st">"results"</span>)</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>pe_results_dir <span class="op">=</span> os.path.join(pe_output_dir, <span class="st">"results"</span>)</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>test_results_dir <span class="op">=</span> os.path.join(test_output_dir, <span class="st">"results"</span>)</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>full_test_results_dir <span class="op">=</span> os.path.join(full_test_output_dir, <span class="st">"results"</span>)</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>se_qc_dir <span class="op">=</span> os.path.join(se_results_dir, <span class="st">"qc"</span>)</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>pe_qc_dir <span class="op">=</span> os.path.join(pe_results_dir, <span class="st">"qc"</span>)</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>test_qc_dir <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc"</span>)</span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>full_test_qc_dir <span class="op">=</span> os.path.join(full_test_results_dir, <span class="st">"qc"</span>)</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>se_basic_stats_path <span class="op">=</span> os.path.join(se_qc_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>se_adapter_stats_path <span class="op">=</span> os.path.join(se_qc_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>se_quality_base_stats_path <span class="op">=</span> os.path.join(se_qc_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>se_quality_seq_stats_path <span class="op">=</span> os.path.join(se_qc_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>pe_basic_stats_path <span class="op">=</span> os.path.join(pe_qc_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>pe_adapter_stats_path <span class="op">=</span> os.path.join(pe_qc_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>pe_quality_base_stats_path <span class="op">=</span> os.path.join(pe_qc_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>pe_quality_seq_stats_path <span class="op">=</span> os.path.join(pe_qc_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>test_basic_stats_path <span class="op">=</span> os.path.join(test_qc_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>test_adapter_stats_path <span class="op">=</span> os.path.join(test_qc_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>test_quality_base_stats_path <span class="op">=</span> os.path.join(test_qc_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>test_quality_seq_stats_path <span class="op">=</span> os.path.join(test_qc_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>full_test_basic_stats_path <span class="op">=</span> os.path.join(full_test_qc_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>full_test_adapter_stats_path <span class="op">=</span> os.path.join(full_test_qc_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>full_test_quality_base_stats_path <span class="op">=</span> os.path.join(full_test_qc_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>full_test_quality_seq_stats_path <span class="op">=</span> os.path.join(full_test_qc_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a><span class="fu"># Assessing basic stats for both raw and cleaned reads</span></span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-basic-stats</span></span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>se_basic_stats <span class="op">=</span> pd.read_csv(se_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>pe_basic_stats <span class="op">=</span> pd.read_csv(pe_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>test_basic_stats <span class="op">=</span> pd.read_csv(test_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a>full_test_basic_stats <span class="op">=</span> pd.read_csv(full_test_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check-equivalence-of-paired-read-data</span></span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>pe_basic_stats.equals(full_test_basic_stats)</span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a>Let's compare the basic stats of the single-read version to the paired-end version. Most notable is that paired-end data loses more bases and reads through FASTP cleaning. Accounting for paired-end reads containing twice as many base pairs, cleaned paired-end read files contain 16.4% fewer bases than single-end read files. This is largely due to FASTP dropping low-quality read pairs, with the number of cleaned paired-end reads 18.5% lower than the number of cleaned single-end reads. See @tbl-compare-base-pairs and @tbl-compare-read-pairs for sample level values.</span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a>My current hypothesis for this pattern is that the reverse reads are very low quality, as seen in @fig-quality-base-stats-comparison, leading FASTP to drop many of the read pairs with a low-quality reverse read. I won't investigate this further for now, but it suggests we should use a new test dataset that has high-quality forward and reverse reads.</span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-compare-base-pairs</span></span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Comparison of the number of bases between single-read and paired-end runs, for both raw and cleaned files</span></span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a>combined_df <span class="op">=</span> se_basic_stats[[<span class="st">"sample"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs"</span>]].merge(</span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a>    pe_basic_stats[[<span class="st">"sample"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs"</span>]],</span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span>[<span class="st">"sample"</span>, <span class="st">"stage"</span>],</span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a>    suffixes<span class="op">=</span>[<span class="st">"_single"</span>, <span class="st">"_paired"</span>]</span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_bases"</span>] <span class="op">=</span> <span class="bu">round</span>((combined_df[<span class="st">"n_bases_approx_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_bases_approx_single"</span>]) , <span class="dv">2</span>)</span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_read_pairs"</span>] <span class="op">=</span> <span class="bu">round</span>(combined_df[<span class="st">"n_read_pairs_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_read_pairs_single"</span>], <span class="dv">2</span>)</span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a><span class="co"># Order columns</span></span>
+<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a>combined_df_base_pairs <span class="op">=</span> combined_df[[<span class="st">"sample"</span>, <span class="st">"stage"</span>, <span class="st">"n_bases_approx_single"</span>, <span class="st">"n_bases_approx_paired"</span>, <span class="st">"ratio_bases"</span>]]</span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the result</span></span>
+<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a>combined_df_base_pairs.set_index([<span class="st">"sample"</span>])</span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_bases"</span>] <span class="op">=</span> <span class="bu">round</span>((combined_df[<span class="st">"n_bases_approx_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_bases_approx_single"</span>]) , <span class="dv">2</span>)</span>
+<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a>combined_df[<span class="st">"ratio_read_pairs"</span>] <span class="op">=</span> <span class="bu">round</span>(combined_df[<span class="st">"n_read_pairs_paired"</span>] <span class="op">/</span> combined_df[<span class="st">"n_read_pairs_single"</span>], <span class="dv">2</span>)</span>
+<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-compare-read-pairs</span></span>
+<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Comparison of the number of reads between single-read and paired-end runs, for both raw and cleaned files</span></span>
+<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a>combined_df_read_pairs <span class="op">=</span> combined_df[[<span class="st">"sample"</span>, <span class="st">"stage"</span>, <span class="st">"n_read_pairs_single"</span>, <span class="st">"n_read_pairs_paired"</span>, <span class="st">"ratio_read_pairs"</span>]]</span>
+<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a>combined_df_read_pairs.set_index([<span class="st">"sample"</span>])</span>
+<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check-equivalence-of-forward-categories</span></span>
+<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a>pe_basic_stats_raw <span class="op">=</span> pe_basic_stats[pe_basic_stats[<span class="st">'stage'</span>] <span class="op">==</span> <span class="st">'raw_concat'</span>]</span>
+<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a>se_basic_stats_raw <span class="op">=</span> se_basic_stats[se_basic_stats[<span class="st">'stage'</span>] <span class="op">==</span> <span class="st">'raw_concat'</span>]</span>
+<span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a>pe_basic_stats_fwd_cat_columns <span class="op">=</span> pe_basic_stats_raw[pe_basic_stats_raw.columns[pe_basic_stats_raw.astype(<span class="bu">str</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> x: x.<span class="bu">str</span>.contains(<span class="st">'/'</span>).<span class="bu">any</span>())]].<span class="bu">apply</span>(<span class="kw">lambda</span> x: x.<span class="bu">str</span>.split(<span class="st">'/'</span>).<span class="bu">str</span>[<span class="dv">0</span>])</span>
+<span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a>columns_with_pass_fail_warn <span class="op">=</span> se_basic_stats_raw.columns[se_basic_stats_raw.isin([<span class="st">'pass'</span>, <span class="st">'fail'</span>, <span class="st">'warn'</span>]).<span class="bu">any</span>()]</span>
+<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a>se_basic_stats_fwd_cat_columns <span class="op">=</span> se_basic_stats_raw.loc[:, columns_with_pass_fail_warn]</span>
+<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-179"><a href="#cb10-179" aria-hidden="true" tabindex="-1"></a>se_basic_stats_fwd_cat_columns.equals(pe_basic_stats_fwd_cat_columns)</span>
+<span id="cb10-180"><a href="#cb10-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-181"><a href="#cb10-181" aria-hidden="true" tabindex="-1"></a>combination <span class="op">=</span> se_basic_stats_fwd_cat_columns.astype(<span class="bu">str</span>) <span class="op">==</span> pe_basic_stats_fwd_cat_columns.astype(<span class="bu">str</span>)</span>
+<span id="cb10-182"><a href="#cb10-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-183"><a href="#cb10-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing output of adapter stats</span></span>
+<span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-adapter-stats</span></span>
+<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-195"><a href="#cb10-195" aria-hidden="true" tabindex="-1"></a>test_adapter_stats <span class="op">=</span> pd.read_csv(test_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-196"><a href="#cb10-196" aria-hidden="true" tabindex="-1"></a>se_adapter_stats <span class="op">=</span> pd.read_csv(se_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-197"><a href="#cb10-197" aria-hidden="true" tabindex="-1"></a>pe_adapter_stats <span class="op">=</span> pd.read_csv(pe_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a>full_test_adapter_stats <span class="op">=</span> pd.read_csv(full_test_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a>Again, the paired-end output of <span class="in">`single-read-raw`</span> is identical to the original paired-end output of <span class="in">`qc_adapter_stats.tsv`</span>.</span>
+<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check-equivalence-of-adapter-stats</span></span>
+<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a>pe_adapter_stats.equals(full_test_adapter_stats)</span>
+<span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a>Comparing adapter contamination (@fig-adapter-stats-comparison), the raw_concat percentages are equivalent. MULTIQC running on the paired-end data returned no adapter contamination stats for cleaned reads, suggesting that FASTP did its job well.</span>
+<span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-adapter-stats-comparison</span></span>
+<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Adapter contamination along reads</span></span>
+<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-222"><a href="#cb10-222" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb10-223"><a href="#cb10-223" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>se_adapter_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'pc_adapters'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-224"><a href="#cb10-224" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>pe_adapter_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'pc_adapters'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, style<span class="op">=</span><span class="st">"read_pair"</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>],units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a><span class="co"># Set common properties for both subplots</span></span>
+<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb10-228"><a href="#cb10-228" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'Position'</span>)</span>
+<span id="cb10-229"><a href="#cb10-229" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'% Adapters'</span>)</span>
+<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb10-231"><a href="#cb10-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-232"><a href="#cb10-232" aria-hidden="true" tabindex="-1"></a><span class="co"># Set titles for each subplot</span></span>
+<span id="cb10-233"><a href="#cb10-233" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">'Single-End Adapter Stats'</span>)</span>
+<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">'Paired-End Adapter Stats'</span>)</span>
+<span id="cb10-235"><a href="#cb10-235" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove top and right spines for both subplots</span></span>
+<span id="cb10-236"><a href="#cb10-236" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb10-237"><a href="#cb10-237" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb10-241"><a href="#cb10-241" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-242"><a href="#cb10-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing output of quality base stats</span></span>
+<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-247"><a href="#cb10-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-base-stats</span></span>
+<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a><span class="co">#|</span></span>
+<span id="cb10-251"><a href="#cb10-251" aria-hidden="true" tabindex="-1"></a>test_quality_base_stats <span class="op">=</span> pd.read_csv(test_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-252"><a href="#cb10-252" aria-hidden="true" tabindex="-1"></a>se_quality_base_stats <span class="op">=</span> pd.read_csv(se_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a>pe_quality_base_stats <span class="op">=</span> pd.read_csv(pe_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a>full_test_quality_base_stats <span class="op">=</span> pd.read_csv(full_test_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-256"><a href="#cb10-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-257"><a href="#cb10-257" aria-hidden="true" tabindex="-1"></a>Again, the paired-end output of <span class="in">`single-read-raw`</span> is identical to the original paired-end output of <span class="in">`qc_quality_base_stats.tsv`</span>.</span>
+<span id="cb10-258"><a href="#cb10-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-261"><a href="#cb10-261" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-262"><a href="#cb10-262" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: equivalence-of-quality-base-stats</span></span>
+<span id="cb10-263"><a href="#cb10-263" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-264"><a href="#cb10-264" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb10-265"><a href="#cb10-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a>pe_quality_base_stats.equals(full_test_quality_base_stats)</span>
+<span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a>As expected, the single-read run looks very similar to the forward read of the paired-end run (@fig-quality-base-stats-comparison). However, the Phred scores of the reverse reads are quite bad, with scores consistently under 30 after position 20.</span>
+<span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-274"><a href="#cb10-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-275"><a href="#cb10-275" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-base-stats-comparison</span></span>
+<span id="cb10-276"><a href="#cb10-276" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Phred scores along the read</span></span>
+<span id="cb10-277"><a href="#cb10-277" aria-hidden="true" tabindex="-1"></a><span class="co">#|</span></span>
+<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-280"><a href="#cb10-280" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>se_quality_base_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'mean_phred_score'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, style<span class="op">=</span><span class="st">"read_pair"</span>, units<span class="op">=</span><span class="st">"sample"</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-281"><a href="#cb10-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-282"><a href="#cb10-282" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>pe_quality_base_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'mean_phred_score'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, style<span class="op">=</span><span class="st">"read_pair"</span>, units<span class="op">=</span><span class="st">"sample"</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>],estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-283"><a href="#cb10-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-284"><a href="#cb10-284" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">'Mean phred scores across single-end reads'</span>)</span>
+<span id="cb10-285"><a href="#cb10-285" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">'Mean phred scores across paired-end reads'</span>)</span>
+<span id="cb10-286"><a href="#cb10-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-287"><a href="#cb10-287" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb10-288"><a href="#cb10-288" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-289"><a href="#cb10-289" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-290"><a href="#cb10-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-291"><a href="#cb10-291" aria-hidden="true" tabindex="-1"></a>plt.subplots_adjust(hspace<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb10-292"><a href="#cb10-292" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-293"><a href="#cb10-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-294"><a href="#cb10-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-295"><a href="#cb10-295" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing output of quality sequence stats</span></span>
+<span id="cb10-296"><a href="#cb10-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-299"><a href="#cb10-299" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-300"><a href="#cb10-300" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-sequence-stats</span></span>
+<span id="cb10-301"><a href="#cb10-301" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-302"><a href="#cb10-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-303"><a href="#cb10-303" aria-hidden="true" tabindex="-1"></a>test_quality_seq_stats <span class="op">=</span> pd.read_csv(test_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-304"><a href="#cb10-304" aria-hidden="true" tabindex="-1"></a>se_quality_seq_stats <span class="op">=</span> pd.read_csv(se_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-305"><a href="#cb10-305" aria-hidden="true" tabindex="-1"></a>pe_quality_seq_stats <span class="op">=</span> pd.read_csv(pe_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-306"><a href="#cb10-306" aria-hidden="true" tabindex="-1"></a>full_test_quality_seq_stats <span class="op">=</span> pd.read_csv(full_test_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb10-307"><a href="#cb10-307" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-308"><a href="#cb10-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-309"><a href="#cb10-309" aria-hidden="true" tabindex="-1"></a>Again, the paired-end output of <span class="in">`single-read-raw`</span> is identical to the original paired-end output of <span class="in">`qc_quality_sequence_stats.tsv`</span>.</span>
+<span id="cb10-310"><a href="#cb10-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-313"><a href="#cb10-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-314"><a href="#cb10-314" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: equivalence-of-quality-sequence-stats</span></span>
+<span id="cb10-315"><a href="#cb10-315" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-316"><a href="#cb10-316" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb10-317"><a href="#cb10-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-318"><a href="#cb10-318" aria-hidden="true" tabindex="-1"></a>pe_quality_seq_stats.equals(full_test_quality_seq_stats)</span>
+<span id="cb10-319"><a href="#cb10-319" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-320"><a href="#cb10-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-321"><a href="#cb10-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-322"><a href="#cb10-322" aria-hidden="true" tabindex="-1"></a>Plotting the mean phred score (@fig-quality-sequence-stats-comparison), the average Phred scores of the single-read output looks similar to the forward reads of the paired-end run. Notable there are fewer sequences in the cleaned paired-end forward read. Again, this can be explained by FASTP dropping read pairs where the reverse read was low quality (@fig-quality-cleaned-single-vs-forward).</span>
+<span id="cb10-323"><a href="#cb10-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-324"><a href="#cb10-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-327"><a href="#cb10-327" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-328"><a href="#cb10-328" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-sequence-stats-comparison</span></span>
+<span id="cb10-329"><a href="#cb10-329" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Average Phred scores of sequences</span></span>
+<span id="cb10-330"><a href="#cb10-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-331"><a href="#cb10-331" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb10-332"><a href="#cb10-332" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>se_quality_seq_stats, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-333"><a href="#cb10-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-334"><a href="#cb10-334" aria-hidden="true" tabindex="-1"></a>plt.subplots_adjust(hspace<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb10-335"><a href="#cb10-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-336"><a href="#cb10-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-337"><a href="#cb10-337" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>pe_quality_seq_stats, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>], style<span class="op">=</span><span class="st">"read_pair"</span>, units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-338"><a href="#cb10-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-339"><a href="#cb10-339" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">'Mean phred scores of single-end reads'</span>)</span>
+<span id="cb10-340"><a href="#cb10-340" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">'Mean phred scores of paired-end reads'</span>)</span>
+<span id="cb10-341"><a href="#cb10-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-342"><a href="#cb10-342" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb10-343"><a href="#cb10-343" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-344"><a href="#cb10-344" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-345"><a href="#cb10-345" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">0</span>, <span class="dv">40</span>)</span>
+<span id="cb10-346"><a href="#cb10-346" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="dv">0</span>, <span class="dv">7000</span>)</span>
+<span id="cb10-347"><a href="#cb10-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-348"><a href="#cb10-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-349"><a href="#cb10-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-350"><a href="#cb10-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-351"><a href="#cb10-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-354"><a href="#cb10-354" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-355"><a href="#cb10-355" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-cleaned-single-vs-forward</span></span>
+<span id="cb10-356"><a href="#cb10-356" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Average phred scores of the paired-end run forward reads,\ncompared to single-read phred scores</span></span>
+<span id="cb10-357"><a href="#cb10-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-358"><a href="#cb10-358" aria-hidden="true" tabindex="-1"></a>pe_cleaned_fwd <span class="op">=</span> pe_quality_seq_stats[(pe_quality_seq_stats[<span class="st">'read_pair'</span>] <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (pe_quality_seq_stats[<span class="st">'stage'</span>] <span class="op">==</span> <span class="st">'cleaned'</span>)]</span>
+<span id="cb10-359"><a href="#cb10-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-360"><a href="#cb10-360" aria-hidden="true" tabindex="-1"></a>se_cleaned <span class="op">=</span> se_quality_seq_stats[se_quality_seq_stats[<span class="st">'stage'</span>] <span class="op">==</span> <span class="st">'cleaned'</span>]</span>
+<span id="cb10-361"><a href="#cb10-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-362"><a href="#cb10-362" aria-hidden="true" tabindex="-1"></a>se_cleaned <span class="op">=</span> se_cleaned.copy()</span>
+<span id="cb10-363"><a href="#cb10-363" aria-hidden="true" tabindex="-1"></a>pe_cleaned_fwd <span class="op">=</span> pe_cleaned_fwd.copy()</span>
+<span id="cb10-364"><a href="#cb10-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-365"><a href="#cb10-365" aria-hidden="true" tabindex="-1"></a>se_cleaned[<span class="st">'read_type'</span>] <span class="op">=</span> <span class="st">'single'</span></span>
+<span id="cb10-366"><a href="#cb10-366" aria-hidden="true" tabindex="-1"></a>pe_cleaned_fwd[<span class="st">'read_type'</span>] <span class="op">=</span> <span class="st">'paired'</span></span>
+<span id="cb10-367"><a href="#cb10-367" aria-hidden="true" tabindex="-1"></a>merged_cleaned <span class="op">=</span> pd.concat([se_cleaned, pe_cleaned_fwd], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-368"><a href="#cb10-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-369"><a href="#cb10-369" aria-hidden="true" tabindex="-1"></a>mean_phred_paired <span class="op">=</span> merged_cleaned[merged_cleaned[<span class="st">'read_type'</span>] <span class="op">==</span> <span class="st">'paired'</span>][<span class="st">'mean_phred_score'</span>].mean()</span>
+<span id="cb10-370"><a href="#cb10-370" aria-hidden="true" tabindex="-1"></a>mean_phred_single <span class="op">=</span> merged_cleaned[merged_cleaned[<span class="st">'read_type'</span>] <span class="op">==</span> <span class="st">'single'</span>][<span class="st">'mean_phred_score'</span>].mean()</span>
+<span id="cb10-371"><a href="#cb10-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-372"><a href="#cb10-372" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb10-373"><a href="#cb10-373" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>merged_cleaned, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'read_type'</span>, ax<span class="op">=</span>ax,units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb10-374"><a href="#cb10-374" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">""</span>)</span>
+<span id="cb10-375"><a href="#cb10-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-376"><a href="#cb10-376" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-377"><a href="#cb10-377" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-378"><a href="#cb10-378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

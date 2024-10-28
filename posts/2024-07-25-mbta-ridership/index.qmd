@@ -1,5 +1,5 @@
 ---
-title: "Identifying pormising MBTA stations for swab sampling: MBTA Ridership"
+title: "Identifying promising MBTA stations for swab sampling: MBTA Ridership"
 subtitle: "How many passengers use different MBTA stations?"
 author: "Simon Grimm"
 date: 2024-07-25
@@ -7,7 +7,7 @@ categories:
   - MBTA
   - Swab sampling
 toc: true
-draft: true
+draft: false
 format:
   html:
     code-fold: true
@@ -17,8 +17,6 @@ format:
     fig-format: png
     fig-dpi: 600
 jupyter: venv
-# execute:
-#   cache: true
 cap-location: bottom
 ---
 # Introduction
