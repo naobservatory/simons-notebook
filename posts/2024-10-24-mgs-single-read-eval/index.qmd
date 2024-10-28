@@ -25,7 +25,7 @@ I'm adapting mgs-workflow to take in single-read sequencing data. Here I'm check
 
 I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to those of the forward reads in the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through fastp, and thus affecting the paired-end QC measures. This suggests we should possibly use a different test dataset going forward.
 
-I will amend the TAXONOMY workflow of mgs-workflow next.
+I will amend the PROFILE workflow of mgs-workflow next.
 
 # Introduction
 

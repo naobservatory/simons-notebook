@@ -186,7 +186,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>I’m adapting mgs-workflow to take in single-read sequencing data. Here I’m checking if: i) the output of the single-read RAW and CLEAN workflows look as expected, and ii) ifthe output of the paired-end version is the same as the output of the test run on <code>dev</code>.</p>
 <p>I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to those of the forward reads in the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through fastp, and thus affecting the paired-end QC measures. This suggests we should possibly use a different test dataset going forward.</p>
-<p>I will amend the TAXONOMY workflow of mgs-workflow next.</p>
+<p>I will amend the PROFILE workflow of mgs-workflow next.</p>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset, run on the <code>single-read-raw</code> pipeline with <code>read_type == paired_end</code>, and the same dataset run with the <code>dev</code> branch of <code>mgs-workflow</code>.</p>
@@ -1192,7 +1192,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to those of the forward reads in the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through fastp, and thus affecting the paired-end QC measures. This suggests we should possibly use a different test dataset going forward.</span>
 <span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>I will amend the TAXONOMY workflow of mgs-workflow next.</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>I will amend the PROFILE workflow of mgs-workflow next.</span>
 <span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
 <span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
