@@ -28,7 +28,7 @@ Looking at Kingdom-level composition in both Kraken and Bracken results, the sin
 
 # Introduction
 
-The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset. Both of these are run through `run_dev_se.nf`, a shorter version of `run.nf` that only includes RAW, CLEAN, and PROFILE. For the single-end and paired-end run, the `read_type` parameter is set to `single_end` and `paired_end`, respectively. Finally, the paired-end run is compared to the output of a normal test run using `run.nf`.
+The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset. Both of these are run through `run_dev_se.nf`, a shorter version of `run.nf` that only includes RAW, CLEAN, and PROFILE. `run_dev_se.nf` contains a `read_type` parameter, which is set to `single_end` for the single-end run, and `paired_end` for the paired-end run. Finally, the paired-end run is compared to the output of a normal test run using `run.nf`.
 
 ```{python}
 #| label: load-packages
