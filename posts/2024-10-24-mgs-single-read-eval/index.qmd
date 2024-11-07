@@ -1,5 +1,5 @@
 ---
-title: "Testing single-read versions of RAW and CLEAN"
+title: "Testing the single-read version of mgs-workflow's RAW and CLEAN subworkflows"
 author: "Simon Grimm"
 date: 2024-10-23
 format:
@@ -21,9 +21,12 @@ jupyter: venv
 title-block-banner: "#5cb2a0"
 ---
 
-I'm adapting mgs-workflow to take in single-read sequencing data. Here I'm checking if: i) the output of the single-read RAW and CLEAN workflows look as expected, and ii) ifthe output of the paired-end version is the same as the output of the test run on `dev`.
+I'm adapting mgs-workflow to take in single-read sequencing data. Here I'm checking if: (i) the output of the single-read RAW and CLEAN workflows look as expected, and (ii) if the output of the paired-end version is the same as the output of the test run on `dev`.
 
-I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to those of the forward reads in the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through fastp, and thus affecting the paired-end QC measures. This suggests we should possibly use a different test dataset going forward.
+The dataset used here was generated from Project Runway samples, with library prep performed at the BMC followed by Element AVITI sequencing. Will previously analyzed this data [here](https://data.securebio.org/wills-public-notebook/notebooks/2023-12-19_project-runway-bmc-rna.html).
+
+
+I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to those of the forward reads in the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through FASTP, and thus affecting the paired-end QC measures. This suggests we should possibly use a different test dataset going forward.
 
 I will amend the PROFILE workflow of mgs-workflow next.
 
@@ -48,22 +51,18 @@ import seaborn as sns
 single_read_dir = "mgs-results/test_single_read"
 paired_read_dir = "mgs-results/test_paired_end"
 test_dir = "mgs-results/test"
-full_test_dir = "mgs-results/test-full"
 
 se_output_dir = os.path.join(single_read_dir, "output")
 pe_output_dir = os.path.join(paired_read_dir, "output")
 test_output_dir = os.path.join(test_dir, "output")
-full_test_output_dir = os.path.join(full_test_dir, "output")
 
 se_results_dir = os.path.join(se_output_dir, "results")
 pe_results_dir = os.path.join(pe_output_dir, "results")
 test_results_dir = os.path.join(test_output_dir, "results")
-full_test_results_dir = os.path.join(full_test_output_dir, "results")
 
 se_qc_dir = os.path.join(se_results_dir, "qc")
 pe_qc_dir = os.path.join(pe_results_dir, "qc")
 test_qc_dir = os.path.join(test_results_dir, "qc")
-full_test_qc_dir = os.path.join(full_test_results_dir, "qc")
 
 se_basic_stats_path = os.path.join(se_qc_dir, "qc_basic_stats.tsv.gz")
 se_adapter_stats_path = os.path.join(se_qc_dir, "qc_adapter_stats.tsv.gz")
@@ -83,10 +82,6 @@ test_adapter_stats_path = os.path.join(test_qc_dir, "qc_adapter_stats.tsv.gz")
 test_quality_base_stats_path = os.path.join(test_qc_dir, "qc_quality_base_stats.tsv.gz")
 test_quality_seq_stats_path = os.path.join(test_qc_dir, "qc_quality_sequence_stats.tsv.gz")
 
-full_test_basic_stats_path = os.path.join(full_test_qc_dir, "qc_basic_stats.tsv.gz")
-full_test_adapter_stats_path = os.path.join(full_test_qc_dir, "qc_adapter_stats.tsv.gz")
-full_test_quality_base_stats_path = os.path.join(full_test_qc_dir, "qc_quality_base_stats.tsv.gz")
-full_test_quality_seq_stats_path = os.path.join(full_test_qc_dir, "qc_quality_sequence_stats.tsv.gz")
 ```
 
 
@@ -100,7 +95,6 @@ full_test_quality_seq_stats_path = os.path.join(full_test_qc_dir, "qc_quality_se
 se_basic_stats = pd.read_csv(se_basic_stats_path, sep='\t')
 pe_basic_stats = pd.read_csv(pe_basic_stats_path, sep='\t')
 test_basic_stats = pd.read_csv(test_basic_stats_path, sep='\t')
-full_test_basic_stats = pd.read_csv(full_test_basic_stats_path, sep='\t')
 ```
 
 ```{python}
@@ -108,13 +102,13 @@ full_test_basic_stats = pd.read_csv(full_test_basic_stats_path, sep='\t')
 #| echo: false
 #| include: false
 
-pe_basic_stats.equals(full_test_basic_stats)
+pe_basic_stats.equals(test_basic_stats)
 
 ```
 
 Comparing the basic stats of the single-read version to the paired-end version, the most notable difference is paired-end data losing more bases and reads through FASTP cleaning. Accounting for paired-end reads containing twice as many base pairs, cleaned paired-end read files contain 16.4% fewer bases than cleaned single-end read files. This is largely due to FASTP dropping low-quality read pairs, with the number of cleaned paired-end reads 18.5% lower than the number of cleaned single-end reads. See @tbl-compare-base-pairs and @tbl-compare-read-pairs for per-sample statistics.
 
-My current hypothesis for this pattern is that the reverse reads are very low quality, as seen in @fig-quality-base-stats-comparison, leading FASTP to drop many of the read pairs with a low-quality reverse read. I won't investigate this further for now, but it suggests we should use a new test dataset that has high-quality forward and reverse reads.
+My current hypothesis for this pattern is that the reverse reads are very low quality, as seen in @fig-quality-base-stats-comparison, leading FASTP to drop many of the read pairs with a low-quality reverse read. I won't investigate this further for now, but it suggests we should use a new test dataset that has high-quality forward and reverse reads. Harmon is working on this, which is great.
 
 ```{python}
 #| label: tbl-compare-base-pairs
@@ -189,7 +183,6 @@ combination = se_basic_stats_fwd_cat_columns.astype(str) == pe_basic_stats_fwd_c
 test_adapter_stats = pd.read_csv(test_adapter_stats_path, sep='\t')
 se_adapter_stats = pd.read_csv(se_adapter_stats_path, sep='\t')
 pe_adapter_stats = pd.read_csv(pe_adapter_stats_path, sep='\t')
-full_test_adapter_stats = pd.read_csv(full_test_adapter_stats_path, sep='\t')
 
 ```
 
@@ -198,7 +191,7 @@ full_test_adapter_stats = pd.read_csv(full_test_adapter_stats_path, sep='\t')
 #| echo: false
 #| include: false
 
-pe_adapter_stats.equals(full_test_adapter_stats)
+pe_adapter_stats.equals(test_adapter_stats)
 ```
 
 Comparing adapter contamination (@fig-adapter-stats-comparison), the raw_concat percentages are equivalent. MULTIQC running on the paired-end data returned no adapter contamination stats for cleaned reads, suggesting that FASTP did its job well.
@@ -237,7 +230,6 @@ fig.tight_layout()
 test_quality_base_stats = pd.read_csv(test_quality_base_stats_path, sep='\t')
 se_quality_base_stats = pd.read_csv(se_quality_base_stats_path, sep='\t')
 pe_quality_base_stats = pd.read_csv(pe_quality_base_stats_path, sep='\t')
-full_test_quality_base_stats = pd.read_csv(full_test_quality_base_stats_path, sep='\t')
 ```
 
 
@@ -246,7 +238,7 @@ full_test_quality_base_stats = pd.read_csv(full_test_quality_base_stats_path, se
 #| echo: false
 #| include: false
 
-pe_quality_base_stats.equals(full_test_quality_base_stats)
+pe_quality_base_stats.equals(test_quality_base_stats)
 
 ```
 
@@ -282,7 +274,6 @@ plt.subplots_adjust(hspace=0.3)
 test_quality_seq_stats = pd.read_csv(test_quality_seq_stats_path, sep='\t')
 se_quality_seq_stats = pd.read_csv(se_quality_seq_stats_path, sep='\t')
 pe_quality_seq_stats = pd.read_csv(pe_quality_seq_stats_path, sep='\t')
-full_test_quality_seq_stats = pd.read_csv(full_test_quality_seq_stats_path, sep='\t')
 ```
 
 
@@ -291,7 +282,7 @@ full_test_quality_seq_stats = pd.read_csv(full_test_quality_seq_stats_path, sep=
 #| echo: false
 #| include: false
 
-pe_quality_seq_stats.equals(full_test_quality_seq_stats)
+pe_quality_seq_stats.equals(test_quality_seq_stats)
 ```
 
 
