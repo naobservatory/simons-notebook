@@ -24,11 +24,11 @@ I'm adapting mgs-workflow to take in single-read sequencing data. Here I'm check
 
 As in my [previous post](https://data.securebio.org/simons-notebook/posts/2024-10-24-mgs-single-read-eval/), the dataset the workflows are run on is based on Project Runway samples, with library prep performed at the BMC followed by Element AVITI sequencing. Will previously analyzed this test dataset [here](https://data.securebio.org/wills-public-notebook/notebooks/2023-12-19_project-runway-bmc-rna.html), using an early version of mgs-workflow.
 
-Looking at Kingdom-level composition in both Kraken and Bracken results, the single-read output looks as expected, i.e., similar to the paired-end output. The paired-end run and the test have the same results in the plots shown below, suggesting that the addition of single-read functionality doesn't impede mgs-workflow runs on paired-end data.
+Looking at Kingdom-level composition in both Kraken and Bracken results, the single-read output looks as expected, i.e., similar to the paired-end output. The paired-end run looks the same as when using the original run workflow, so addition of single-read functionality doesn't impede mgs-workflow runs on paired-end data.
 
 # Introduction
 
-The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset, run on the `single-read-raw` pipeline with `read_type == paired_end`, and the same dataset run with the `run` workflow of mgs-workflow.
+The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset. Both of these are run through `run_dev_se.nf`, a shorter version of `run.nf` that only includes RAW, CLEAN, and PROFILE. For the single-end and paired-end run, the `read_type` parameter is set to `single_end` and `paired_end`, respectively. Finally, the paired-end run is compared to the output of a normal test run using `run.nf`.
 
 ```{python}
 #| label: load-packages
