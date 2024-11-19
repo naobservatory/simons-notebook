@@ -183,6 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>I’m adapting mgs-workflow to take in single-read sequencing data. Here I’m checking if: i) the output of the single-read PROFILE workflow looks as expected, and ii) if the output of the paired-end version is the same as the output of the test run on <code>dev</code>.</p>
 <p>As in my <a href="https://data.securebio.org/simons-notebook/posts/2024-10-24-mgs-single-read-eval/">previous post</a>, the dataset the workflows are run on is based on Project Runway samples, with library prep performed at the BMC followed by Element AVITI sequencing. Will previously analyzed this test dataset <a href="https://data.securebio.org/wills-public-notebook/notebooks/2023-12-19_project-runway-bmc-rna.html">here</a>, using an early version of mgs-workflow.</p>
 <p>Looking at Kingdom-level composition in both Kraken and Bracken results, the single-read output looks as expected, i.e., similar to the paired-end output. The paired-end run looks the same as when using the original run workflow, so addition of single-read functionality doesn’t impede mgs-workflow runs on paired-end data.</p>
+<p>I will amend the HV subworkflow of mgs-workflow next.</p>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset. Both of these are run through <code>run_dev_se.nf</code>, a shorter version of <code>run.nf</code> that only includes RAW, CLEAN, and PROFILE. <code>run_dev_se.nf</code> contains a <code>read_type</code> parameter, which is set to <code>single_end</code> for the single-end run, and <code>paired_end</code> for the paired-end run. Finally, the paired-end run is compared to the output of a normal test run using <code>run.nf</code>.</p>
@@ -848,300 +849,302 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>Looking at Kingdom-level composition in both Kraken and Bracken results, the single-read output looks as expected, i.e., similar to the paired-end output. The paired-end run looks the same as when using the original run workflow, so addition of single-read functionality doesn't impede mgs-workflow runs on paired-end data.</span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>I will amend the HV subworkflow of mgs-workflow next.</span>
 <span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset. Both of these are run through <span class="in">`run_dev_se.nf`</span>, a shorter version of <span class="in">`run.nf`</span> that only includes RAW, CLEAN, and PROFILE. <span class="in">`run_dev_se.nf`</span> contains a <span class="in">`read_type`</span> parameter, which is set to <span class="in">`single_end`</span> for the single-end run, and <span class="in">`paired_end`</span> for the paired-end run. Finally, the paired-end run is compared to the output of a normal test run using <span class="in">`run.nf`</span>.</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
 <span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-packages</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-paths</span></span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>single_read_dir <span class="op">=</span> <span class="st">"mgs-results/test_single_read"</span></span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>paired_read_dir <span class="op">=</span> <span class="st">"mgs-results/test_paired_end"</span></span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>test_dir <span class="op">=</span> <span class="st">"mgs-results/test"</span></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>se_output_dir <span class="op">=</span> os.path.join(single_read_dir, <span class="st">"output"</span>)</span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>pe_output_dir <span class="op">=</span> os.path.join(paired_read_dir, <span class="st">"output"</span>)</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>test_output_dir <span class="op">=</span> os.path.join(test_dir, <span class="st">"output"</span>)</span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>se_results_dir <span class="op">=</span> os.path.join(se_output_dir, <span class="st">"results"</span>)</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>pe_results_dir <span class="op">=</span> os.path.join(pe_output_dir, <span class="st">"results"</span>)</span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>test_results_dir <span class="op">=</span> os.path.join(test_output_dir, <span class="st">"results"</span>)</span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>se_taxonomy_dir <span class="op">=</span> os.path.join(se_results_dir, <span class="st">"taxonomy"</span>)</span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>pe_taxonomy_dir <span class="op">=</span> os.path.join(pe_results_dir, <span class="st">"taxonomy"</span>)</span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>test_taxonomy_dir <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"taxonomy"</span>)</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>se_bracken_path <span class="op">=</span> os.path.join(se_taxonomy_dir, <span class="st">"bracken_reports_merged.tsv.gz"</span>)</span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>pe_bracken_path <span class="op">=</span> os.path.join(pe_taxonomy_dir, <span class="st">"bracken_reports_merged.tsv.gz"</span>)</span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>test_bracken_path <span class="op">=</span> os.path.join(test_taxonomy_dir, <span class="st">"bracken_reports_merged.tsv.gz"</span>)</span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>se_kraken_path <span class="op">=</span> os.path.join(se_taxonomy_dir, <span class="st">"kraken_reports_merged.tsv.gz"</span>)</span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>pe_kraken_path <span class="op">=</span> os.path.join(pe_taxonomy_dir, <span class="st">"kraken_reports_merged.tsv.gz"</span>)</span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>test_kraken_path <span class="op">=</span> os.path.join(test_taxonomy_dir, <span class="st">"kraken_reports_merged.tsv.gz"</span>)</span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="fu"># Assessing Kraken output files</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset. Both of these are run through <span class="in">`run_dev_se.nf`</span>, a shorter version of <span class="in">`run.nf`</span> that only includes RAW, CLEAN, and PROFILE. <span class="in">`run_dev_se.nf`</span> contains a <span class="in">`read_type`</span> parameter, which is set to <span class="in">`single_end`</span> for the single-end run, and <span class="in">`paired_end`</span> for the paired-end run. Finally, the paired-end run is compared to the output of a normal test run using <span class="in">`run.nf`</span>.</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-packages</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-paths</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>single_read_dir <span class="op">=</span> <span class="st">"mgs-results/test_single_read"</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>paired_read_dir <span class="op">=</span> <span class="st">"mgs-results/test_paired_end"</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>test_dir <span class="op">=</span> <span class="st">"mgs-results/test"</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>se_output_dir <span class="op">=</span> os.path.join(single_read_dir, <span class="st">"output"</span>)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>pe_output_dir <span class="op">=</span> os.path.join(paired_read_dir, <span class="st">"output"</span>)</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>test_output_dir <span class="op">=</span> os.path.join(test_dir, <span class="st">"output"</span>)</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>se_results_dir <span class="op">=</span> os.path.join(se_output_dir, <span class="st">"results"</span>)</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>pe_results_dir <span class="op">=</span> os.path.join(pe_output_dir, <span class="st">"results"</span>)</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>test_results_dir <span class="op">=</span> os.path.join(test_output_dir, <span class="st">"results"</span>)</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>se_taxonomy_dir <span class="op">=</span> os.path.join(se_results_dir, <span class="st">"taxonomy"</span>)</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>pe_taxonomy_dir <span class="op">=</span> os.path.join(pe_results_dir, <span class="st">"taxonomy"</span>)</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>test_taxonomy_dir <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"taxonomy"</span>)</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>se_bracken_path <span class="op">=</span> os.path.join(se_taxonomy_dir, <span class="st">"bracken_reports_merged.tsv.gz"</span>)</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>pe_bracken_path <span class="op">=</span> os.path.join(pe_taxonomy_dir, <span class="st">"bracken_reports_merged.tsv.gz"</span>)</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>test_bracken_path <span class="op">=</span> os.path.join(test_taxonomy_dir, <span class="st">"bracken_reports_merged.tsv.gz"</span>)</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>se_kraken_path <span class="op">=</span> os.path.join(se_taxonomy_dir, <span class="st">"kraken_reports_merged.tsv.gz"</span>)</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>pe_kraken_path <span class="op">=</span> os.path.join(pe_taxonomy_dir, <span class="st">"kraken_reports_merged.tsv.gz"</span>)</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>test_kraken_path <span class="op">=</span> os.path.join(test_taxonomy_dir, <span class="st">"kraken_reports_merged.tsv.gz"</span>)</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>First off, we can check if the high-level taxonomy statistics are the same between the single-read, paired-end, and default test runs. For this we use the <span class="in">`kraken_reports_merged.tsv.gz`</span> files, which gives a detailed taxonomic breakdown.</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a><span class="fu"># Assessing Kraken output files</span></span>
 <span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>Only looking at the kingdom-level, the single-read and paired-end read results look nearly identical, which is what we'd expect. As seen in the previous notebook, in the single-read run more total reads survive FASTP cleaning, leading to a higher number of reads that end up getting classified.</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>First off, we can check if the high-level taxonomy statistics are the same between the single-read, paired-end, and default test runs. For this we use the <span class="in">`kraken_reports_merged.tsv.gz`</span> files, which gives a detailed taxonomic breakdown.</span>
 <span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-kraken-output</span></span>
-<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>se_kraken <span class="op">=</span> pd.read_csv(se_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>pe_kraken <span class="op">=</span> pd.read_csv(pe_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>test_kraken <span class="op">=</span> pd.read_csv(test_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>Only looking at the kingdom-level, the single-read and paired-end read results look nearly identical, which is what we'd expect. As seen in the previous notebook, in the single-read run more total reads survive FASTP cleaning, leading to a higher number of reads that end up getting classified.</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-kraken-output</span></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>se_kraken <span class="op">=</span> pd.read_csv(se_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>pe_kraken <span class="op">=</span> pd.read_csv(pe_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>test_kraken <span class="op">=</span> pd.read_csv(test_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
 <span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: generate-table</span></span>
-<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> []</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: generate-table</span></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
 <span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>tax_ids <span class="op">=</span> {</span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Bacteria"</span>: <span class="dv">2</span>,</span>
-<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Viruses"</span>: <span class="dv">10239</span>,</span>
-<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Archaea"</span>: <span class="dv">2157</span>,</span>
-<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Eukaryota"</span>: <span class="dv">2759</span>,</span>
-<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Unclassified"</span>: <span class="dv">0</span>,</span>
-<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>se_kraken_df <span class="op">=</span> pd.read_csv(se_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>pe_kraken_df <span class="op">=</span> pd.read_csv(pe_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>test_kraken_df <span class="op">=</span> pd.read_csv(test_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_df(df):</span>
-<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> []</span>
-<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> sample, sample_data <span class="kw">in</span> df.groupby(<span class="st">"sample"</span>):</span>
-<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Process ribosomal reads</span></span>
-<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>        ribo_df <span class="op">=</span> sample_data[sample_data[<span class="st">"ribosomal"</span>] <span class="op">==</span> <span class="va">True</span>]</span>
-<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>        n_reads_bacteria_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Bacteria"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>        n_reads_virus_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Viruses"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>        n_reads_archea_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Archaea"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>        n_reads_eukaryota_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Eukaryota"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a>        n_reads_unclassified_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Unclassified"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Process non-ribosomal reads</span></span>
-<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>        nonribo_df <span class="op">=</span> sample_data[sample_data[<span class="st">"ribosomal"</span>] <span class="op">==</span> <span class="va">False</span>]</span>
-<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>        n_reads_bacteria_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Bacteria"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>        n_reads_virus_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Viruses"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>        n_reads_archea_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Archaea"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>        n_reads_eukaryota_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Eukaryota"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>        n_reads_unclassified_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Unclassified"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>        total_reads <span class="op">=</span> (</span>
-<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a>            n_reads_bacteria_ribo <span class="op">+</span> n_reads_bacteria_nonribo <span class="op">+</span></span>
-<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a>            n_reads_virus_ribo <span class="op">+</span> n_reads_virus_nonribo <span class="op">+</span></span>
-<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a>            n_reads_archea_ribo <span class="op">+</span> n_reads_archea_nonribo <span class="op">+</span></span>
-<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a>            n_reads_eukaryota_ribo <span class="op">+</span> n_reads_eukaryota_nonribo <span class="op">+</span></span>
-<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>            n_reads_unclassified_ribo <span class="op">+</span> n_reads_unclassified_nonribo</span>
-<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>        data.append([</span>
-<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>            sample,</span>
-<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>            n_reads_bacteria_ribo, n_reads_bacteria_nonribo,</span>
-<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>            n_reads_virus_ribo, n_reads_virus_nonribo,</span>
-<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>            n_reads_archea_ribo, n_reads_archea_nonribo,</span>
-<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>            n_reads_eukaryota_ribo, n_reads_eukaryota_nonribo,</span>
-<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>            n_reads_unclassified_ribo, n_reads_unclassified_nonribo,</span>
-<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>            total_reads</span>
-<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>        ])</span>
-<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(data, columns<span class="op">=</span>[</span>
-<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sample"</span>,</span>
-<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Bacteria (Ribosomal)"</span>, <span class="st">"Bacteria (Non-ribosomal)"</span>,</span>
-<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Viruses (Ribosomal)"</span>, <span class="st">"Viruses (Non-ribosomal)"</span>,</span>
-<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Archaea (Ribosomal)"</span>, <span class="st">"Archaea (Non-ribosomal)"</span>,</span>
-<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Eukaryota (Ribosomal)"</span>, <span class="st">"Eukaryota (Non-ribosomal)"</span>,</span>
-<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Unclassified (Ribosomal)"</span>, <span class="st">"Unclassified (Non-ribosomal)"</span>,</span>
-<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Total Reads"</span></span>
-<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a>se_kraken_plot_df <span class="op">=</span> process_df(se_kraken_df)</span>
-<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a>pe_kraken_plot_df <span class="op">=</span> process_df(pe_kraken_df)</span>
-<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a>test_kraken_plot_df <span class="op">=</span> process_df(test_kraken_df)</span>
-<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> []</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>tax_ids <span class="op">=</span> {</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Bacteria"</span>: <span class="dv">2</span>,</span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Viruses"</span>: <span class="dv">10239</span>,</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Archaea"</span>: <span class="dv">2157</span>,</span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Eukaryota"</span>: <span class="dv">2759</span>,</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Unclassified"</span>: <span class="dv">0</span>,</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>se_kraken_df <span class="op">=</span> pd.read_csv(se_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>pe_kraken_df <span class="op">=</span> pd.read_csv(pe_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>test_kraken_df <span class="op">=</span> pd.read_csv(test_kraken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_df(df):</span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> []</span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> sample, sample_data <span class="kw">in</span> df.groupby(<span class="st">"sample"</span>):</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Process ribosomal reads</span></span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>        ribo_df <span class="op">=</span> sample_data[sample_data[<span class="st">"ribosomal"</span>] <span class="op">==</span> <span class="va">True</span>]</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>        n_reads_bacteria_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Bacteria"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>        n_reads_virus_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Viruses"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a>        n_reads_archea_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Archaea"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>        n_reads_eukaryota_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Eukaryota"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>        n_reads_unclassified_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Unclassified"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Process non-ribosomal reads</span></span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>        nonribo_df <span class="op">=</span> sample_data[sample_data[<span class="st">"ribosomal"</span>] <span class="op">==</span> <span class="va">False</span>]</span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>        n_reads_bacteria_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Bacteria"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>        n_reads_virus_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Viruses"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>        n_reads_archea_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Archaea"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>        n_reads_eukaryota_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Eukaryota"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>        n_reads_unclassified_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"taxid"</span>] <span class="op">==</span> tax_ids[<span class="st">"Unclassified"</span>]][<span class="st">"n_reads_clade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a>        total_reads <span class="op">=</span> (</span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a>            n_reads_bacteria_ribo <span class="op">+</span> n_reads_bacteria_nonribo <span class="op">+</span></span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a>            n_reads_virus_ribo <span class="op">+</span> n_reads_virus_nonribo <span class="op">+</span></span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>            n_reads_archea_ribo <span class="op">+</span> n_reads_archea_nonribo <span class="op">+</span></span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>            n_reads_eukaryota_ribo <span class="op">+</span> n_reads_eukaryota_nonribo <span class="op">+</span></span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>            n_reads_unclassified_ribo <span class="op">+</span> n_reads_unclassified_nonribo</span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>        data.append([</span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>            sample,</span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>            n_reads_bacteria_ribo, n_reads_bacteria_nonribo,</span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>            n_reads_virus_ribo, n_reads_virus_nonribo,</span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>            n_reads_archea_ribo, n_reads_archea_nonribo,</span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>            n_reads_eukaryota_ribo, n_reads_eukaryota_nonribo,</span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>            n_reads_unclassified_ribo, n_reads_unclassified_nonribo,</span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a>            total_reads</span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(data, columns<span class="op">=</span>[</span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sample"</span>,</span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Bacteria (Ribosomal)"</span>, <span class="st">"Bacteria (Non-ribosomal)"</span>,</span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Viruses (Ribosomal)"</span>, <span class="st">"Viruses (Non-ribosomal)"</span>,</span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Archaea (Ribosomal)"</span>, <span class="st">"Archaea (Non-ribosomal)"</span>,</span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Eukaryota (Ribosomal)"</span>, <span class="st">"Eukaryota (Non-ribosomal)"</span>,</span>
+<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Unclassified (Ribosomal)"</span>, <span class="st">"Unclassified (Non-ribosomal)"</span>,</span>
+<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Total Reads"</span></span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a>se_kraken_plot_df <span class="op">=</span> process_df(se_kraken_df)</span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a>pe_kraken_plot_df <span class="op">=</span> process_df(pe_kraken_df)</span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>test_kraken_plot_df <span class="op">=</span> process_df(test_kraken_df)</span>
 <span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-kraken-stats</span></span>
-<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Kingdom-level read distribution (Kraken)</span></span>
-<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate percentages</span></span>
-<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a>cols_to_normalize <span class="op">=</span> [<span class="st">'Bacteria (Ribosomal)'</span>, <span class="st">'Bacteria (Non-ribosomal)'</span>,</span>
-<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Viruses (Ribosomal)'</span>, <span class="st">'Viruses (Non-ribosomal)'</span>,</span>
-<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Archaea (Ribosomal)'</span>, <span class="st">'Archaea (Non-ribosomal)'</span>,</span>
-<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Eukaryota (Ribosomal)'</span>, <span class="st">'Eukaryota (Non-ribosomal)'</span>,</span>
-<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Unclassified (Ribosomal)'</span>, <span class="st">'Unclassified (Non-ribosomal)'</span>]</span>
-<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the horizontal stacked bar plot</span></span>
-<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2, ax3) <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>), dpi<span class="op">=</span><span class="dv">300</span>)  <span class="co">#</span></span>
-<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot stacked bars horizontally</span></span>
-<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, df, title <span class="kw">in</span> <span class="bu">zip</span>([ax1, ax2, ax3], [se_kraken_plot_df, pe_kraken_plot_df, test_kraken_plot_df], [<span class="st">"single-end"</span>, <span class="st">"paired-end"</span>, <span class="st">"normal run"</span>]):</span>
-<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a>    df_pct <span class="op">=</span> df[cols_to_normalize].div(df[cols_to_normalize].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a>    left <span class="op">=</span> np.zeros(<span class="bu">len</span>(df))</span>
-<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a>    colors <span class="op">=</span> plt.rcParams[<span class="st">'axes.prop_cycle'</span>].by_key()[<span class="st">'color'</span>]</span>
-<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, column <span class="kw">in</span> <span class="bu">enumerate</span>(cols_to_normalize):</span>
-<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a>        ax.barh(df[<span class="st">'sample'</span>], df_pct[column], left<span class="op">=</span>left,</span>
-<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a>                label<span class="op">=</span>column.capitalize(), color<span class="op">=</span>colors[i])</span>
-<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a>        left <span class="op">+=</span> df_pct[column]</span>
-<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, row <span class="kw">in</span> df.iterrows():</span>
-<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a>        ax.text(<span class="dv">101</span>, i, <span class="ss">f'</span><span class="sc">{</span><span class="bu">int</span>(row[<span class="st">"Total Reads"</span>])<span class="sc">:,}</span><span class="ss">'</span>,</span>
-<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a>                va<span class="op">=</span><span class="st">'center'</span>, ha<span class="op">=</span><span class="st">'left'</span>)</span>
-<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Customize the plot</span></span>
-<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ax.set_yticks(rotation=0)  # No rotation needed for horizontal bars</span></span>
-<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a>    ax.set_title(title)</span>
-<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">0</span>, <span class="dv">100</span>)</span>
-<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-207"><a href="#cb4-207" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add some padding to the right for the legend</span></span>
-<span id="cb4-208"><a href="#cb4-208" aria-hidden="true" tabindex="-1"></a>ax3.set_xlabel(<span class="st">'Percentage (%)'</span>)</span>
-<span id="cb4-209"><a href="#cb4-209" aria-hidden="true" tabindex="-1"></a>ax1.text(<span class="dv">101</span>, <span class="dv">9</span>, <span class="st">'Number of</span><span class="ch">\n</span><span class="st">reads'</span>, va<span class="op">=</span><span class="st">'center'</span>, ha<span class="op">=</span><span class="st">'left'</span>)</span>
-<span id="cb4-210"><a href="#cb4-210" aria-hidden="true" tabindex="-1"></a>ax3.legend(title<span class="op">=</span><span class="st">'Taxonomy'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.8</span>), loc<span class="op">=</span><span class="st">'center'</span>, ncol<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb4-211"><a href="#cb4-211" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb4-212"><a href="#cb4-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-213"><a href="#cb4-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-214"><a href="#cb4-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-215"><a href="#cb4-215" aria-hidden="true" tabindex="-1"></a><span class="fu"># Assessing Bracken output files</span></span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-kraken-stats</span></span>
+<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Kingdom-level read distribution (Kraken)</span></span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate percentages</span></span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>cols_to_normalize <span class="op">=</span> [<span class="st">'Bacteria (Ribosomal)'</span>, <span class="st">'Bacteria (Non-ribosomal)'</span>,</span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Viruses (Ribosomal)'</span>, <span class="st">'Viruses (Non-ribosomal)'</span>,</span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Archaea (Ribosomal)'</span>, <span class="st">'Archaea (Non-ribosomal)'</span>,</span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Eukaryota (Ribosomal)'</span>, <span class="st">'Eukaryota (Non-ribosomal)'</span>,</span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Unclassified (Ribosomal)'</span>, <span class="st">'Unclassified (Non-ribosomal)'</span>]</span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the horizontal stacked bar plot</span></span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2, ax3) <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>), dpi<span class="op">=</span><span class="dv">300</span>)  <span class="co">#</span></span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot stacked bars horizontally</span></span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, df, title <span class="kw">in</span> <span class="bu">zip</span>([ax1, ax2, ax3], [se_kraken_plot_df, pe_kraken_plot_df, test_kraken_plot_df], [<span class="st">"single-end"</span>, <span class="st">"paired-end"</span>, <span class="st">"normal run"</span>]):</span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a>    df_pct <span class="op">=</span> df[cols_to_normalize].div(df[cols_to_normalize].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a>    left <span class="op">=</span> np.zeros(<span class="bu">len</span>(df))</span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a>    colors <span class="op">=</span> plt.rcParams[<span class="st">'axes.prop_cycle'</span>].by_key()[<span class="st">'color'</span>]</span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, column <span class="kw">in</span> <span class="bu">enumerate</span>(cols_to_normalize):</span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a>        ax.barh(df[<span class="st">'sample'</span>], df_pct[column], left<span class="op">=</span>left,</span>
+<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a>                label<span class="op">=</span>column.capitalize(), color<span class="op">=</span>colors[i])</span>
+<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a>        left <span class="op">+=</span> df_pct[column]</span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, row <span class="kw">in</span> df.iterrows():</span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a>        ax.text(<span class="dv">101</span>, i, <span class="ss">f'</span><span class="sc">{</span><span class="bu">int</span>(row[<span class="st">"Total Reads"</span>])<span class="sc">:,}</span><span class="ss">'</span>,</span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a>                va<span class="op">=</span><span class="st">'center'</span>, ha<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Customize the plot</span></span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ax.set_yticks(rotation=0)  # No rotation needed for horizontal bars</span></span>
+<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a>    ax.set_title(title)</span>
+<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">0</span>, <span class="dv">100</span>)</span>
+<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb4-207"><a href="#cb4-207" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb4-208"><a href="#cb4-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-209"><a href="#cb4-209" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add some padding to the right for the legend</span></span>
+<span id="cb4-210"><a href="#cb4-210" aria-hidden="true" tabindex="-1"></a>ax3.set_xlabel(<span class="st">'Percentage (%)'</span>)</span>
+<span id="cb4-211"><a href="#cb4-211" aria-hidden="true" tabindex="-1"></a>ax1.text(<span class="dv">101</span>, <span class="dv">9</span>, <span class="st">'Number of</span><span class="ch">\n</span><span class="st">reads'</span>, va<span class="op">=</span><span class="st">'center'</span>, ha<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb4-212"><a href="#cb4-212" aria-hidden="true" tabindex="-1"></a>ax3.legend(title<span class="op">=</span><span class="st">'Taxonomy'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.8</span>), loc<span class="op">=</span><span class="st">'center'</span>, ncol<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb4-213"><a href="#cb4-213" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-214"><a href="#cb4-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-215"><a href="#cb4-215" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-216"><a href="#cb4-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-217"><a href="#cb4-217" aria-hidden="true" tabindex="-1"></a>The other output of the PROFILE subworkflow is the <span class="in">`bracken_reports_merged.tsv.gz`</span> file, which gives Bracken-summarized and corrected kingdom-level counts, based on the Kraken output. Again, single-read results look very similar to paired-end results. The only difference is a slightly higher share of non-ribosomal bacterial reads in the single-read run. I am uncertain to why that is, maybe the reads that FASTP removed in the paired-end run were enriched for non-ribosomal bacterial reads?</span>
+<span id="cb4-217"><a href="#cb4-217" aria-hidden="true" tabindex="-1"></a><span class="fu"># Assessing Bracken output files</span></span>
 <span id="cb4-218"><a href="#cb4-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-221"><a href="#cb4-221" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb4-222"><a href="#cb4-222" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-bracken-output</span></span>
-<span id="cb4-223"><a href="#cb4-223" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb4-224"><a href="#cb4-224" aria-hidden="true" tabindex="-1"></a>se_bracken <span class="op">=</span> pd.read_csv(se_bracken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb4-225"><a href="#cb4-225" aria-hidden="true" tabindex="-1"></a>pe_bracken <span class="op">=</span> pd.read_csv(pe_bracken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb4-226"><a href="#cb4-226" aria-hidden="true" tabindex="-1"></a>test_bracken <span class="op">=</span> pd.read_csv(test_bracken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb4-227"><a href="#cb4-227" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-228"><a href="#cb4-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-229"><a href="#cb4-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-232"><a href="#cb4-232" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb4-233"><a href="#cb4-233" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: generate-bracken-table</span></span>
-<span id="cb4-234"><a href="#cb4-234" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb4-235"><a href="#cb4-235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-236"><a href="#cb4-236" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(se_bracken.head())</span>
+<span id="cb4-219"><a href="#cb4-219" aria-hidden="true" tabindex="-1"></a>The other output of the PROFILE subworkflow is the <span class="in">`bracken_reports_merged.tsv.gz`</span> file, which gives Bracken-summarized and corrected kingdom-level counts, based on the Kraken output. Again, single-read results look very similar to paired-end results. The only difference is a slightly higher share of non-ribosomal bacterial reads in the single-read run. I am uncertain to why that is, maybe the reads that FASTP removed in the paired-end run were enriched for non-ribosomal bacterial reads?</span>
+<span id="cb4-220"><a href="#cb4-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-223"><a href="#cb4-223" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-224"><a href="#cb4-224" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-bracken-output</span></span>
+<span id="cb4-225"><a href="#cb4-225" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb4-226"><a href="#cb4-226" aria-hidden="true" tabindex="-1"></a>se_bracken <span class="op">=</span> pd.read_csv(se_bracken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb4-227"><a href="#cb4-227" aria-hidden="true" tabindex="-1"></a>pe_bracken <span class="op">=</span> pd.read_csv(pe_bracken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb4-228"><a href="#cb4-228" aria-hidden="true" tabindex="-1"></a>test_bracken <span class="op">=</span> pd.read_csv(test_bracken_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb4-229"><a href="#cb4-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-230"><a href="#cb4-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-231"><a href="#cb4-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-234"><a href="#cb4-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-235"><a href="#cb4-235" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: generate-bracken-table</span></span>
+<span id="cb4-236"><a href="#cb4-236" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
 <span id="cb4-237"><a href="#cb4-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-238"><a href="#cb4-238" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_df(df):</span>
-<span id="cb4-239"><a href="#cb4-239" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> []</span>
-<span id="cb4-240"><a href="#cb4-240" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> sample, sample_data <span class="kw">in</span> df.groupby(<span class="st">"sample"</span>):</span>
-<span id="cb4-241"><a href="#cb4-241" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Process ribosomal reads</span></span>
-<span id="cb4-242"><a href="#cb4-242" aria-hidden="true" tabindex="-1"></a>        ribo_df <span class="op">=</span> sample_data[sample_data[<span class="st">"ribosomal"</span>] <span class="op">==</span> <span class="va">True</span>]</span>
-<span id="cb4-243"><a href="#cb4-243" aria-hidden="true" tabindex="-1"></a>        n_reads_bacteria_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Bacteria"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-244"><a href="#cb4-244" aria-hidden="true" tabindex="-1"></a>        n_reads_virus_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Viruses"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-245"><a href="#cb4-245" aria-hidden="true" tabindex="-1"></a>        n_reads_archea_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Archaea"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-246"><a href="#cb4-246" aria-hidden="true" tabindex="-1"></a>        n_reads_eukaryota_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Eukaryota"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-247"><a href="#cb4-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-248"><a href="#cb4-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-249"><a href="#cb4-249" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Process non-ribosomal reads</span></span>
-<span id="cb4-250"><a href="#cb4-250" aria-hidden="true" tabindex="-1"></a>        nonribo_df <span class="op">=</span> sample_data[sample_data[<span class="st">"ribosomal"</span>] <span class="op">==</span> <span class="va">False</span>]</span>
-<span id="cb4-251"><a href="#cb4-251" aria-hidden="true" tabindex="-1"></a>        n_reads_bacteria_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Bacteria"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-252"><a href="#cb4-252" aria-hidden="true" tabindex="-1"></a>        n_reads_virus_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Viruses"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-253"><a href="#cb4-253" aria-hidden="true" tabindex="-1"></a>        n_reads_archea_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Archaea"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-254"><a href="#cb4-254" aria-hidden="true" tabindex="-1"></a>        n_reads_eukaryota_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Eukaryota"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-255"><a href="#cb4-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-256"><a href="#cb4-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-257"><a href="#cb4-257" aria-hidden="true" tabindex="-1"></a>        total_assigned_reads <span class="op">=</span> (</span>
-<span id="cb4-258"><a href="#cb4-258" aria-hidden="true" tabindex="-1"></a>            n_reads_bacteria_ribo <span class="op">+</span> n_reads_bacteria_nonribo <span class="op">+</span></span>
-<span id="cb4-259"><a href="#cb4-259" aria-hidden="true" tabindex="-1"></a>            n_reads_virus_ribo <span class="op">+</span> n_reads_virus_nonribo <span class="op">+</span></span>
-<span id="cb4-260"><a href="#cb4-260" aria-hidden="true" tabindex="-1"></a>            n_reads_archea_ribo <span class="op">+</span> n_reads_archea_nonribo <span class="op">+</span></span>
-<span id="cb4-261"><a href="#cb4-261" aria-hidden="true" tabindex="-1"></a>            n_reads_eukaryota_ribo <span class="op">+</span> n_reads_eukaryota_nonribo</span>
-<span id="cb4-262"><a href="#cb4-262" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb4-263"><a href="#cb4-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-264"><a href="#cb4-264" aria-hidden="true" tabindex="-1"></a>        data.append([</span>
-<span id="cb4-265"><a href="#cb4-265" aria-hidden="true" tabindex="-1"></a>            sample,</span>
-<span id="cb4-266"><a href="#cb4-266" aria-hidden="true" tabindex="-1"></a>            n_reads_bacteria_ribo, n_reads_bacteria_nonribo,</span>
-<span id="cb4-267"><a href="#cb4-267" aria-hidden="true" tabindex="-1"></a>            n_reads_virus_ribo, n_reads_virus_nonribo,</span>
-<span id="cb4-268"><a href="#cb4-268" aria-hidden="true" tabindex="-1"></a>            n_reads_archea_ribo, n_reads_archea_nonribo,</span>
-<span id="cb4-269"><a href="#cb4-269" aria-hidden="true" tabindex="-1"></a>            n_reads_eukaryota_ribo, n_reads_eukaryota_nonribo,</span>
-<span id="cb4-270"><a href="#cb4-270" aria-hidden="true" tabindex="-1"></a>            total_assigned_reads</span>
-<span id="cb4-271"><a href="#cb4-271" aria-hidden="true" tabindex="-1"></a>        ])</span>
-<span id="cb4-272"><a href="#cb4-272" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(data, columns<span class="op">=</span>[</span>
-<span id="cb4-273"><a href="#cb4-273" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sample"</span>,</span>
-<span id="cb4-274"><a href="#cb4-274" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Bacteria (Ribosomal)"</span>, <span class="st">"Bacteria (Non-ribosomal)"</span>,</span>
-<span id="cb4-275"><a href="#cb4-275" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Viruses (Ribosomal)"</span>, <span class="st">"Viruses (Non-ribosomal)"</span>,</span>
-<span id="cb4-276"><a href="#cb4-276" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Archaea (Ribosomal)"</span>, <span class="st">"Archaea (Non-ribosomal)"</span>,</span>
-<span id="cb4-277"><a href="#cb4-277" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Eukaryota (Ribosomal)"</span>, <span class="st">"Eukaryota (Non-ribosomal)"</span>,</span>
-<span id="cb4-278"><a href="#cb4-278" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Total Assigned Reads"</span></span>
-<span id="cb4-279"><a href="#cb4-279" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb4-280"><a href="#cb4-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-281"><a href="#cb4-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-282"><a href="#cb4-282" aria-hidden="true" tabindex="-1"></a>se_bracken_plot_df <span class="op">=</span> process_df(se_bracken)</span>
-<span id="cb4-283"><a href="#cb4-283" aria-hidden="true" tabindex="-1"></a>pe_bracken_plot_df <span class="op">=</span> process_df(pe_bracken)</span>
-<span id="cb4-284"><a href="#cb4-284" aria-hidden="true" tabindex="-1"></a>test_bracken_plot_df <span class="op">=</span> process_df(test_bracken)</span>
-<span id="cb4-285"><a href="#cb4-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-286"><a href="#cb4-286" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-238"><a href="#cb4-238" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(se_bracken.head())</span>
+<span id="cb4-239"><a href="#cb4-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-240"><a href="#cb4-240" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_df(df):</span>
+<span id="cb4-241"><a href="#cb4-241" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> []</span>
+<span id="cb4-242"><a href="#cb4-242" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> sample, sample_data <span class="kw">in</span> df.groupby(<span class="st">"sample"</span>):</span>
+<span id="cb4-243"><a href="#cb4-243" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Process ribosomal reads</span></span>
+<span id="cb4-244"><a href="#cb4-244" aria-hidden="true" tabindex="-1"></a>        ribo_df <span class="op">=</span> sample_data[sample_data[<span class="st">"ribosomal"</span>] <span class="op">==</span> <span class="va">True</span>]</span>
+<span id="cb4-245"><a href="#cb4-245" aria-hidden="true" tabindex="-1"></a>        n_reads_bacteria_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Bacteria"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-246"><a href="#cb4-246" aria-hidden="true" tabindex="-1"></a>        n_reads_virus_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Viruses"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-247"><a href="#cb4-247" aria-hidden="true" tabindex="-1"></a>        n_reads_archea_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Archaea"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-248"><a href="#cb4-248" aria-hidden="true" tabindex="-1"></a>        n_reads_eukaryota_ribo <span class="op">=</span> ribo_df[ribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Eukaryota"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-249"><a href="#cb4-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-250"><a href="#cb4-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-251"><a href="#cb4-251" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Process non-ribosomal reads</span></span>
+<span id="cb4-252"><a href="#cb4-252" aria-hidden="true" tabindex="-1"></a>        nonribo_df <span class="op">=</span> sample_data[sample_data[<span class="st">"ribosomal"</span>] <span class="op">==</span> <span class="va">False</span>]</span>
+<span id="cb4-253"><a href="#cb4-253" aria-hidden="true" tabindex="-1"></a>        n_reads_bacteria_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Bacteria"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-254"><a href="#cb4-254" aria-hidden="true" tabindex="-1"></a>        n_reads_virus_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Viruses"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-255"><a href="#cb4-255" aria-hidden="true" tabindex="-1"></a>        n_reads_archea_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Archaea"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-256"><a href="#cb4-256" aria-hidden="true" tabindex="-1"></a>        n_reads_eukaryota_nonribo <span class="op">=</span> nonribo_df[nonribo_df[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"Eukaryota"</span>][<span class="st">"kraken_assigned_reads"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-257"><a href="#cb4-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-258"><a href="#cb4-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-259"><a href="#cb4-259" aria-hidden="true" tabindex="-1"></a>        total_assigned_reads <span class="op">=</span> (</span>
+<span id="cb4-260"><a href="#cb4-260" aria-hidden="true" tabindex="-1"></a>            n_reads_bacteria_ribo <span class="op">+</span> n_reads_bacteria_nonribo <span class="op">+</span></span>
+<span id="cb4-261"><a href="#cb4-261" aria-hidden="true" tabindex="-1"></a>            n_reads_virus_ribo <span class="op">+</span> n_reads_virus_nonribo <span class="op">+</span></span>
+<span id="cb4-262"><a href="#cb4-262" aria-hidden="true" tabindex="-1"></a>            n_reads_archea_ribo <span class="op">+</span> n_reads_archea_nonribo <span class="op">+</span></span>
+<span id="cb4-263"><a href="#cb4-263" aria-hidden="true" tabindex="-1"></a>            n_reads_eukaryota_ribo <span class="op">+</span> n_reads_eukaryota_nonribo</span>
+<span id="cb4-264"><a href="#cb4-264" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-265"><a href="#cb4-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-266"><a href="#cb4-266" aria-hidden="true" tabindex="-1"></a>        data.append([</span>
+<span id="cb4-267"><a href="#cb4-267" aria-hidden="true" tabindex="-1"></a>            sample,</span>
+<span id="cb4-268"><a href="#cb4-268" aria-hidden="true" tabindex="-1"></a>            n_reads_bacteria_ribo, n_reads_bacteria_nonribo,</span>
+<span id="cb4-269"><a href="#cb4-269" aria-hidden="true" tabindex="-1"></a>            n_reads_virus_ribo, n_reads_virus_nonribo,</span>
+<span id="cb4-270"><a href="#cb4-270" aria-hidden="true" tabindex="-1"></a>            n_reads_archea_ribo, n_reads_archea_nonribo,</span>
+<span id="cb4-271"><a href="#cb4-271" aria-hidden="true" tabindex="-1"></a>            n_reads_eukaryota_ribo, n_reads_eukaryota_nonribo,</span>
+<span id="cb4-272"><a href="#cb4-272" aria-hidden="true" tabindex="-1"></a>            total_assigned_reads</span>
+<span id="cb4-273"><a href="#cb4-273" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb4-274"><a href="#cb4-274" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(data, columns<span class="op">=</span>[</span>
+<span id="cb4-275"><a href="#cb4-275" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sample"</span>,</span>
+<span id="cb4-276"><a href="#cb4-276" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Bacteria (Ribosomal)"</span>, <span class="st">"Bacteria (Non-ribosomal)"</span>,</span>
+<span id="cb4-277"><a href="#cb4-277" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Viruses (Ribosomal)"</span>, <span class="st">"Viruses (Non-ribosomal)"</span>,</span>
+<span id="cb4-278"><a href="#cb4-278" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Archaea (Ribosomal)"</span>, <span class="st">"Archaea (Non-ribosomal)"</span>,</span>
+<span id="cb4-279"><a href="#cb4-279" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Eukaryota (Ribosomal)"</span>, <span class="st">"Eukaryota (Non-ribosomal)"</span>,</span>
+<span id="cb4-280"><a href="#cb4-280" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Total Assigned Reads"</span></span>
+<span id="cb4-281"><a href="#cb4-281" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb4-282"><a href="#cb4-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-283"><a href="#cb4-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-284"><a href="#cb4-284" aria-hidden="true" tabindex="-1"></a>se_bracken_plot_df <span class="op">=</span> process_df(se_bracken)</span>
+<span id="cb4-285"><a href="#cb4-285" aria-hidden="true" tabindex="-1"></a>pe_bracken_plot_df <span class="op">=</span> process_df(pe_bracken)</span>
+<span id="cb4-286"><a href="#cb4-286" aria-hidden="true" tabindex="-1"></a>test_bracken_plot_df <span class="op">=</span> process_df(test_bracken)</span>
 <span id="cb4-287"><a href="#cb4-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-290"><a href="#cb4-290" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb4-291"><a href="#cb4-291" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-bracken-stats</span></span>
-<span id="cb4-292"><a href="#cb4-292" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Kingdom-level read distribution (Bracken)</span></span>
-<span id="cb4-293"><a href="#cb4-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-294"><a href="#cb4-294" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb4-295"><a href="#cb4-295" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb4-296"><a href="#cb4-296" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb4-297"><a href="#cb4-297" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate percentages</span></span>
-<span id="cb4-298"><a href="#cb4-298" aria-hidden="true" tabindex="-1"></a>cols_to_normalize <span class="op">=</span> [<span class="st">'Bacteria (Ribosomal)'</span>, <span class="st">'Bacteria (Non-ribosomal)'</span>,</span>
-<span id="cb4-299"><a href="#cb4-299" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Viruses (Ribosomal)'</span>, <span class="st">'Viruses (Non-ribosomal)'</span>,</span>
-<span id="cb4-300"><a href="#cb4-300" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Archaea (Ribosomal)'</span>, <span class="st">'Archaea (Non-ribosomal)'</span>,</span>
-<span id="cb4-301"><a href="#cb4-301" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Eukaryota (Ribosomal)'</span>, <span class="st">'Eukaryota (Non-ribosomal)'</span>]</span>
-<span id="cb4-302"><a href="#cb4-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-303"><a href="#cb4-303" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the horizontal stacked bar plot</span></span>
-<span id="cb4-304"><a href="#cb4-304" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2, ax3) <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>), dpi<span class="op">=</span><span class="dv">300</span>)  <span class="co">#</span></span>
-<span id="cb4-305"><a href="#cb4-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-306"><a href="#cb4-306" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot stacked bars horizontally</span></span>
-<span id="cb4-307"><a href="#cb4-307" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, df, title <span class="kw">in</span> <span class="bu">zip</span>([ax1, ax2, ax3], [se_bracken_plot_df, pe_bracken_plot_df, test_bracken_plot_df], [<span class="st">"single-end"</span>, <span class="st">"paired-end"</span>, <span class="st">"normal run"</span>]):</span>
-<span id="cb4-308"><a href="#cb4-308" aria-hidden="true" tabindex="-1"></a>    df_pct <span class="op">=</span> df[cols_to_normalize].div(df[cols_to_normalize].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb4-309"><a href="#cb4-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-310"><a href="#cb4-310" aria-hidden="true" tabindex="-1"></a>    left <span class="op">=</span> np.zeros(<span class="bu">len</span>(df))</span>
-<span id="cb4-311"><a href="#cb4-311" aria-hidden="true" tabindex="-1"></a>    colors <span class="op">=</span> plt.rcParams[<span class="st">'axes.prop_cycle'</span>].by_key()[<span class="st">'color'</span>]</span>
-<span id="cb4-312"><a href="#cb4-312" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, column <span class="kw">in</span> <span class="bu">enumerate</span>(cols_to_normalize):</span>
-<span id="cb4-313"><a href="#cb4-313" aria-hidden="true" tabindex="-1"></a>        ax.barh(df[<span class="st">'sample'</span>], df_pct[column], left<span class="op">=</span>left,</span>
-<span id="cb4-314"><a href="#cb4-314" aria-hidden="true" tabindex="-1"></a>                label<span class="op">=</span>column.capitalize(), color<span class="op">=</span>colors[i])</span>
-<span id="cb4-315"><a href="#cb4-315" aria-hidden="true" tabindex="-1"></a>        left <span class="op">+=</span> df_pct[column]</span>
-<span id="cb4-316"><a href="#cb4-316" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, row <span class="kw">in</span> df.iterrows():</span>
-<span id="cb4-317"><a href="#cb4-317" aria-hidden="true" tabindex="-1"></a>        ax.text(<span class="dv">101</span>, i, <span class="ss">f'</span><span class="sc">{</span><span class="bu">int</span>(row[<span class="st">"Total Assigned Reads"</span>])<span class="sc">:,}</span><span class="ss">'</span>,</span>
-<span id="cb4-318"><a href="#cb4-318" aria-hidden="true" tabindex="-1"></a>                va<span class="op">=</span><span class="st">'center'</span>, ha<span class="op">=</span><span class="st">'left'</span>)</span>
-<span id="cb4-319"><a href="#cb4-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-320"><a href="#cb4-320" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Customize the plot</span></span>
-<span id="cb4-321"><a href="#cb4-321" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ax.set_yticks(rotation=0)  # No rotation needed for horizontal bars</span></span>
-<span id="cb4-322"><a href="#cb4-322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-323"><a href="#cb4-323" aria-hidden="true" tabindex="-1"></a>    ax.set_title(title)</span>
-<span id="cb4-324"><a href="#cb4-324" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">0</span>, <span class="dv">100</span>)</span>
-<span id="cb4-325"><a href="#cb4-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-326"><a href="#cb4-326" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb4-327"><a href="#cb4-327" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb4-328"><a href="#cb4-328" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-329"><a href="#cb4-329" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add some padding to the right for the legend</span></span>
-<span id="cb4-330"><a href="#cb4-330" aria-hidden="true" tabindex="-1"></a>ax3.set_xlabel(<span class="st">'Percentage (%)'</span>)</span>
-<span id="cb4-331"><a href="#cb4-331" aria-hidden="true" tabindex="-1"></a>ax1.text(<span class="dv">101</span>, <span class="dv">9</span>, <span class="st">'Number of</span><span class="ch">\n</span><span class="st">Assigned</span><span class="ch">\n</span><span class="st">reads'</span>, va<span class="op">=</span><span class="st">'center'</span>, ha<span class="op">=</span><span class="st">'left'</span>)</span>
-<span id="cb4-332"><a href="#cb4-332" aria-hidden="true" tabindex="-1"></a>ax3.legend(title<span class="op">=</span><span class="st">'Taxonomy'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.8</span>), loc<span class="op">=</span><span class="st">'center'</span>, ncol<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb4-333"><a href="#cb4-333" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb4-334"><a href="#cb4-334" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-335"><a href="#cb4-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-336"><a href="#cb4-336" aria-hidden="true" tabindex="-1"></a><span class="fu"># Next steps</span></span>
+<span id="cb4-288"><a href="#cb4-288" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-289"><a href="#cb4-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-292"><a href="#cb4-292" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-293"><a href="#cb4-293" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-bracken-stats</span></span>
+<span id="cb4-294"><a href="#cb4-294" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Kingdom-level read distribution (Bracken)</span></span>
+<span id="cb4-295"><a href="#cb4-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-296"><a href="#cb4-296" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-297"><a href="#cb4-297" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-298"><a href="#cb4-298" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-299"><a href="#cb4-299" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate percentages</span></span>
+<span id="cb4-300"><a href="#cb4-300" aria-hidden="true" tabindex="-1"></a>cols_to_normalize <span class="op">=</span> [<span class="st">'Bacteria (Ribosomal)'</span>, <span class="st">'Bacteria (Non-ribosomal)'</span>,</span>
+<span id="cb4-301"><a href="#cb4-301" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Viruses (Ribosomal)'</span>, <span class="st">'Viruses (Non-ribosomal)'</span>,</span>
+<span id="cb4-302"><a href="#cb4-302" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Archaea (Ribosomal)'</span>, <span class="st">'Archaea (Non-ribosomal)'</span>,</span>
+<span id="cb4-303"><a href="#cb4-303" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'Eukaryota (Ribosomal)'</span>, <span class="st">'Eukaryota (Non-ribosomal)'</span>]</span>
+<span id="cb4-304"><a href="#cb4-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-305"><a href="#cb4-305" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the horizontal stacked bar plot</span></span>
+<span id="cb4-306"><a href="#cb4-306" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2, ax3) <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>), dpi<span class="op">=</span><span class="dv">300</span>)  <span class="co">#</span></span>
+<span id="cb4-307"><a href="#cb4-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-308"><a href="#cb4-308" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot stacked bars horizontally</span></span>
+<span id="cb4-309"><a href="#cb4-309" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, df, title <span class="kw">in</span> <span class="bu">zip</span>([ax1, ax2, ax3], [se_bracken_plot_df, pe_bracken_plot_df, test_bracken_plot_df], [<span class="st">"single-end"</span>, <span class="st">"paired-end"</span>, <span class="st">"normal run"</span>]):</span>
+<span id="cb4-310"><a href="#cb4-310" aria-hidden="true" tabindex="-1"></a>    df_pct <span class="op">=</span> df[cols_to_normalize].div(df[cols_to_normalize].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb4-311"><a href="#cb4-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-312"><a href="#cb4-312" aria-hidden="true" tabindex="-1"></a>    left <span class="op">=</span> np.zeros(<span class="bu">len</span>(df))</span>
+<span id="cb4-313"><a href="#cb4-313" aria-hidden="true" tabindex="-1"></a>    colors <span class="op">=</span> plt.rcParams[<span class="st">'axes.prop_cycle'</span>].by_key()[<span class="st">'color'</span>]</span>
+<span id="cb4-314"><a href="#cb4-314" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, column <span class="kw">in</span> <span class="bu">enumerate</span>(cols_to_normalize):</span>
+<span id="cb4-315"><a href="#cb4-315" aria-hidden="true" tabindex="-1"></a>        ax.barh(df[<span class="st">'sample'</span>], df_pct[column], left<span class="op">=</span>left,</span>
+<span id="cb4-316"><a href="#cb4-316" aria-hidden="true" tabindex="-1"></a>                label<span class="op">=</span>column.capitalize(), color<span class="op">=</span>colors[i])</span>
+<span id="cb4-317"><a href="#cb4-317" aria-hidden="true" tabindex="-1"></a>        left <span class="op">+=</span> df_pct[column]</span>
+<span id="cb4-318"><a href="#cb4-318" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, row <span class="kw">in</span> df.iterrows():</span>
+<span id="cb4-319"><a href="#cb4-319" aria-hidden="true" tabindex="-1"></a>        ax.text(<span class="dv">101</span>, i, <span class="ss">f'</span><span class="sc">{</span><span class="bu">int</span>(row[<span class="st">"Total Assigned Reads"</span>])<span class="sc">:,}</span><span class="ss">'</span>,</span>
+<span id="cb4-320"><a href="#cb4-320" aria-hidden="true" tabindex="-1"></a>                va<span class="op">=</span><span class="st">'center'</span>, ha<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb4-321"><a href="#cb4-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-322"><a href="#cb4-322" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Customize the plot</span></span>
+<span id="cb4-323"><a href="#cb4-323" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ax.set_yticks(rotation=0)  # No rotation needed for horizontal bars</span></span>
+<span id="cb4-324"><a href="#cb4-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-325"><a href="#cb4-325" aria-hidden="true" tabindex="-1"></a>    ax.set_title(title)</span>
+<span id="cb4-326"><a href="#cb4-326" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">0</span>, <span class="dv">100</span>)</span>
+<span id="cb4-327"><a href="#cb4-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-328"><a href="#cb4-328" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb4-329"><a href="#cb4-329" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb4-330"><a href="#cb4-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-331"><a href="#cb4-331" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add some padding to the right for the legend</span></span>
+<span id="cb4-332"><a href="#cb4-332" aria-hidden="true" tabindex="-1"></a>ax3.set_xlabel(<span class="st">'Percentage (%)'</span>)</span>
+<span id="cb4-333"><a href="#cb4-333" aria-hidden="true" tabindex="-1"></a>ax1.text(<span class="dv">101</span>, <span class="dv">9</span>, <span class="st">'Number of</span><span class="ch">\n</span><span class="st">Assigned</span><span class="ch">\n</span><span class="st">reads'</span>, va<span class="op">=</span><span class="st">'center'</span>, ha<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb4-334"><a href="#cb4-334" aria-hidden="true" tabindex="-1"></a>ax3.legend(title<span class="op">=</span><span class="st">'Taxonomy'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.8</span>), loc<span class="op">=</span><span class="st">'center'</span>, ncol<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb4-335"><a href="#cb4-335" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-336"><a href="#cb4-336" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-337"><a href="#cb4-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-338"><a href="#cb4-338" aria-hidden="true" tabindex="-1"></a>Overall, the single-read version of the PROFILE workflow seems to work as expected. The next step is to adapt the HV subworkflow.</span>
+<span id="cb4-338"><a href="#cb4-338" aria-hidden="true" tabindex="-1"></a><span class="fu"># Next steps</span></span>
+<span id="cb4-339"><a href="#cb4-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-340"><a href="#cb4-340" aria-hidden="true" tabindex="-1"></a>Overall, the single-read version of the PROFILE workflow seems to work as expected. The next step is to adapt the HV subworkflow.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

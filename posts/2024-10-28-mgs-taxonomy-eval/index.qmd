@@ -26,6 +26,8 @@ As in my [previous post](https://data.securebio.org/simons-notebook/posts/2024-1
 
 Looking at Kingdom-level composition in both Kraken and Bracken results, the single-read output looks as expected, i.e., similar to the paired-end output. The paired-end run looks the same as when using the original run workflow, so addition of single-read functionality doesn't impede mgs-workflow runs on paired-end data.
 
+I will amend the HV subworkflow of mgs-workflow next.
+
 # Introduction
 
 The single-end dataset simply consists of the forward reads of our usual test dataset. Additionally, I work with the paired-end test dataset. Both of these are run through `run_dev_se.nf`, a shorter version of `run.nf` that only includes RAW, CLEAN, and PROFILE. `run_dev_se.nf` contains a `read_type` parameter, which is set to `single_end` for the single-end run, and `paired_end` for the paired-end run. Finally, the paired-end run is compared to the output of a normal test run using `run.nf`.
