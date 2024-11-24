@@ -109,9 +109,6 @@ My current hypothesis for this pattern is that the reverse reads are very low qu
 #| label: tbl-compare-base-pairs
 #| tbl-cap: Comparison of the number of bases between single-read and paired-end runs, for both raw and cleaned files
 
-
-
-
 combined_df = se_basic_stats[["sample", "n_bases_approx", "stage", "n_read_pairs"]].merge(
     pe_basic_stats[["sample", "n_bases_approx", "stage", "n_read_pairs"]],
     on=["sample", "stage"],
@@ -292,7 +289,7 @@ for ax in axs:
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.set_xlim(0, 40)
-    ax.set_ylim(0, 500)
+    ax.set_ylim(0, 7000)
 ```
 
 

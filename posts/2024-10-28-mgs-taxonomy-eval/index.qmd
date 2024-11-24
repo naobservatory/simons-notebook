@@ -45,9 +45,9 @@ import seaborn as sns
 ```{python}
 #| label: data-paths
 
-single_read_dir = "mgs-results/test_single_read"
-paired_read_dir = "mgs-results/test_paired_end"
-test_dir = "mgs-results/test"
+single_read_dir = "~/code/simons-notebook/posts/2024-10-28-mgs-taxonomy-eval/mgs-results/test_single_read"
+paired_read_dir = "~/code/simons-notebook/posts/2024-10-28-mgs-taxonomy-eval/mgs-results/test_paired_end"
+test_dir = "~/code/simons-notebook/posts/2024-10-28-mgs-taxonomy-eval/mgs-results/test"
 
 se_output_dir = os.path.join(single_read_dir, "output")
 pe_output_dir = os.path.join(paired_read_dir, "output")
@@ -57,17 +57,13 @@ se_results_dir = os.path.join(se_output_dir, "results")
 pe_results_dir = os.path.join(pe_output_dir, "results")
 test_results_dir = os.path.join(test_output_dir, "results")
 
-se_taxonomy_dir = os.path.join(se_results_dir, "taxonomy")
-pe_taxonomy_dir = os.path.join(pe_results_dir, "taxonomy")
-test_taxonomy_dir = os.path.join(test_results_dir, "taxonomy")
+se_bracken_path = os.path.join(se_results_dir, "bracken_reports_merged.tsv.gz")
+pe_bracken_path = os.path.join(pe_results_dir, "bracken_reports_merged.tsv.gz")
+test_bracken_path = os.path.join(test_results_dir, "bracken_reports_merged.tsv.gz")
 
-se_bracken_path = os.path.join(se_taxonomy_dir, "bracken_reports_merged.tsv.gz")
-pe_bracken_path = os.path.join(pe_taxonomy_dir, "bracken_reports_merged.tsv.gz")
-test_bracken_path = os.path.join(test_taxonomy_dir, "bracken_reports_merged.tsv.gz")
-
-se_kraken_path = os.path.join(se_taxonomy_dir, "kraken_reports_merged.tsv.gz")
-pe_kraken_path = os.path.join(pe_taxonomy_dir, "kraken_reports_merged.tsv.gz")
-test_kraken_path = os.path.join(test_taxonomy_dir, "kraken_reports_merged.tsv.gz")
+se_kraken_path = os.path.join(se_results_dir, "kraken_reports_merged.tsv.gz")
+pe_kraken_path = os.path.join(pe_results_dir, "kraken_reports_merged.tsv.gz")
+test_kraken_path = os.path.join(test_results_dir, "kraken_reports_merged.tsv.gz")
 ```
 
 # Assessing Kraken output files
@@ -83,6 +79,10 @@ Only looking at the kingdom-level, the single-read and paired-end read results l
 se_kraken = pd.read_csv(se_kraken_path, sep='\t')
 pe_kraken = pd.read_csv(pe_kraken_path, sep='\t')
 test_kraken = pd.read_csv(test_kraken_path, sep='\t')
+
+# print(se_kraken.head())
+# print(pe_kraken.head())
+print(test_kraken.head())
 
 ```
 
@@ -153,6 +153,10 @@ def process_df(df):
 se_kraken_plot_df = process_df(se_kraken_df)
 pe_kraken_plot_df = process_df(pe_kraken_df)
 test_kraken_plot_df = process_df(test_kraken_df)
+
+print(se_kraken_plot_df.head())
+print(pe_kraken_plot_df.head())
+print(test_kraken_plot_df.head())
 
 ```
 

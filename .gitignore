@@ -47,7 +47,7 @@ wheels/
 
 
 
-_site
+
 **/mgs-results/
 _freeze
 **/.DS_Store
