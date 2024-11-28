@@ -23,10 +23,7 @@ title-block-banner: "#5cb2a0"
 
 I'm adapting mgs-workflow to take in single-read sequencing data. Here I'm checking if: (i) the output of the single-read RAW and CLEAN workflows look as expected, and (ii) if the output of the paired-end version is the same as the output of the test run on `dev`.
 
-The dataset used here was generated from Project Runway samples, with library prep performed at the BMC followed by Element AVITI sequencing. Will previously analyzed this data [here](https://data.securebio.org/wills-public-notebook/notebooks/2023-12-19_project-runway-bmc-rna.html). Notably, the reverse reads of the paired-end run were low quality, at the same time as our MultiQC analyses not providing separate quality statitics for the forward and reverse reads. As such, the plots of the paired-end data show artefacts due to an iniability to distinguish between forward and reverse reads. I created a Github issue for this.
-
-
-I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to those of the forward reads in the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through FASTP, and thus affecting the paired-end QC measures.
+The dataset used here was generated from Project Runway samples, with library prep performed at the BMC followed by Element AVITI sequencing. Will previously analyzed this data [here](https://data.securebio.org/wills-public-notebook/notebooks/2023-12-19_project-runway-bmc-rna.html). I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, i.e., similar to those of the forward reads in the paired-end run. Differences in the two datasets are mostly mediated by the reverse reads of the paired-end run being low quality, leading to fewer reads and base pairs passing through FASTP, and thus affecting the paired-end QC measures.
 
 I will amend the PROFILE subworkflow of mgs-workflow next.
 
@@ -152,7 +149,6 @@ combined_df_read_pairs.set_index(["sample"])
 test_adapter_stats = pd.read_csv(test_adapter_stats_path, sep='\t')
 se_adapter_stats = pd.read_csv(se_adapter_stats_path, sep='\t')
 pe_adapter_stats = pd.read_csv(pe_adapter_stats_path, sep='\t')
-
 ```
 
 ```{python}
@@ -177,8 +173,9 @@ Comparing adapter contamination (@fig-adapter-stats-comparison) between single-r
 #| fig-cap: Adapter contamination along reads
 
 fig, axs = plt.subplots(2, 1, dpi=300, figsize=(10, 8))
+pe_adapter_stats["fwd_rev"] = pe_adapter_stats["file"].apply(lambda x: "forward" if "_1" in x else "reverse")
 sns.lineplot(data=se_adapter_stats, x='position', y='pc_adapters', hue='stage', ax=axs[0],units="sample", estimator=None, legend=True)
-sns.lineplot(data=pe_adapter_stats, x='position', y='pc_adapters', hue='stage', ax=axs[1],units="sample", estimator=None, legend=True)
+sns.lineplot(data=pe_adapter_stats, x='position', y='pc_adapters', hue='stage', style="fwd_rev", ax=axs[1],units="sample", estimator=None, legend=True)
 
 # Set common properties for both subplots
 for ax in axs:
@@ -227,9 +224,11 @@ This plot has become less meaningful with the inability to distinguish between f
 #|
 fig, axs = plt.subplots(2, 1, dpi=300, figsize=(10, 8))
 
+pe_quality_base_stats["fwd_rev"] = pe_quality_base_stats["file"].apply(lambda x: "forward" if "_1" in x else "reverse")
+
 sns.lineplot(data=se_quality_base_stats, x='position', y='mean_phred_score', hue='stage', units="sample", ax=axs[0],estimator=None, legend=True)
 
-sns.lineplot(data=pe_quality_base_stats, x='position', y='mean_phred_score', hue='stage', units="sample", ax=axs[1],estimator=None, legend=True)
+sns.lineplot(data=pe_quality_base_stats, x='position', y='mean_phred_score', hue='stage', style="fwd_rev", units="sample", ax=axs[1],estimator=None, legend=True)
 
 axs[0].set_title('Mean phred scores across single-end reads')
 axs[1].set_title('Mean phred scores across paired-end reads')
@@ -279,8 +278,9 @@ sns.lineplot(data=se_quality_seq_stats, x='mean_phred_score', y='n_sequences', h
 
 plt.subplots_adjust(hspace=0.3)
 
+pe_quality_seq_stats["fwd_rev"] = pe_quality_seq_stats["file"].apply(lambda x: "forward" if "_1" in x else "reverse")
 
-sns.lineplot(data=pe_quality_seq_stats, x='mean_phred_score', y='n_sequences', hue='stage', ax=axs[1], units="sample", estimator=None, legend=True)
+sns.lineplot(data=pe_quality_seq_stats, x='mean_phred_score', y='n_sequences', hue='stage', style="fwd_rev", units="sample", ax=axs[1], estimator=None, legend=True)
 
 axs[0].set_title('Mean phred scores of single-end reads')
 axs[1].set_title('Mean phred scores of paired-end reads')
