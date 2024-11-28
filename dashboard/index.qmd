@@ -68,6 +68,7 @@ def process_data(sheet):
     df = df[df["sample name"] != ""] # Drop rows where sample name is empty
     df = df.rename(columns={
         "collection site": "Collection Site",
+        "sampling duration": "Sampling duration",
         "compensation": "Compensation",
         "sample type": "Sample Type",
         "total swabs": "Samples collected",
@@ -158,16 +159,17 @@ fig.show(config={'displayModeBar': False})
 
 df_columns = [
     'Date collected',
+    'Collection Site',
     # 'Sample Type', # Currenty all nasal swabs, hence not interesting.
     'Compensation',
     'Samples collected',
+    'Sampling duration',
     'Swabs per hour',
-    'Collection Site',
 ]
 
 df['Date collected'] = df['Date collected'].dt.strftime('%B %d, %Y')
 
-df_public = df[df_columns]
+df_public = df[df_columns].sort_values(by='Date collected', ascending=False)
 df_public = df_public.iloc[:, 0:]
 
 display(df_public.style.hide(axis='index'))
