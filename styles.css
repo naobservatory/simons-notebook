@@ -1,0 +1,4 @@
+.nav-link.active {
+    color: inherit !important;
+    background-color: transparent !important;
+}
