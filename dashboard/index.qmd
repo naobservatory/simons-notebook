@@ -158,7 +158,7 @@ fig.show(config={'displayModeBar': False})
 #| echo: false
 
 df_columns = [
-    'Date collected',
+    'Date',
     'Collection Site',
     # 'Sample Type', # Currenty all nasal swabs, hence not interesting.
     'Compensation',
@@ -167,11 +167,11 @@ df_columns = [
     'Swabs per hour',
 ]
 
-df['Date collected'] = df['Date collected'].dt.strftime('%B %d, %Y')
+df['Date'] = df['Date collected'].dt.strftime('%B %d, %Y')
+df.sort_values(by='Date collected', ascending=False, inplace=True)
 
-df_public = df[df_columns].sort_values(by='Date collected', ascending=False)
+df_public = df[df_columns]
 df_public = df_public.iloc[:, 0:]
-
 display(df_public.style.hide(axis='index'))
 
 ```
