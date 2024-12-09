@@ -1,0 +1,189 @@
+---
+title: "Testing the ONT version of mgs-workflow's RAW and CLEAN subworkflows"
+author: "Simon Grimm"
+date: 2024-12-08
+
+
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-link: true
+    df-print: paged
+    toc: true
+    toc-depth: 2
+    cap-location: bottom
+    fig-format: svg
+    crossref:
+      fig-title: Figure
+      fig-prefix: Figure
+      chapters: true
+jupyter: venv
+title-block-banner: "#5cb2a0"
+---
+
+After spending some time adapting mgs-workflow to take in single-read sequencing data (see [here](https://data.securebio.org/simons-notebook/posts/2024-10-24-mgs-single-read-eval/) and [here](https://data.securebio.org/simons-notebook/posts/2024-10-28-mgs-taxonomy-eval/)), I'm now working to adapt the pipeline to take in long-read Oxford Nanopore sequencing data.
+
+I'm starting with the RAW and CLEAN workflows. I expect to want to change the cleaning tool in CLEAN, which is currently fastp and not set up to analyse long-read data.
+
+The dataset used here is based on our sequencing data, generated from [swab samples collected on 2024-10-10](https://data.securebio.org/sampling-metadata/#:~:text=45/h-,2024%2D10%2D10,-MIT). For now, I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, though I want to compare the results with the default HTML-rendered MultiQC output.
+
+
+```{python}
+#| label: data-paths
+#| include: false
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+test_dir = "mgs-results/test-ont"
+
+test_output_dir = os.path.join(test_dir, "output")
+
+test_results_dir = os.path.join(test_output_dir, "results")
+
+test_basic_stats_path = os.path.join(test_results_dir, "qc_basic_stats.tsv")
+test_adapter_stats_path = os.path.join(test_results_dir, "qc_adapter_stats.tsv")
+test_quality_base_stats_path = os.path.join(test_results_dir, "qc_quality_base_stats.tsv")
+test_quality_seq_stats_path = os.path.join(test_results_dir, "qc_quality_sequence_stats.tsv")
+
+```
+
+# Assessing basic stats for both raw and cleaned reads
+
+
+```{python}
+#| label: load-basic-stats
+#| echo: false
+#| include: false
+test_basic_stats = pd.read_csv(test_basic_stats_path, sep='\t')
+```
+
+Open todos based on results here:
+
+- Rename `raw_concat` to `raw`
+- Rename `n_read_pairs` to `n_reads`
+
+```{python}
+#| label: tbl-basic-stats
+#| tbl-cap: Summary statistics for raw ONT read
+
+
+test_basic_stats_tbl= test_basic_stats[["sample", "percent_gc", "mean_seq_len", "n_read_pairs", "percent_duplicates", "n_bases_approx", "stage"]]
+test_basic_stats_tbl = test_basic_stats_tbl[test_basic_stats_tbl["stage"] == "raw_concat"]
+
+# Display the result
+test_basic_stats_tbl.set_index(["sample"])
+
+```
+
+
+# Adapter contamination stats
+
+```{python}
+#| label: load-adapter-stats
+#| echo: false
+test_adapter_stats = pd.read_csv(test_adapter_stats_path, sep='\t')
+```
+
+Adapter contamination looks fine on first glance.
+
+Todo here:
+
+ - Figure out what poly and polyg tails mean, why they show up, and if we want to remove them.
+
+```{python}
+#| label: fig-adapter-stats-comparison
+#| fig-cap: Adapter contamination along reads
+#| fig-cap-location: top
+
+fig, ax = plt.subplots(dpi=300, figsize=(10, 4))
+sns.lineplot(data=test_adapter_stats, x='position', y='pc_adapters', hue='stage', ax=ax,units="sample", style="adapter", estimator=None, legend=True)
+
+# Set common properties for both subplots
+ax.set_xlabel('Position')
+ax.set_ylabel('% Adapters')
+ax.grid(True, linestyle='--', alpha=0.7)
+
+# Set titles for each subplot
+ax.set_title('Adapter contamination along reads')
+# Remove top and right spines for both subplots
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+fig.tight_layout()
+```
+
+# Comparing base quality stats
+
+```{python}
+#| label: load-quality-base-stats
+#| echo: false
+#|
+test_quality_base_stats = pd.read_csv(test_quality_base_stats_path, sep='\t')
+```
+
+
+Phred scores along the read look good! We have long, clean reads that reach up to 5000bp at quality scores of 35 and above.
+
+```{python}
+#| label: fig-quality-base-stats-comparison
+#| fig-cap: Mean phred scores along the read
+#| fig-cap-location: top
+fig, ax = plt.subplots(dpi=300, figsize=(10, 4))
+
+
+sns.lineplot(data=test_quality_base_stats, x='position', y='mean_phred_score', hue='stage', units="sample", ax=ax,estimator=None, legend=True)
+
+# ax.set_title('Mean phred scores along reads')
+
+# Add horizontal lines at Phred scores 10, 20, 30, 40
+ax.grid(True, linestyle='--', alpha=0.7)
+
+# for phred in [10, 20, 30, 40]:
+    # ax.axhline(y=phred, color='gray', linestyle='--', alpha=0.5, linewidth=1, zorder=-2)
+
+
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+```
+
+
+# Comparing sequence quality stats
+
+```{python}
+#| label: load-quality-sequence-stats
+#| echo: false
+
+test_quality_seq_stats = pd.read_csv(test_quality_seq_stats_path, sep='\t')
+```
+
+As expected given @fig-quality-base-stats-comparison, the number of sequences with a decent average Phred score looks good. Fastp does succesfully remove low-quality sequences (among other things those with an average Phred score below 20).
+
+Todos:
+
+ - Check how quality filtering looks like with a tool that was designed for long-read data.
+
+```{python}
+#| label: fig-quality-sequence-stats-comparison
+#| fig-cap: Average Phred scores of sequences
+#| fig-cap-location: top
+
+fig, ax = plt.subplots(dpi=300, figsize=(10, 4))
+sns.lineplot(data=test_quality_seq_stats, x='mean_phred_score', y='n_sequences', hue='stage', ax=ax,units="sample", estimator=None, legend=True)
+ax.grid(True, linestyle='--', alpha=0.7)
+
+
+
+# Add horizontal lines at 200, 400, 600
+# for n_seq in [200, 400, 600]:
+    # ax.axhline(y=n_seq, color='gray', linestyle='--', alpha=0.5, linewidth=1, zorder=-2)
+
+
+# ax.set_title('Average Phred scores of sequences')
+
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+```
+
+

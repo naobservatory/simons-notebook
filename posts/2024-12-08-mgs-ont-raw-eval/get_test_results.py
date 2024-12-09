@@ -3,10 +3,10 @@
 import subprocess
 import os
 
-mgs_results_dir = "/Users/simongrimm/code/simons-notebook/posts/2024-10-24-mgs-single-read-eval/mgs-results"
+mgs_results_dir = "/Users/simongrimm/code/simons-notebook/posts/2024-12-08-mgs-ont-raw-eval/mgs-results"
 
 
-run_types = ["test_single_read", "test_paired_end", "test"]
+run_types = ["test-ont"]
 
 
 def get_test_results(mgs_results_dir):
