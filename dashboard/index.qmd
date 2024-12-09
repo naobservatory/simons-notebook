@@ -150,6 +150,47 @@ fig.update_layout(yaxis_range=[0, 800])
 fig.show(config={'displayModeBar': False})
 ```
 
+#### Samples collected per day
+
+```{python}
+#| label: sample-rate
+#| echo: false
+
+fig = px.scatter(df, x="Date collected", y="Swabs per hour",
+    labels={"Date collected": "", "Swabs per hour": "Samples collected per hour"},
+    color_discrete_sequence=["#5cb2a0"],
+    hover_data={
+        "Collection Site": True,
+        "Compensation": True,
+        "Samples collected": True
+    },
+    height=400  # Added height parameter to make plot less tall
+)
+
+fig.update_traces(marker_size=12)
+
+fig.update_layout(
+    plot_bgcolor='white'
+)
+fig.update_xaxes(
+    mirror=False,
+    ticks='outside',
+    showline=True,
+    linecolor='black',
+    tickfont=dict(size=16),
+)
+fig.update_yaxes(
+    mirror=False,
+    ticks='outside',
+    showline=True,
+    linecolor='black',
+    gridcolor='lightgrey',
+    tickfont=dict(size=15),
+)
+
+fig.show(config={'displayModeBar': False})
+```
+
 
 
 #### Sampling run metadata
