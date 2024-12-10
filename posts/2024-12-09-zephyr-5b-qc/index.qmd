@@ -20,7 +20,7 @@ jupyter: venv
 title-block-banner: "#5cb2a0"
 ---
 
-We can now run mgs-workflow's QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. I find very high polyA contamination, a lot of very short reads (<500bp), but good quality scores for those reads that reach the expected length of 4000bp.
+Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. I find very high polyA contamination, a large number of very short low-quality reads (<500bp), but good quality scores for those reads that reach the expected length of 4000bp.
 
 ```{python}
 #| label: data-paths
@@ -62,13 +62,15 @@ test_basic_stats = pd.read_csv(test_basic_stats_path, sep='\t')
 
 test_basic_stats["barcode-div"] = test_basic_stats["sample"].apply(lambda x: f"{x.split('-')[-2]}-div{x.split('-')[-1].replace('div000', '')}")
 test_basic_stats_tbl= test_basic_stats[["barcode-div", "percent_gc", "mean_seq_len", "n_read_pairs", "percent_duplicates", "n_bases_approx", "stage"]]
-test_basic_stats_tbl = test_basic_stats_tbl[test_basic_stats_tbl["stage"] == "raw_concat"]
-test_basic_stats_tbl = test_basic_stats_tbl.drop(columns=["stage"])
+test_basic_stats_tbl = test_basic_stats_tbl.sort_values(by="barcode-div")
+test_basic_stats_tbl = test_basic_stats_tbl.sort_values(by="stage", ascending=False)
+# test_basic_stats_tbl = test_basic_stats_tbl[test_basic_stats_tbl["stage"] == "raw_concat"]
+# test_basic_stats_tbl = test_basic_stats_tbl.drop(columns=["stage"])
 
 
 # Display the result
-test_basic_stats_tbl.sort_values(by="barcode-div").set_index(["barcode-div"])
-
+# test_basic_stats_tbl.sort_values(by="barcode-div")
+test_basic_stats_tbl
 ```
 
 
