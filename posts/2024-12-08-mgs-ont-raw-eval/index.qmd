@@ -1,9 +1,7 @@
 ---
 title: "Testing the ONT version of mgs-workflow's RAW and CLEAN subworkflows"
 author: "Simon Grimm"
-date: 2024-12-08
-
-
+date: 2024-12-09
 format:
   html:
     code-fold: true
@@ -24,10 +22,7 @@ title-block-banner: "#5cb2a0"
 
 After spending some time adapting mgs-workflow to take in single-read sequencing data (see [here](https://data.securebio.org/simons-notebook/posts/2024-10-24-mgs-single-read-eval/) and [here](https://data.securebio.org/simons-notebook/posts/2024-10-28-mgs-taxonomy-eval/)), I'm now working to adapt the pipeline to take in long-read Oxford Nanopore sequencing data.
 
-I'm starting with the RAW and CLEAN workflows. I expect to want to change the cleaning tool in CLEAN, which is currently fastp and not set up to analyse long-read data.
-
-The dataset used here is based on our sequencing data, generated from [swab samples collected on 2024-10-10](https://data.securebio.org/sampling-metadata/#:~:text=45/h-,2024%2D10%2D10,-MIT). For now, I find that the single-read QC output of the RAW and CLEAN workflows looks as expected, though I want to compare the results with the default HTML-rendered MultiQC output.
-
+The dataset used here is based on our sequencing data, generated from [swab samples collected on 2024-10-10](https://data.securebio.org/sampling-metadata/#:~:text=45/h-,2024%2D10%2D10,-MIT).I'm starting with the RAW and CLEAN workflows. Outputs look as expected, but I want to compare the results with the default HTML-rendered MultiQC output.
 
 ```{python}
 #| label: data-paths
@@ -43,14 +38,17 @@ test_output_dir = os.path.join(test_dir, "output")
 
 test_results_dir = os.path.join(test_output_dir, "results")
 
-test_basic_stats_path = os.path.join(test_results_dir, "qc_basic_stats.tsv")
-test_adapter_stats_path = os.path.join(test_results_dir, "qc_adapter_stats.tsv")
-test_quality_base_stats_path = os.path.join(test_results_dir, "qc_quality_base_stats.tsv")
-test_quality_seq_stats_path = os.path.join(test_results_dir, "qc_quality_sequence_stats.tsv")
+test_basic_stats_path = os.path.join(test_results_dir, "qc_basic_stats.tsv.gz")
+test_adapter_stats_path = os.path.join(test_results_dir, "qc_adapter_stats.tsv.gz")
+test_quality_base_stats_path = os.path.join(test_results_dir, "qc_quality_base_stats.tsv.gz")
+test_quality_seq_stats_path = os.path.join(test_results_dir, "qc_quality_sequence_stats.tsv.gz")
+test_read_lengths_path = os.path.join(test_results_dir, "qc_length_stats.tsv.gz")
 
 ```
 
 # Assessing basic stats for both raw and cleaned reads
+
+Basic statistics look fine. The higher number of duplicates does suggest that we should make sure that deduplication is working properly in the later stages of the pipeline.
 
 
 ```{python}
@@ -60,21 +58,19 @@ test_quality_seq_stats_path = os.path.join(test_results_dir, "qc_quality_sequenc
 test_basic_stats = pd.read_csv(test_basic_stats_path, sep='\t')
 ```
 
-Open todos based on results here:
-
-- Rename `raw_concat` to `raw`
-- Rename `n_read_pairs` to `n_reads`
-
 ```{python}
 #| label: tbl-basic-stats
 #| tbl-cap: Summary statistics for raw ONT read
 
 
-test_basic_stats_tbl= test_basic_stats[["sample", "percent_gc", "mean_seq_len", "n_read_pairs", "percent_duplicates", "n_bases_approx", "stage"]]
+test_basic_stats["barcode-div"] = test_basic_stats["sample"].apply(lambda x: f"{x.split('-')[-2]}-div{x.split('-')[-1].replace('div000', '')}")
+test_basic_stats_tbl= test_basic_stats[["barcode-div", "percent_gc", "mean_seq_len", "n_read_pairs", "percent_duplicates", "n_bases_approx", "stage"]]
 test_basic_stats_tbl = test_basic_stats_tbl[test_basic_stats_tbl["stage"] == "raw_concat"]
+test_basic_stats_tbl = test_basic_stats_tbl.drop(columns=["stage"])
+
 
 # Display the result
-test_basic_stats_tbl.set_index(["sample"])
+test_basic_stats_tbl.sort_values(by="barcode-div").set_index(["barcode-div"])
 
 ```
 
@@ -87,11 +83,7 @@ test_basic_stats_tbl.set_index(["sample"])
 test_adapter_stats = pd.read_csv(test_adapter_stats_path, sep='\t')
 ```
 
-Adapter contamination looks fine on first glance.
-
-Todo here:
-
- - Figure out what poly and polyg tails mean, why they show up, and if we want to remove them.
+A lot of reads show polya tails. I will check in with Vanessa to see if this level of contamination is to be expected.
 
 ```{python}
 #| label: fig-adapter-stats-comparison
@@ -154,15 +146,13 @@ ax.spines['right'].set_visible(False)
 ```{python}
 #| label: load-quality-sequence-stats
 #| echo: false
-
+#| include: false
+#|
 test_quality_seq_stats = pd.read_csv(test_quality_seq_stats_path, sep='\t')
+print(test_quality_seq_stats["file"].unique())
 ```
 
-As expected given @fig-quality-base-stats-comparison, the number of sequences with a decent average Phred score looks good. Fastp does succesfully remove low-quality sequences (among other things those with an average Phred score below 20).
-
-Todos:
-
- - Check how quality filtering looks like with a tool that was designed for long-read data.
+As expected given @fig-quality-base-stats-comparison, the number of sequences with a decent average Phred score looks good. Filtlong does succesfully remove low-quality sequences, though the average quality score we are currently using is probably too low.
 
 ```{python}
 #| label: fig-quality-sequence-stats-comparison
@@ -184,6 +174,38 @@ ax.grid(True, linestyle='--', alpha=0.7)
 
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
+```
+
+
+# Read lengths
+
+After cleaning, read lengths are under 200bp are removed. There are two cleaned samples, that still show data at under 200bp. This could be an artefact of how MultiQC summarises length statistics for plotting, but it's worth following up here by manually checking the read length data.
+
+```{python}
+#| label: load-read-lengths
+#| echo: false
+#| include: false
+
+test_read_lengths = pd.read_csv(test_read_lengths_path, sep='\t')
+```
+
+```{python}
+#| label: fig-read-lengths-comparison
+#| fig-cap: Read lengths
+#| fig-cap-location: top
+
+fig, ax = plt.subplots(dpi=300, figsize=(10, 4))
+sns.lineplot(data=test_read_lengths, x='length', y='n_sequences', hue='stage', ax=ax, units="sample", estimator=None, legend=True)
+ax.grid(True, linestyle='--', alpha=0.7)
+
+
+ax.set_xlim(0, 7500)
+
+ax.set_xlabel('Read length')
+ax.set_ylabel('Number of sequences')
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
 ```
 
 
