@@ -9,7 +9,7 @@
 <meta name="author" content="Simon Grimm">
 <meta name="dcterms.date" content="2024-12-09">
 
-<title>Running quality control evaluation on Zephyr 5b – Simon’s Public NAO Notebook</title>
+<title>Quality control of Zephyr 5b – Simon’s Public NAO Notebook</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -148,7 +148,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <div class="quarto-title-block"><div><h1 class="title">Running quality control evaluation on Zephyr 5b</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+      <div class="quarto-title-block"><div><h1 class="title">Quality control of Zephyr 5b</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
                       </div>
   </div>
     
@@ -196,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>We can now run mgss-workflow’s QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. We find very high polyA contamination, a lot of very short reads (&lt;500bp), but good quality scores for those reads that are reach the expected length of 4000bp.</p>
+<p>We can now run mgs-workflow’s QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. We found very high polyA contamination, a lot of very short reads (&lt;500bp), but good quality scores for those reads that reach the expected length of 4000bp.</p>
 <section id="assessing-basic-stats-for-both-raw-and-cleaned-reads" class="level1">
 <h1>Assessing basic stats for both raw and cleaned reads</h1>
 <p>Notably, the GC content and mean sequence length of most sequencing files are fairly low (~20% GC, mean length ~ 320 bp). We’d expect mean sequence length to be close to 4kbp, and the GC content to be closer to 40%. Duplication rates are also fairly high, with up to 60%.</p>
@@ -215,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tbl-basic-stats" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3">
 <figure class="quarto-float quarto-float-tbl figure">
 <div aria-describedby="tbl-basic-stats-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="195">
+<div class="cell-output cell-output-display" data-execution_count="363">
 <div>
 
 
@@ -318,7 +318,7 @@ Table&nbsp;1.1: Summary statistics for raw ONT read
 </section>
 <section id="adapter-contamination-stats" class="level1">
 <h1>Adapter contamination stats</h1>
-<p>PolyA contamination is very high. The higher levels of contamination in cleaned reads could be due to the latter having been cleaned of more artefact reads.</p>
+<p>PolyA contamination is very high. The higher contamination levels in cleaned reads may be due to the removal of very low-complexity reads that didn’t get classified as being polyA-contaminated.</p>
 <div id="cell-fig-adapter-stats-comparison" class="cell fig-cap-location-top" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
@@ -969,7 +969,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Running quality control evaluation on Zephyr 5b"</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Quality control of Zephyr 5b"</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Simon Grimm"</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-12-09</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
@@ -990,7 +990,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> "#5cb2a0"</span></span>
 <span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>We can now run mgss-workflow's QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. We find very high polyA contamination, a lot of very short reads (&lt;500bp), but good quality scores for those reads that are reach the expected length of 4000bp.</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>We can now run mgs-workflow's QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. We found very high polyA contamination, a lot of very short reads (&lt;500bp), but good quality scores for those reads that reach the expected length of 4000bp.</span>
 <span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-paths</span></span>
@@ -1050,7 +1050,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a>test_adapter_stats <span class="op">=</span> pd.read_csv(test_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
 <span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a>PolyA contamination is very high. The higher levels of contamination in cleaned reads could be due to the latter having been cleaned of more artefact reads.</span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a>PolyA contamination is very high. The higher contamination levels in cleaned reads may be due to the removal of very low-complexity reads that didn't get classified as being polyA-contaminated.</span>
 <span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
 <span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-adapter-stats-comparison</span></span>
