@@ -196,10 +196,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>We can now run mgss-workflow’s QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024.</p>
+<p>We can now run mgss-workflow’s QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. We find very high polyA contamination, a lot of very short reads (&lt;500bp), but good quality scores for those reads that are reach the expected length of 4000bp.</p>
 <section id="assessing-basic-stats-for-both-raw-and-cleaned-reads" class="level1">
 <h1>Assessing basic stats for both raw and cleaned reads</h1>
-<p>Notably, the GC content and mean sequence length of most sequencing files are fairly low. We’d expect mean sequence length to be close to 4kbp, and the GC content to be closer to 40%. Duplication rates are also fairly high, with up to 60%.</p>
+<p>Notably, the GC content and mean sequence length of most sequencing files are fairly low (~20% GC, mean length ~ 320 bp). We’d expect mean sequence length to be close to 4kbp, and the GC content to be closer to 40%. Duplication rates are also fairly high, with up to 60%.</p>
 <div class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
@@ -215,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tbl-basic-stats" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3">
 <figure class="quarto-float quarto-float-tbl figure">
 <div aria-describedby="tbl-basic-stats-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="195">
 <div>
 
 
@@ -355,7 +355,7 @@ Figure&nbsp;2.1: PolyA/PolyQ contamination along reads
 </section>
 <section id="comparing-base-quality-stats" class="level1">
 <h1>Comparing base quality stats</h1>
-<p>Most reads have a good average Phred score up until around 6000bp, dropping off thereafter. Cleaning increases Phred scores for most samples.</p>
+<p>Most reads have a good average Phred score up until around 6000bp, dropping off thereafter. Cleaning increases Phred scores for most samples. The low scores at the start of the reads are likely due to the large number of short low-quality reads.</p>
 <div id="cell-fig-quality-base-stats-comparison" class="cell fig-cap-location-top" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
@@ -394,7 +394,7 @@ Figure&nbsp;3.1: Mean phred scores along the read
 </section>
 <section id="comparing-sequence-quality-stats" class="level1">
 <h1>Comparing sequence quality stats</h1>
-<p>The modal mean phred score for reads is arround 24, which isn’t great. Potentially this average would be improved by stronger trimming of reads once their quality drops below a certain threshold. I still need to think about how to best model the results in <a href="#fig-quality-base-stats-comparison" class="quarto-xref">Figure&nbsp;3.1</a> and the results here, I would have expected that the model read score here would be closer to the average Phred score along the majority of reads (which looks like it’s around 40 in the plot above.)</p>
+<p>The modal mean phred score for reads is around 24, which isn’t great. Potentially this average would be improved by I) stronger trimming of reads once their quality drops below a certain threshold, and II) removal of reads that are short, and probably very low quality (see the low quality scores of over the first few hundred base pair positions in <a href="#fig-quality-base-stats-comparison" class="quarto-xref">Figure&nbsp;3.1</a>).</p>
 <div id="cell-fig-quality-sequence-stats-comparison" class="cell fig-cap-location-top" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
@@ -402,17 +402,8 @@ Figure&nbsp;3.1: Mean phred scores along the read
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_quality_seq_stats, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>ax,units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add horizontal lines at 200, 400, 600</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># for n_seq in [200, 400, 600]:</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ax.axhline(y=n_seq, color='gray', linestyle='--', alpha=0.5, linewidth=1, zorder=-2)</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ax.set_title('Average Phred scores of sequences')</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-quality-sequence-stats-comparison" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
@@ -452,24 +443,14 @@ Figure&nbsp;4.1: Average Phred scores of sequences
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre data-cap-location="top"><code>/var/folders/gm/txqg8t5d57z34sqfjcvpcjj00000gn/T/ipykernel_2572/22352141.py:4: SettingWithCopyWarning:
-
-
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-</code></pre>
-</div>
 <div class="cell-output cell-output-display">
 <div id="fig-read-lengths-comparison" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-read-lengths-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.1: Read lengths
+Figure&nbsp;5.1: Read lengths (high-level)
 </figcaption>
 <div aria-describedby="fig-read-lengths-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-read-lengths-comparison-output-2.svg" class="img-fluid figure-img">
+<img src="index_files/figure-html/fig-read-lengths-comparison-output-1.svg" class="img-fluid figure-img">
 </div>
 </figure>
 </div>
@@ -478,42 +459,32 @@ Figure&nbsp;5.1: Read lengths
 <div id="cell-fig-read-lengths-comparison-zoom" class="cell fig-cap-location-top" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7" data-cap-location="top"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned <span class="op">=</span> test_read_lengths[test_read_lengths[<span class="st">"stage"</span>] <span class="op">==</span> <span class="st">"cleaned"</span>]</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned[<span class="st">"Treatment"</span>] <span class="op">=</span> test_read_lengths_cleaned[<span class="st">"sample"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">"Filtration + Concentration"</span> <span class="cf">if</span> <span class="st">"12"</span> <span class="kw">in</span> x <span class="cf">else</span> <span class="st">"Filtration"</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_read_lengths_cleaned, x<span class="op">=</span><span class="st">'length'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'Treatment'</span>, ax<span class="op">=</span>ax, units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">500</span>, <span class="dv">8000</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">50</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Read length'</span>)</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Number of sequences'</span>)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6" data-cap-location="top"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned <span class="op">=</span> test_read_lengths[test_read_lengths[<span class="st">"stage"</span>] <span class="op">==</span> <span class="st">"cleaned"</span>]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned[<span class="st">"Treatment"</span>] <span class="op">=</span> test_read_lengths_cleaned[<span class="st">"sample"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">"Filtration + Concentration"</span> <span class="cf">if</span> <span class="st">"12"</span> <span class="kw">in</span> x <span class="cf">else</span> <span class="st">"Filtration"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_read_lengths_cleaned, x<span class="op">=</span><span class="st">'length'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'Treatment'</span>, ax<span class="op">=</span>ax, units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">500</span>, <span class="dv">8000</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">50</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Read length'</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Number of sequences'</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre data-cap-location="top"><code>/var/folders/gm/txqg8t5d57z34sqfjcvpcjj00000gn/T/ipykernel_2572/897950990.py:4: SettingWithCopyWarning:
-
-
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-</code></pre>
-</div>
 <div class="cell-output cell-output-display">
 <div id="fig-read-lengths-comparison-zoom" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-read-lengths-comparison-zoom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.2: Read lengths
+Figure&nbsp;5.2: Read lengths (zoomed in)
 </figcaption>
 <div aria-describedby="fig-read-lengths-comparison-zoom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-read-lengths-comparison-zoom-output-2.svg" class="img-fluid figure-img">
+<img src="index_files/figure-html/fig-read-lengths-comparison-zoom-output-1.svg" class="img-fluid figure-img">
 </div>
 </figure>
 </div>
@@ -997,247 +968,241 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Running quality control evaluation on Zephyr 5b"</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Simon Grimm"</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-12-09</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-link: true</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 2</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">    cap-location: bottom</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-format: svg</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">    crossref:</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">      fig-title: Figure</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">      fig-prefix: Figure</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">      chapters: true</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> venv</span></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> "#5cb2a0"</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>We can now run mgss-workflow's QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024.</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-paths</span></span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>test_dir <span class="op">=</span> <span class="st">"mgs-results/NAO-ONT-20241113-Zephyr5b"</span></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>test_output_dir <span class="op">=</span> os.path.join(test_dir, <span class="st">"output"</span>)</span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>test_results_dir <span class="op">=</span> os.path.join(test_output_dir, <span class="st">"results"</span>)</span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>test_basic_stats_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>test_adapter_stats_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>test_quality_base_stats_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>test_quality_seq_stats_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>test_read_lengths_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_length_stats.tsv.gz"</span>)</span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="fu"># Assessing basic stats for both raw and cleaned reads</span></span>
-<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>Notably, the GC content and mean sequence length of most sequencing files are fairly low. We'd expect mean sequence length to be close to 4kbp, and the GC content to be closer to 40%. Duplication rates are also fairly high, with up to 60%.</span>
-<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-basic-stats</span></span>
-<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>test_basic_stats <span class="op">=</span> pd.read_csv(test_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-basic-stats</span></span>
-<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Summary statistics for raw ONT read</span></span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>test_basic_stats[<span class="st">"barcode-div"</span>] <span class="op">=</span> test_basic_stats[<span class="st">"sample"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="ss">f"</span><span class="sc">{</span>x<span class="sc">.</span>split(<span class="st">'-'</span>)[<span class="op">-</span><span class="dv">2</span>]<span class="sc">}</span><span class="ss">-div</span><span class="sc">{</span>x<span class="sc">.</span>split(<span class="st">'-'</span>)[<span class="op">-</span><span class="dv">1</span>]<span class="sc">.</span>replace(<span class="st">'div000'</span>, <span class="st">''</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>test_basic_stats_tbl<span class="op">=</span> test_basic_stats[[<span class="st">"barcode-div"</span>, <span class="st">"percent_gc"</span>, <span class="st">"mean_seq_len"</span>, <span class="st">"n_read_pairs"</span>, <span class="st">"percent_duplicates"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>]]</span>
-<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>test_basic_stats_tbl <span class="op">=</span> test_basic_stats_tbl[test_basic_stats_tbl[<span class="st">"stage"</span>] <span class="op">==</span> <span class="st">"raw_concat"</span>]</span>
-<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>test_basic_stats_tbl <span class="op">=</span> test_basic_stats_tbl.drop(columns<span class="op">=</span>[<span class="st">"stage"</span>])</span>
-<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the result</span></span>
-<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>test_basic_stats_tbl.sort_values(by<span class="op">=</span><span class="st">"barcode-div"</span>).set_index([<span class="st">"barcode-div"</span>])</span>
-<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a><span class="fu"># Adapter contamination stats</span></span>
-<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-adapter-stats</span></span>
-<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>test_adapter_stats <span class="op">=</span> pd.read_csv(test_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>PolyA contamination is very high. The higher levels of contamination in cleaned reads could be due to the latter having been cleaned of more artefact reads.</span>
-<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-adapter-stats-comparison</span></span>
-<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: PolyA/PolyQ contamination along reads</span></span>
-<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
-<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_adapter_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'pc_adapters'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>ax,units<span class="op">=</span><span class="st">"sample"</span>, style<span class="op">=</span><span class="st">"adapter"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Set common properties for both subplots</span></span>
-<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Position'</span>)</span>
-<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'% Adapters'</span>)</span>
-<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, <span class="dv">15000</span>)</span>
-<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a><span class="co"># Set titles for each subplot</span></span>
-<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Adapter contamination along reads'</span>)</span>
-<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove top and right spines for both subplots</span></span>
-<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing base quality stats</span></span>
-<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-base-stats</span></span>
-<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a><span class="co">#|</span></span>
-<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a>test_quality_base_stats <span class="op">=</span> pd.read_csv(test_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a>Most reads have a good average Phred score up until around 6000bp, dropping off thereafter. Cleaning increases Phred scores for most samples.</span>
-<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-base-stats-comparison</span></span>
-<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Mean phred scores along the read</span></span>
-<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
-<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_quality_base_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'mean_phred_score'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, units<span class="op">=</span><span class="st">"sample"</span>, ax<span class="op">=</span>ax,estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a><span class="co"># ax.set_title('Mean phred scores along reads')</span></span>
-<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a><span class="co"># Add horizontal lines at Phred scores 10, 20, 30, 40</span></span>
-<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, <span class="dv">15000</span>)</span>
-<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a><span class="co"># for phred in [10, 20, 30, 40]:</span></span>
-<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ax.axhline(y=phred, color='gray', linestyle='--', alpha=0.5, linewidth=1, zorder=-2)</span></span>
-<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing sequence quality stats</span></span>
-<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-sequence-stats</span></span>
-<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a><span class="co">#|</span></span>
-<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a>test_quality_seq_stats <span class="op">=</span> pd.read_csv(test_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a>The modal mean phred score for reads is arround 24, which isn't great. Potentially this average would be improved by stronger trimming of reads once their quality drops below a certain threshold. I still need to think about how to best model the results in @fig-quality-base-stats-comparison and the results here, I would have expected that the model read score here would be closer to the average Phred score along the majority of reads (which looks like it's around 40 in the plot above.)</span>
-<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-sequence-stats-comparison</span></span>
-<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Average Phred scores of sequences</span></span>
-<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
-<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_quality_seq_stats, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>ax,units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a><span class="co"># Add horizontal lines at 200, 400, 600</span></span>
-<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a><span class="co"># for n_seq in [200, 400, 600]:</span></span>
-<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ax.axhline(y=n_seq, color='gray', linestyle='--', alpha=0.5, linewidth=1, zorder=-2)</span></span>
-<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a><span class="co"># ax.set_title('Average Phred scores of sequences')</span></span>
-<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-193"><a href="#cb9-193" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a><span class="fu"># Read lengths</span></span>
-<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a>As observed in the initial summary stats, most reads in the sample are very short (@fig-read-lengths-comparison). Zooming in in @fig-read-lengths-comparison-zoom shows that there are a couple of reads that have the expected length of 4000bp.</span>
-<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-204"><a href="#cb9-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-read-lengths</span></span>
-<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb9-208"><a href="#cb9-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a>test_read_lengths <span class="op">=</span> pd.read_csv(test_read_lengths_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
-<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-211"><a href="#cb9-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-read-lengths-comparison</span></span>
-<span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Read lengths</span></span>
-<span id="cb9-218"><a href="#cb9-218" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
-<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-220"><a href="#cb9-220" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned <span class="op">=</span> test_read_lengths[test_read_lengths[<span class="st">"stage"</span>] <span class="op">==</span> <span class="st">"cleaned"</span>]</span>
-<span id="cb9-222"><a href="#cb9-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned[<span class="st">"Treatment"</span>] <span class="op">=</span> test_read_lengths_cleaned[<span class="st">"sample"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">"Filtration + Concentration"</span> <span class="cf">if</span> <span class="st">"12"</span> <span class="kw">in</span> x <span class="cf">else</span> <span class="st">"Filtration"</span>)</span>
-<span id="cb9-224"><a href="#cb9-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-225"><a href="#cb9-225" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_read_lengths_cleaned, x<span class="op">=</span><span class="st">'length'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'Treatment'</span>, ax<span class="op">=</span>ax, units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb9-226"><a href="#cb9-226" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, <span class="dv">6500</span>)</span>
-<span id="cb9-230"><a href="#cb9-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-231"><a href="#cb9-231" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">1000</span>)</span>
-<span id="cb9-232"><a href="#cb9-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Read length'</span>)</span>
-<span id="cb9-234"><a href="#cb9-234" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Number of sequences'</span>)</span>
-<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-236"><a href="#cb9-236" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-238"><a href="#cb9-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-241"><a href="#cb9-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb9-242"><a href="#cb9-242" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-read-lengths-comparison-zoom</span></span>
-<span id="cb9-243"><a href="#cb9-243" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Read lengths</span></span>
-<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
-<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned <span class="op">=</span> test_read_lengths[test_read_lengths[<span class="st">"stage"</span>] <span class="op">==</span> <span class="st">"cleaned"</span>]</span>
-<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-249"><a href="#cb9-249" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned[<span class="st">"Treatment"</span>] <span class="op">=</span> test_read_lengths_cleaned[<span class="st">"sample"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">"Filtration + Concentration"</span> <span class="cf">if</span> <span class="st">"12"</span> <span class="kw">in</span> x <span class="cf">else</span> <span class="st">"Filtration"</span>)</span>
-<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-251"><a href="#cb9-251" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_read_lengths_cleaned, x<span class="op">=</span><span class="st">'length'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'Treatment'</span>, ax<span class="op">=</span>ax, units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb9-253"><a href="#cb9-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-254"><a href="#cb9-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-255"><a href="#cb9-255" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">500</span>, <span class="dv">8000</span>)</span>
-<span id="cb9-256"><a href="#cb9-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">50</span>)</span>
-<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-259"><a href="#cb9-259" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Read length'</span>)</span>
-<span id="cb9-260"><a href="#cb9-260" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Number of sequences'</span>)</span>
-<span id="cb9-261"><a href="#cb9-261" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-262"><a href="#cb9-262" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-263"><a href="#cb9-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-264"><a href="#cb9-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-265"><a href="#cb9-265" aria-hidden="true" tabindex="-1"></a></span>
+<div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Running quality control evaluation on Zephyr 5b"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Simon Grimm"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-12-09</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-link: true</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 2</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">    cap-location: bottom</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-format: svg</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">    crossref:</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">      fig-title: Figure</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">      fig-prefix: Figure</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">      chapters: true</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> venv</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> "#5cb2a0"</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>We can now run mgss-workflow's QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. We find very high polyA contamination, a lot of very short reads (&lt;500bp), but good quality scores for those reads that are reach the expected length of 4000bp.</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-paths</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>test_dir <span class="op">=</span> <span class="st">"mgs-results/NAO-ONT-20241113-Zephyr5b"</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>test_output_dir <span class="op">=</span> os.path.join(test_dir, <span class="st">"output"</span>)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>test_results_dir <span class="op">=</span> os.path.join(test_output_dir, <span class="st">"results"</span>)</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>test_basic_stats_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_basic_stats.tsv.gz"</span>)</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>test_adapter_stats_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_adapter_stats.tsv.gz"</span>)</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>test_quality_base_stats_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_quality_base_stats.tsv.gz"</span>)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>test_quality_seq_stats_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_quality_sequence_stats.tsv.gz"</span>)</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>test_read_lengths_path <span class="op">=</span> os.path.join(test_results_dir, <span class="st">"qc_length_stats.tsv.gz"</span>)</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="fu"># Assessing basic stats for both raw and cleaned reads</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>Notably, the GC content and mean sequence length of most sequencing files are fairly low (~20% GC, mean length ~ 320 bp). We'd expect mean sequence length to be close to 4kbp, and the GC content to be closer to 40%. Duplication rates are also fairly high, with up to 60%.</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-basic-stats</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>test_basic_stats <span class="op">=</span> pd.read_csv(test_basic_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-basic-stats</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Summary statistics for raw ONT read</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>test_basic_stats[<span class="st">"barcode-div"</span>] <span class="op">=</span> test_basic_stats[<span class="st">"sample"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="ss">f"</span><span class="sc">{</span>x<span class="sc">.</span>split(<span class="st">'-'</span>)[<span class="op">-</span><span class="dv">2</span>]<span class="sc">}</span><span class="ss">-div</span><span class="sc">{</span>x<span class="sc">.</span>split(<span class="st">'-'</span>)[<span class="op">-</span><span class="dv">1</span>]<span class="sc">.</span>replace(<span class="st">'div000'</span>, <span class="st">''</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>test_basic_stats_tbl<span class="op">=</span> test_basic_stats[[<span class="st">"barcode-div"</span>, <span class="st">"percent_gc"</span>, <span class="st">"mean_seq_len"</span>, <span class="st">"n_read_pairs"</span>, <span class="st">"percent_duplicates"</span>, <span class="st">"n_bases_approx"</span>, <span class="st">"stage"</span>]]</span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>test_basic_stats_tbl <span class="op">=</span> test_basic_stats_tbl[test_basic_stats_tbl[<span class="st">"stage"</span>] <span class="op">==</span> <span class="st">"raw_concat"</span>]</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>test_basic_stats_tbl <span class="op">=</span> test_basic_stats_tbl.drop(columns<span class="op">=</span>[<span class="st">"stage"</span>])</span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the result</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a>test_basic_stats_tbl.sort_values(by<span class="op">=</span><span class="st">"barcode-div"</span>).set_index([<span class="st">"barcode-div"</span>])</span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="fu"># Adapter contamination stats</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-adapter-stats</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a>test_adapter_stats <span class="op">=</span> pd.read_csv(test_adapter_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a>PolyA contamination is very high. The higher levels of contamination in cleaned reads could be due to the latter having been cleaned of more artefact reads.</span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-adapter-stats-comparison</span></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: PolyA/PolyQ contamination along reads</span></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_adapter_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'pc_adapters'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>ax,units<span class="op">=</span><span class="st">"sample"</span>, style<span class="op">=</span><span class="st">"adapter"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Set common properties for both subplots</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Position'</span>)</span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'% Adapters'</span>)</span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, <span class="dv">15000</span>)</span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a><span class="co"># Set titles for each subplot</span></span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Adapter contamination along reads'</span>)</span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove top and right spines for both subplots</span></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing base quality stats</span></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-base-stats</span></span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a><span class="co">#|</span></span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a>test_quality_base_stats <span class="op">=</span> pd.read_csv(test_quality_base_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a>Most reads have a good average Phred score up until around 6000bp, dropping off thereafter. Cleaning increases Phred scores for most samples. The low scores at the start of the reads are likely due to the large number of short low-quality reads.</span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-base-stats-comparison</span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Mean phred scores along the read</span></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_quality_base_stats, x<span class="op">=</span><span class="st">'position'</span>, y<span class="op">=</span><span class="st">'mean_phred_score'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, units<span class="op">=</span><span class="st">"sample"</span>, ax<span class="op">=</span>ax,estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a><span class="co"># ax.set_title('Mean phred scores along reads')</span></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="co"># Add horizontal lines at Phred scores 10, 20, 30, 40</span></span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, <span class="dv">15000</span>)</span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a><span class="co"># for phred in [10, 20, 30, 40]:</span></span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ax.axhline(y=phred, color='gray', linestyle='--', alpha=0.5, linewidth=1, zorder=-2)</span></span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comparing sequence quality stats</span></span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-quality-sequence-stats</span></span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a><span class="co">#|</span></span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a>test_quality_seq_stats <span class="op">=</span> pd.read_csv(test_quality_seq_stats_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a>The modal mean phred score for reads is around 24, which isn't great. Potentially this average would be improved by I) stronger trimming of reads once their quality drops below a certain threshold, and II) removal of reads that are short, and probably very low quality (see the low quality scores of over the first few hundred base pair positions in @fig-quality-base-stats-comparison).</span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-quality-sequence-stats-comparison</span></span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Average Phred scores of sequences</span></span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_quality_seq_stats, x<span class="op">=</span><span class="st">'mean_phred_score'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'stage'</span>, ax<span class="op">=</span>ax,units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a><span class="fu"># Read lengths</span></span>
+<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a>As observed in the initial summary stats, most reads in the sample are very short (@fig-read-lengths-comparison). Zooming in in @fig-read-lengths-comparison-zoom shows that there are a couple of reads that have the expected length of 4000bp.</span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-read-lengths</span></span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a>test_read_lengths <span class="op">=</span> pd.read_csv(test_read_lengths_path, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-read-lengths-comparison</span></span>
+<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Read lengths (high-level)</span></span>
+<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
+<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned <span class="op">=</span> test_read_lengths[test_read_lengths[<span class="st">"stage"</span>] <span class="op">==</span> <span class="st">"cleaned"</span>]</span>
+<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned[<span class="st">"Treatment"</span>] <span class="op">=</span> test_read_lengths_cleaned[<span class="st">"sample"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">"Filtration + Concentration"</span> <span class="cf">if</span> <span class="st">"12"</span> <span class="kw">in</span> x <span class="cf">else</span> <span class="st">"Filtration"</span>)</span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_read_lengths_cleaned, x<span class="op">=</span><span class="st">'length'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'Treatment'</span>, ax<span class="op">=</span>ax, units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, <span class="dv">6500</span>)</span>
+<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">1000</span>)</span>
+<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Read length'</span>)</span>
+<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Number of sequences'</span>)</span>
+<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-read-lengths-comparison-zoom</span></span>
+<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Read lengths (zoomed in)</span></span>
+<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-location: top</span></span>
+<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">300</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned <span class="op">=</span> test_read_lengths[test_read_lengths[<span class="st">"stage"</span>] <span class="op">==</span> <span class="st">"cleaned"</span>]</span>
+<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a>test_read_lengths_cleaned[<span class="st">"Treatment"</span>] <span class="op">=</span> test_read_lengths_cleaned[<span class="st">"sample"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">"Filtration + Concentration"</span> <span class="cf">if</span> <span class="st">"12"</span> <span class="kw">in</span> x <span class="cf">else</span> <span class="st">"Filtration"</span>)</span>
+<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-245"><a href="#cb7-245" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>test_read_lengths_cleaned, x<span class="op">=</span><span class="st">'length'</span>, y<span class="op">=</span><span class="st">'n_sequences'</span>, hue<span class="op">=</span><span class="st">'Treatment'</span>, ax<span class="op">=</span>ax, units<span class="op">=</span><span class="st">"sample"</span>, estimator<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">500</span>, <span class="dv">8000</span>)</span>
+<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">50</span>)</span>
+<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Read length'</span>)</span>
+<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Number of sequences'</span>)</span>
+<span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-259"><a href="#cb7-259" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
