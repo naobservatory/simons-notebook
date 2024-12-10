@@ -196,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>We can now run mgs-workflow’s QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. I find very high polyA contamination, a lot of very short reads (&lt;500bp), but good quality scores for those reads that reach the expected length of 4000bp.</p>
+<p>We can now run mgs-workflow’s QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. I find very high polyA contamination, a large number of very short low-quality reads (&lt;500bp), but good quality scores for those reads that reach the expected length of 4000bp.</p>
 <section id="assessing-basic-stats-for-both-raw-and-cleaned-reads" class="level1">
 <h1>Assessing basic stats for both raw and cleaned reads</h1>
 <p>Notably, the GC content and mean sequence length of most sequencing files are fairly low (~20% GC, mean length ~ 320 bp). We’d expect mean sequence length to be close to 4kbp, and the GC content to be closer to 40%. Duplication rates are also fairly high, with up to 60%.</p>
@@ -215,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tbl-basic-stats" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3">
 <figure class="quarto-float quarto-float-tbl figure">
 <div aria-describedby="tbl-basic-stats-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <div>
 
 
@@ -990,7 +990,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> "#5cb2a0"</span></span>
 <span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>We can now run mgs-workflow's QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. I find very high polyA contamination, a lot of very short reads (&lt;500bp), but good quality scores for those reads that reach the expected length of 4000bp.</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>We can now run mgs-workflow’s QC and filtering steps on ONT data. Here is a quick analysis of the results of the Zephyr 5b run from November 13, 2024. I find very high polyA contamination, a large number of very short low-quality reads (&lt;500bp), but good quality scores for those reads that reach the expected length of 4000bp.</span>
 <span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-paths</span></span>
