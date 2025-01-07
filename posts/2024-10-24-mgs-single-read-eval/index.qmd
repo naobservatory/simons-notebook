@@ -2,6 +2,7 @@
 title: "Testing the single-read version of mgs-workflow's RAW and CLEAN subworkflows"
 author: "Simon Grimm"
 date: 2024-10-23
+draft: true
 format:
   html:
     code-fold: true

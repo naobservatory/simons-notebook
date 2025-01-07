@@ -2,10 +2,9 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2024-12-14-ont-taxonomy-eval/index.html",
       "/posts/2024-12-08-mgs-ont-raw-eval/index.html",
       "/posts/2024-12-09-zephyr-5b-qc/index.html",
-      "/posts/2024-10-28-mgs-taxonomy-eval/index.html",
-      "/posts/2024-10-24-mgs-single-read-eval/index.html",
       "/posts/2024-07-25-mbta-ridership/index.html"
     ]
   }

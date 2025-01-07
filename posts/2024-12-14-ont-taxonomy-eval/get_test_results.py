@@ -3,10 +3,10 @@
 import subprocess
 import os
 
-mgs_results_dir = "/Users/simongrimm/code/simons-notebook/posts/2024-12-08-mgs-ont-raw-eval/mgs-results"
+mgs_results_dir = "/Users/simongrimm/code/simons-notebook/posts/2024-12-14-ont-taxonomy-eval/mgs-results"
 
 
-run_types = ["test-ont"]
+run_types = ["test-ont-ww"]
 
 
 def get_test_results(mgs_results_dir):
