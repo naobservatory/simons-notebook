@@ -186,6 +186,7 @@ fig.update_yaxes(
     linecolor='black',
     gridcolor='lightgrey',
     tickfont=dict(size=15),
+    range=[0, max(df["Swabs per hour"]) * 1.1]  # Set y-axis minimum to 0
 )
 
 fig.show(config={'displayModeBar': False})
