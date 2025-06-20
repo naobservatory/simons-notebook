@@ -1,0 +1,319 @@
+---
+title: "ONT swab sequencing statistics"
+author: "Simon Grimm"
+date: 2025-06-20
+categories:
+  - Swab sampling
+  - Sequencing
+toc: true
+draft: false
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    code-link: true
+    df-print: paged
+    fig-format: png
+    fig-dpi: 600
+jupyter: general_venv
+
+cap-location: bottom
+---
+
+When creating cost estimates for surveillance programs, we frequently need to provide parameters for metrics such as the number of base pairs produced in one sequencing run or read length distribution. To make these parameters more legible, here is a set of statistics based on NAO's Oxford Nanopore-sequencing of pooled swab samples.
+
+## Total and viral read output
+
+Based on 7 sequencing runs, performed between January 2025 and June 2025, the average read output is **2.47 gigabases and 3.1 million reads**. Many reads are short, with a median read length across all reads of 166 bp.
+
+```{python}
+# | echo: false
+# | output: asis
+#! /usr/bin/env python3
+import json
+import os
+import pandas as pd
+import numpy as np
+from collections import defaultdict
+import matplotlib.pyplot as plt
+
+zephyr_deliveries = [
+    "NAO-ONT-20250120-Zephyr8",
+    "NAO-ONT-20250127-Zephyr9",
+    "NAO-ONT-20250213-Zephyr10",
+    "NAO-ONT-20250220-Zephyr11",
+    "NAO-ONT-20250313-Zephyr12",
+    "NAO-ONT-20250327-Zephyr13",
+    "NAO-ONT-20250606-Zephyr14",
+]
+
+results = {}
+read_counts = {}
+mean_lengths = {}
+median_lengths = {}
+
+total_gb_across_runs = 0
+total_reads_across_runs = 0
+all_lengths = []
+
+for delivery in zephyr_deliveries:
+
+    read_lengths = json.load(
+        open(
+            os.path.expanduser(
+                f"~/code/ont-analysis/delivery_analyses/{delivery}/{delivery}-raw-lengths.json"
+            )
+        )
+    )
+
+    total_gb = 0
+    total_reads = 0
+    run_lengths = []
+
+    for _, length_data in read_lengths.items():
+        for length, counts in length_data.items():
+            length = int(length)
+            counts = int(counts)
+            gbs = counts * length
+            total_gb += gbs
+            total_reads += counts
+            run_lengths.extend([length] * counts)
+
+    results[delivery] = total_gb
+    read_counts[delivery] = total_reads
+    mean_lengths[delivery] = np.mean(run_lengths)
+    median_lengths[delivery] = np.median(run_lengths)
+    all_lengths.extend(run_lengths)
+
+    total_gb_across_runs += total_gb
+    total_reads_across_runs += total_reads
+
+avg_gb_per_run = total_gb_across_runs / len(zephyr_deliveries)
+avg_reads_per_run = total_reads_across_runs / len(zephyr_deliveries)
+results["Average"] = avg_gb_per_run
+read_counts["Average"] = avg_reads_per_run
+mean_lengths["Average"] = np.mean(all_lengths)
+median_lengths["Average"] = np.median(all_lengths)
+
+df = pd.DataFrame(
+    list(
+        zip(
+            results.keys(),
+            results.values(),
+            read_counts.values(),
+            mean_lengths.values(),
+            median_lengths.values(),
+        )
+    ),
+    columns=[
+        "Sequencing run",
+        "Total Base Pairs",
+        "Total Reads",
+        "Mean Read Length",
+        "Median Read Length",
+    ],
+)
+df["Sequencing run"] = df["Sequencing run"].str.replace(r"-Zephyr\d+", "", regex=True)
+
+df.set_index("Sequencing run", inplace=True)
+df["Total Base Pairs"] = df["Total Base Pairs"].apply(
+    lambda x: f"{x / 1e9:.2f} GB" if x >= 1e9 else f"{x / 1e6:.2f} MB"
+)
+df["Total Reads"] = df["Total Reads"].apply(lambda x: f"{x/1e6:.1f}M")
+df["Mean Read Length"] = df["Mean Read Length"].apply(lambda x: f"{x:.0f} bp")
+df["Median Read Length"] = df["Median Read Length"].apply(lambda x: f"{x:.0f} bp")
+
+df
+```
+
+Actual read length distributions are fairly heterogeneous across runs, with many runs showing a bimodal distribution with peaks at 10 bp and 100 bp, and NAO-ONT-20250313 and NAO-ONT-20250327 showing a trimodal distribution, with peaks at 10 bp, 1000 bp, and 2000 bp.
+
+```{python}
+# | echo: false
+# | output: asis
+import re
+
+fig, axes = plt.subplots(3, 3, figsize=(15, 12))
+axes = axes.flatten()
+
+for i, delivery in enumerate(zephyr_deliveries):
+    read_lengths = json.load(
+        open(
+            os.path.expanduser(
+                f"~/code/ont-analysis/delivery_analyses/{delivery}/{delivery}-raw-lengths.json"
+            )
+        )
+    )
+
+    delivery_length_counts = defaultdict(int)
+    for _, length_data in read_lengths.items():
+        for length, counts in length_data.items():
+            delivery_length_counts[int(length)] += int(counts)
+
+    lengths = sorted(delivery_length_counts.keys())
+    counts = [delivery_length_counts[length] for length in lengths]
+    delivery_name = re.sub(r"-Zephyr\d+", "", delivery)
+
+    axes[i].plot(lengths, counts, alpha=0.7)
+    axes[i].set_xscale("log")
+    axes[i].set_xlim(1, 8000)
+    axes[i].set_xlabel("Read Length (bp)")
+    axes[i].set_ylabel("Number of Reads")
+    axes[i].set_title(delivery_name)
+    axes[i].grid(True, alpha=0.3)
+
+# Hide the unused subplot
+axes[7].set_visible(False)
+axes[8].set_visible(False)
+
+plt.tight_layout()
+
+plt.show()
+
+```
+
+More relevant for virus detection are read length distributions of viral reads. In most runs, viral reads predominantly exceed 1,000 bp in length.
+
+```{python}
+# | echo: false
+# | output: asis
+#! /usr/bin/env python3
+import json
+import matplotlib.pyplot as plt
+from collections import defaultdict
+import os
+import csv
+import gzip
+from collections import Counter
+
+n_deliveries = len(zephyr_deliveries)
+n_cols = 3
+n_rows = (n_deliveries + n_cols - 1) // n_cols
+
+fig, axes = plt.subplots(n_rows, n_cols, figsize=(15, 4 * n_rows))
+if n_rows == 1:
+    axes = axes.reshape(1, -1)
+axes = axes.flatten()
+
+for i, delivery in enumerate(zephyr_deliveries):
+    hv_lengths = Counter()
+    delivery_hv_tsv = os.path.expanduser(
+        f"~/code/ont-analysis/delivery_analyses/{delivery}/{delivery}.hv.tsv.gz"
+    )
+
+    with gzip.open(delivery_hv_tsv, "rt") as inf:
+        for row in csv.DictReader(inf, delimiter="\t"):
+            sample = row["sample"]
+            read_length = int(row["query_len_clean"])
+            hv_lengths[read_length] += 1
+
+    lengths = list(hv_lengths.keys())
+    counts = list(hv_lengths.values())
+
+    axes[i].hist(lengths, weights=counts, bins=50, alpha=0.7, edgecolor="black")
+    axes[i].set_xlim(0, 5000)
+    axes[i].set_xlabel("Read Length (bp)")
+    axes[i].set_ylabel("Number of Reads")
+    axes[i].set_title(delivery)
+    axes[i].grid(True, alpha=0.3, zorder=-10)
+
+for i in range(n_deliveries, len(axes)):
+    axes[i].set_visible(False)
+
+plt.tight_layout()
+plt.show()
+```
+
+
+## Output across time
+
+Finally, for an up-and-running biosurveillance system we would want to have fast turnaround sequencing. Hence, we're interested to know how much sequencing output is generated in the first 12 hours of a sequencing run. We have this data in rough shape as figures generated by ONT's MinKNOW software ([Google Doc](https://docs.google.com/document/d/10rmAnjBBLO0byQst60BDJjwN6xQV5X6aCGmxL9ZvSDA/edit?tab=t.0))
+
+Roughly, we see that for most runs, the base pairs generated per hour in the first 12 hours is **1.6 to 3.3 times higher** than after 12 hours.
+
+
+```{python}
+# | echo: false
+# | output: asis
+
+time_output_data = {
+    "NAO-ONT-20250120-Zephyr8": {
+        "total_length_hours": 25,
+        "output_at_end_gb": 1.6,
+        "output_at_12h_gb": 1.0,
+    },
+    "NAO-ONT-20250127-Zephyr9": {
+        "total_length_hours": 28,
+        "output_at_end_gb": 1.7,
+        "output_at_12h_gb": 1.0,
+    },
+    "NAO-ONT-20250213-Zephyr10": {
+        "total_length_hours": 40,
+        "output_at_end_gb": 3.1,
+        "output_at_12h_gb": 1.3,
+    },
+    "NAO-ONT-20250220-Zephyr11": {
+        "total_length_hours": 40,
+        "output_at_end_gb": 2.7,
+        "output_at_12h_gb": 1.2,
+    },
+    "NAO-ONT-20250313-Zephyr12": {
+        "total_length_hours": 4.5,
+        "output_at_end_gb": 4.9,
+        "output_at_12h_gb": 4.9,
+    },
+    "NAO-ONT-20250327-Zephyr13": {
+        "total_length_hours": 11.5,
+        "output_at_end_gb": 8.0,
+        "output_at_12h_gb": 8.0,
+    },
+    "NAO-ONT-20250606-Zephyr14": {
+        "total_length_hours": 40,
+        "output_at_end_gb": 6.8,
+        "output_at_12h_gb": 4.0,
+    },
+}
+
+rows = []
+for delivery, data in time_output_data.items():
+    share_of_data = data["output_at_12h_gb"] / data["output_at_end_gb"]
+    share_of_time = min(12, data["total_length_hours"]) / data["total_length_hours"]
+    hourly_rate_first_12h = data["output_at_12h_gb"] / min(
+        12, data["total_length_hours"]
+    )
+    hourly_rate_at_end = (
+        (data["output_at_end_gb"] - data["output_at_12h_gb"])
+        / (data["total_length_hours"] - min(12, data["total_length_hours"]))
+        if data["total_length_hours"] >= 12
+        else "—"
+    )
+    hourly_rate_first_12h = round(hourly_rate_first_12h, 2)
+    if isinstance(hourly_rate_at_end, float):
+        hourly_rate_at_end = round(hourly_rate_at_end, 2)
+    if hourly_rate_at_end != "—":
+        early_vs_late_ratio = round(hourly_rate_first_12h / hourly_rate_at_end, 1)
+    else:
+        early_vs_late_ratio = "—"
+    delivery_name = re.sub(r"-Zephyr\d+", "", delivery)
+    rows.append(
+        {
+            "Sequencing run": delivery_name,
+            "Run duration (h)": data["total_length_hours"],
+            "Output at 12h (GB)": data["output_at_12h_gb"],
+            "Total output (GB)": data["output_at_end_gb"],
+            "Share of Time": share_of_time * 100,
+            "Share of Data": share_of_data * 100,
+            "Rate 0-12h (GB/h)": hourly_rate_first_12h,
+            "Rate >12h (GB/h)": hourly_rate_at_end,
+            "Early/Late ratio": early_vs_late_ratio,
+        }
+    )
+
+df = pd.DataFrame(rows)
+df.set_index("Sequencing run", inplace=True)
+df["Share of Time"] = df["Share of Time"].apply(lambda x: f"{x:.1f}%")
+df["Share of Data"] = df["Share of Data"].apply(lambda x: f"{x:.1f}%")
+df["Output at 12h (GB)"] = df["Output at 12h (GB)"].apply(lambda x: f"{x:.1f}")
+df["Total output (GB)"] = df["Total output (GB)"].apply(lambda x: f"{x:.1f}")
+df
+```
