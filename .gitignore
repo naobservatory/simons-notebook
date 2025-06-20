@@ -57,3 +57,6 @@ _freeze
 /.quarto/
 
 **/data/
+
+# HV reads that are not in the dashboard
+dashboard/hvreads/*
